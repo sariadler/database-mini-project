@@ -1,4 +1,20 @@
--- Product
+-- 1. טבלאות עצמאיות (ללא מפתחות זרים)
+CREATE TABLE Supplier (
+    S_id INT PRIMARY KEY,
+    Company_Name VARCHAR(100),
+    Phone VARCHAR(50),
+    Address VARCHAR(200),
+    Supplier_MetaData JSON -- דרישת מטלה: לפחות 2 שדות JSON
+);
+
+CREATE TABLE Employee (
+    E_id INT PRIMARY KEY,
+    E_name VARCHAR(100),
+    E_familyName VARCHAR(100),
+    E_date DATE,
+    Role VARCHAR(50)
+);
+
 CREATE TABLE Product (
     P_id INT PRIMARY KEY,
     P_name VARCHAR(100),
@@ -7,16 +23,14 @@ CREATE TABLE Product (
     P_date DATE
 );
 
--- Design
-CREATE TABLE Design (
-    D_id INT PRIMARY KEY,
-    D_name VARCHAR(100),
-    D_description TEXT,
-    D_date DATE,
-    JSON_Specs JSON
+CREATE TABLE Work_Ship (
+    WS_id INT PRIMARY KEY,
+    WS_type VARCHAR(50),
+    WS_time INT,
+    WS_date DATE,
+    WS_notes TEXT
 );
 
--- RawMaterial
 CREATE TABLE RawMaterial (
     R_id INT PRIMARY KEY,
     R_name VARCHAR(100),
@@ -25,16 +39,9 @@ CREATE TABLE RawMaterial (
     Stock_Quantity INT
 );
 
--- Supplier
-CREATE TABLE Supplier (
-    S_id INT PRIMARY KEY,
-    Company_Name VARCHAR(100),
-    Phone VARCHAR(50),
-    Address VARCHAR(200),
-    Supplier_MetaData TEXT
-);
+-- 2. טבלאות עם קשרי 1:M (הטמעת מפתחות זרים)
 
--- SupplyOrder
+-- SupplyOrder (Provides: Supplier 1 -> M Order)
 CREATE TABLE SupplyOrder (
     Order_id INT PRIMARY KEY,
     Order_date DATE,
@@ -45,47 +52,44 @@ CREATE TABLE SupplyOrder (
     FOREIGN KEY (S_id) REFERENCES Supplier(S_id)
 );
 
--- Product Line
+-- Design (Produces: Product 1 -> M Design)
+CREATE TABLE Design (
+    D_id INT PRIMARY KEY,
+    D_name VARCHAR(100),
+    D_description TEXT,
+    D_data DATE, -- לפי ה-JSON (Labels)
+    JSON_Specs JSON, -- דרישת מטלה: שדה JSON שני
+    P_id INT,
+    FOREIGN KEY (P_id) REFERENCES Product(P_id)
+);
+
+-- Product_Line (Manufactures: Product 1 -> M Line)
 CREATE TABLE Product_Line (
     PL_id INT PRIMARY KEY,
     Factory_Location VARCHAR(100),
     Capacity INT,
     Last_Maintenance DATE,
-    Status VARCHAR(50)
+    Status VARCHAR(50),
+    P_id INT,
+    FOREIGN KEY (P_id) REFERENCES Product(P_id)
 );
 
--- Department
+-- Department (Works_In: Employee 1 -> M Dept | Manages: Line 1 -> M Dept)
 CREATE TABLE Department (
     DE_id INT PRIMARY KEY,
     DE_name VARCHAR(100),
     Location VARCHAR(100),
     Budget DECIMAL(10,2),
-    Manager_Name VARCHAR(100)
+    Manager_Name VARCHAR(100),
+    E_id INT,
+    PL_id INT,
+    FOREIGN KEY (E_id) REFERENCES Employee(E_id),
+    FOREIGN KEY (PL_id) REFERENCES Product_Line(PL_id)
 );
 
--- Employee
-CREATE TABLE Employee (
-    E_id INT PRIMARY KEY,
-    E_name VARCHAR(100),
-    E_familyName VARCHAR(100),
-    E_date DATE,
-    Role VARCHAR(50)
-);
+-- 3. טבלאות קשר (Many-to-Many בלבד)
 
--- Work Ship
-CREATE TABLE Work_Ship (
-    WS_id INT PRIMARY KEY,
-    WS_type VARCHAR(50),
-    WS_time INT,
-    WS_date DATE,
-    WS_notes TEXT
-);
-
--- =====================
--- RELATION TABLES
--- =====================
-
--- Includes (SupplyOrder ↔ RawMaterial)
+-- Includes (SupplyOrder M <-> M RawMaterial)
 CREATE TABLE Includes (
     Order_id INT,
     R_id INT,
@@ -94,7 +98,7 @@ CREATE TABLE Includes (
     FOREIGN KEY (R_id) REFERENCES RawMaterial(R_id)
 );
 
--- Requires (Design ↔ RawMaterial)
+-- Requires (Design M <-> M RawMaterial)
 CREATE TABLE Requires (
     D_id INT,
     R_id INT,
@@ -103,34 +107,7 @@ CREATE TABLE Requires (
     FOREIGN KEY (R_id) REFERENCES RawMaterial(R_id)
 );
 
--- Produces (Product ↔ Design)
-CREATE TABLE Produces (
-    P_id INT,
-    D_id INT,
-    PRIMARY KEY (P_id, D_id),
-    FOREIGN KEY (P_id) REFERENCES Product(P_id),
-    FOREIGN KEY (D_id) REFERENCES Design(D_id)
-);
-
--- Manufactures (Product ↔ Product_Line)
-CREATE TABLE Manufactures (
-    P_id INT,
-    PL_id INT,
-    PRIMARY KEY (P_id, PL_id),
-    FOREIGN KEY (P_id) REFERENCES Product(P_id),
-    FOREIGN KEY (PL_id) REFERENCES Product_Line(PL_id)
-);
-
--- Works_in (Employee ↔ Department)
-CREATE TABLE Works_in (
-    E_id INT,
-    DE_id INT,
-    PRIMARY KEY (E_id, DE_id),
-    FOREIGN KEY (E_id) REFERENCES Employee(E_id),
-    FOREIGN KEY (DE_id) REFERENCES Department(DE_id)
-);
-
--- Employee ↔ Work_Ship
+-- Relationship (Employee M <-> M Work_Ship)
 CREATE TABLE Employee_WorkShip (
     E_id INT,
     WS_id INT,
