@@ -1,3 +1,4 @@
+--create-tables
 -- 1. טבלאות עצמאיות (ללא מפתחות זרים)
 CREATE TABLE Supplier (
     S_id INT PRIMARY KEY,
