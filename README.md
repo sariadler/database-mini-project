@@ -12,15 +12,15 @@
 
 **לוח בקרה (Dashboard):**
 מציג סטטיסטיקות על תהליכי הייצור ומלאי חומרי הגלם.
-![Dashboard UI](ui_dashboard.png)
+![Dashboard UI](dbFiles\ui_dashboard.png)
 
 **ניהול מוצרים:**
 טבלת מעקב אחר מוצרים קיימים והקשר שלהם לדגמי העיצוב.
-![Product Management UI](ui_products.png)
+![Product Management UI](dbFiles\ui_products.png)
 
 **טופס הזנת עיצוב חדש:**
 ממשק להזנת מפרטים טכניים כולל תמיכה בפורמט JSON.
-![New Design Form](ui_design_form.png)
+![New Design Form](dbFiles\ui_design_form.png)
 
 ### מבוא ותיאור המערכת
 פרויקט זה מתמקד ב**אגף עיצוב וייצור** כחלק ממערכת כוללת לניהול רשת חנויות. 
@@ -38,7 +38,7 @@
 המערכת מורכבת מ-**9 ישויות מרכזיות**. לכל ישות הוגדרו לפחות 5 תכונות (Attributes) כדי להבטיח פירוט נתונים מרבי ודיוק בתהליכי העבודה.
 
 ### דיאגרמת ERD:
-![ERD Diagram](erd_diagram.jpeg)  
+![ERD Diagram](dbFiles\erd_diagram.jpeg)
 
 ## 3. נירמול ותלויות פונקציונליות (Normalization & Functional Dependencies)
 
@@ -91,3 +91,22 @@
 2.  אין תלויות חלקיות (כל השדות תלויים במפתח הראשי במלואו).
 3.  אין תלויות טרנזיטיביות (שדה שאינו מפתח לא קובע שדה אחר שאינו מפתח).
 4.  לכל תלות פונקציונלית $X \rightarrow Y$, $X$ הוא מפתח-על (Superkey).
+
+
+---
+
+###
+
+### מימוש פיזי בבסיס הנתונים (DSD)
+ * בשלב זה הפכנו את המודל הלוגי (ERD) לבסיס נתונים פיזי מתפקד בתוך שרת PostgreSQL.
+
+### תיאור המימוש:
+באמצעות ממשק ה-pgAdmin, הרצנו סקריפטים של SQL ליצירת הסכימה (Schema). התמונה להלן מציגה את עץ האובייקטים של המערכת, המהווה את ה-DSD (Data Structure Diagram) של הפרויקט:
+
+ * הוכחת מימוש: ניתן לראות כי כל 9 הישויות שהוגדרו בתכנון נוצרו בהצלחה תחת הסכימה הציבורית (public).
+
+ * אילוצים וקשרים: המימוש כולל הגדרת מפתחות ראשיים (PK) ומפתחות זרים (FK) המבטיחים את שלמות הנתונים (Referential Integrity). 
+
+![Dashboard UI](dbFiles\pgAdmin_tables_view.png.JPG)
+
+ 
