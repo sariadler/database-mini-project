@@ -107,6 +107,5 @@
 
  * אילוצים וקשרים: המימוש כולל הגדרת מפתחות ראשיים (PK) ומפתחות זרים (FK) המבטיחים את שלמות הנתונים (Referential Integrity). 
 
-![Dashboard UI](dbFiles\pgAdmin_tables_view.png.JPG)
 
- 
+ ![Dashboard UI](dbFiles/pgAdmin_tables_view.png.JPG)
