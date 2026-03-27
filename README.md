@@ -12,15 +12,15 @@
 
 **לוח בקרה (Dashboard):**
 מציג סטטיסטיקות על תהליכי הייצור ומלאי חומרי הגלם.
-![Dashboard UI](dbFiles\ui_dashboard.png)
+![Dashboard UI](dbFiles/ui_dashboard.png)
 
 **ניהול מוצרים:**
 טבלת מעקב אחר מוצרים קיימים והקשר שלהם לדגמי העיצוב.
-![Product Management UI](dbFiles\ui_products.png)
+![Product Management UI](dbFiles/ui_products.png)
 
 **טופס הזנת עיצוב חדש:**
 ממשק להזנת מפרטים טכניים כולל תמיכה בפורמט JSON.
-![New Design Form](dbFiles\ui_design_form.png)
+![New Design Form](dbFiles/ui_design_form.png)
 
 ### מבוא ותיאור המערכת
 פרויקט זה מתמקד ב**אגף עיצוב וייצור** כחלק ממערכת כוללת לניהול רשת חנויות. 
@@ -38,7 +38,7 @@
 המערכת מורכבת מ-**9 ישויות מרכזיות**. לכל ישות הוגדרו לפחות 5 תכונות (Attributes) כדי להבטיח פירוט נתונים מרבי ודיוק בתהליכי העבודה.
 
 ### דיאגרמת ERD:
-![ERD Diagram](dbFiles\erd_diagram.jpeg)
+![ERD Diagram](dbFiles/erd_diagram.jpeg)
 
 ## 3. נירמול ותלויות פונקציונליות (Normalization & Functional Dependencies)
 
