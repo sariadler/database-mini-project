@@ -205,3 +205,91 @@
 </details>
 
 </details>
+
+<details>
+<summary><b>שיטת Mockaroo (SQL Export) - טבלאות Product ו־Design</b></summary>
+
+כדי למלא 500 רשומות בטבלאות המרכזיות, השתמשנו באתר Mockaroo ליצירת נתונים אקראיים בצורה מהירה ואמינה.
+
+בשלב הראשון הגדרנו את השדות בהתאם למבנה הטבלאות, ולאחר מכן ייצאנו את הנתונים בפורמט SQL.
+
+את קובצי ה־SQL הרצנו ב־pgAdmin, וכך הוזנו הנתונים לטבלאות Product ו־Design.
+
+לאחר ההרצה ביצענו בדיקת COUNT על מנת לוודא שכל הנתונים הוכנסו בהצלחה.
+
+![Schema Create](dbFiles/schema_create.png)
+![Product Insert](dbFiles/product_insert.png)
+![Product Count](dbFiles/product_count.png)
+![Design Insert](dbFiles/design_insert.png)
+![Design Count](dbFiles/design_count.png)
+
+</details>
+
+---
+
+<details>
+<summary><b>שיטת SQL (Generate Series) - טבלת RawMaterial</b></summary>
+
+בטבלה זו השתמשנו בפקודת SQL מובנית של PostgreSQL בשם generate_series כדי ליצור כמות גדולה של נתונים בצורה אוטומטית.
+
+בתחילה הוכנסו מספר רשומות ידניות לצורך בדיקה, ולאחר מכן בוצעה הכנסת נתונים אוטומטית באמצעות generate_series יחד עם פונקציות random ליצירת מחירים וכמויות.
+
+השיטה אפשרה יצירה מהירה ויעילה של מעל 500 רשומות ללא שימוש בכלים חיצוניים.
+
+לאחר ההרצה ביצענו בדיקת COUNT כדי לוודא שהנתונים הוכנסו בהצלחה.
+
+![RawMaterial Insert](dbFiles/rawmaterial_insert.png)
+![RawMaterial Count](dbFiles/rawmaterial_count.png)
+
+</details>
+
+---
+
+<details>
+<summary><b>טיפול בשגיאות (Data Integrity)</b></summary>
+
+במהלך העבודה נתקלנו במספר שגיאות אשר המחישו את חשיבות שלמות הנתונים במערכת.
+
+בין השגיאות:
+
+- Duplicate Key – הכנסת רשומה עם מזהה שכבר קיים
+- JSON לא תקין
+- NULL בשדה שמוגדר כ־NOT NULL
+- Foreign Key Constraint – ניסיון למחוק רשומה שמקושרת לטבלה אחרת
+
+שגיאות אלו סייעו לנו להבין את מגבלות המערכת ואת הקשרים בין הטבלאות.
+
+![Duplicate Key Error](dbFiles/duplicate_error.png)
+![Foreign Key Error](dbFiles/foreign_key_error.png)
+
+
+</details>
+
+---
+
+<details>
+<summary><b>גיבוי בסיס הנתונים (Backup)</b></summary>
+
+לאחר סיום מילוי הנתונים, ביצענו גיבוי מלא של בסיס הנתונים באמצעות pgAdmin.
+
+הגיבוי נשמר בפורמט Custom כקובץ .backup, ומאפשר שחזור מלא של מבנה הנתונים והתוכן.
+
+![Backup](dbFiles/backup.png)
+
+</details>
+
+---
+
+<details>
+<summary><b>שחזור בסיס הנתונים (Restore)</b></summary>
+
+כדי לוודא את תקינות הגיבוי, ביצענו תהליך שחזור.
+
+נוצר בסיס נתונים חדש בשם test_restore, ולאחר מכן בוצע Restore מקובץ הגיבוי.
+
+לאחר השחזור בוצעה בדיקת COUNT על טבלת Product, אשר הראתה כי כל הנתונים שוחזרו בהצלחה.
+
+![Create Restore DB](dbFiles/create_restore_db.png)
+![Restore Count](dbFiles/restore_count.png)
+
+</details>
