@@ -47,8 +47,18 @@
 ### דיאגרמת ERD:
 ![ERD Diagram](dbFiles/erd_diagram.jpeg)
 
-</details>
+### מאפייני המודל הלוגי
 
+כל ישות במערכת כוללת לפחות 5 תכונות בהתאם לדרישות המטלה.
+הוגדרו קשרים בין הישויות עם עוצמות (Cardinality), כגון:
+- קשר מסוג 1:N (לדוגמה: Department – Employee, Supplier – SupplyOrder)
+- קשר מסוג M:N (לדוגמה: Design – RawMaterial, SupplyOrder – RawMaterial)
+נעשה שימוש בסוגי נתונים מגוונים:
+- שדות מסוג Date (לדוגמה: P_date, D_date, Order_date, WS_date)
+- שדות מסוג JSON (לדוגמה: JSON_Specs, Supplier_Metadata)
+קיימים מספר שדות תאריך במערכת, לצורך שימוש בשאילתות בשלבים מתקדמים.
+
+</details>
 
 <details>
 <summary><b>📊 נירמול ותלויות פונקציונליות (BCNF)</b></summary>
@@ -110,6 +120,17 @@
 <details>
 <summary><b>📥 4. מימוש פיזי, מילוי נתונים וגיבוי המערכת </b></summary>
 <br>
+
+### מעבר מהתכנון הלוגי למימוש הפיזי
+
+המעבר מהתכנון הלוגי למימוש הפיזי בוצע על בסיס דיאגרמת ה-ERD.  
+פקודות CREATE TABLE נכתבו בהתאם למבנה הישויות, התכונות והקשרים שהוגדרו בתכנון, ולאחר מכן הורצו ב-pgAdmin ליצירת הסכמה המלאה.
+
+### DSD - Data Structure Diagram
+
+התרשים הבא מציג את מבנה הטבלאות והקשרים כפי שנוצרו בפועל בבסיס הנתונים:
+
+![DSD Diagram](dbFiles/pgadmin_view_data.png)
 
 <details>
 <summary><b>שיטת Python</b></summary>
@@ -243,7 +264,21 @@
 
 </details>
 
----
+<details>
+<summary><b>שיטת Excel - טבלת Department</b></summary>
+<br>
+
+בשיטה זו השתמשנו בקובץ Excel לצורך יצירת נתונים לטבלת Department.
+
+תחילה יצרנו קובץ Excel הכולל את עמודות הטבלה והזנו בו נתונים בהתאם למבנה המערכת.  
+לאחר מכן השתמשנו בתוכן הקובץ לצורך הזנת הנתונים לבסיס הנתונים באמצעות פקודות SQL.
+
+שיטה זו מאפשרת יצירה נוחה של נתונים בצורה ידידותית למשתמש, תוך הפרדה בין יצירת הנתונים לבין הזנתם בפועל למערכת.
+
+![Excel Data](dbFiles/department_excel.png)
+![Department After Insert](dbFiles/department_result.png)
+
+</details>
 
 <details>
 <summary><b>טיפול בשגיאות (Data Integrity)</b></summary>
@@ -271,8 +306,9 @@
 <summary><b>גיבוי בסיס הנתונים (Backup)</b></summary>
 
 לאחר סיום מילוי הנתונים, ביצענו גיבוי מלא של בסיס הנתונים באמצעות pgAdmin.
+הגיבוי בוצע באמצעות pgAdmin על ידי לחיצה ימנית על בסיס הנתונים ובחירה באפשרות Backup.  
+נבחר פורמט Custom (.backup), המאפשר גיבוי מלא של מבנה הנתונים והתוכן.
 
-הגיבוי נשמר בפורמט Custom כקובץ .backup, ומאפשר שחזור מלא של מבנה הנתונים והתוכן.
 
 ![Backup](dbFiles/backup.png)
 
