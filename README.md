@@ -128,7 +128,9 @@
 
 ### DSD - Data Structure Diagram
 
-התרשים הבא מציג את מבנה הטבלאות והקשרים כפי שנוצרו בפועל בבסיס הנתונים:
+לאחר בניית הטבלאות ב-PostgreSQL, הופק תרשים ה-DSD (Data Structure Diagram) המשקף את מבנה הנתונים הסופי. התרשים מציג את טיפוסי הנתונים המדויקים, המפתחות הראשיים והקשרים הפיזיים (Foreign Keys) בין הישויות באגף הייצור.
+
+![DSD Diagram](dsd_diagram.png)
 
 ![DSD Diagram](dbFiles/pgadmin_view_data.png)
 
@@ -331,7 +333,3 @@
 </details>
 ---
 
-## 4. מימוש פיזי - תרשים DSD
-לאחר בניית הטבלאות ב-PostgreSQL, הופק תרשים ה-DSD (Data Structure Diagram) המשקף את מבנה הנתונים הסופי. התרשים מציג את טיפוסי הנתונים המדויקים, המפתחות הראשיים והקשרים הפיזיים (Foreign Keys) בין הישויות באגף הייצור.
-
-![DSD Diagram](dsd_diagram.png)
