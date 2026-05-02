@@ -32,6 +32,7 @@ services:
       - "8080:80"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
+      - ./dbFiles:/my_backups
     depends_on:
       - db
     networks:
