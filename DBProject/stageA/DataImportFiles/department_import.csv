@@ -1,0 +1,501 @@
+﻿PL_id,E_id,Manager_Name,Budget,Location,DE_name,DE_id
+1,1,Manager_501,50000,Tel Aviv,Department_501,501
+2,2,Manager_502,60000,Jerusalem,Department_502,502
+3,3,Manager_503,70000,Tel Aviv,Department_503,503
+4,4,Manager_504,80000,Jerusalem,Department_504,504
+5,5,Manager_505,90000,Tel Aviv,Department_505,505
+6,6,Manager_506,100000,Jerusalem,Department_506,506
+7,7,Manager_507,110000,Tel Aviv,Department_507,507
+8,8,Manager_508,120000,Jerusalem,Department_508,508
+9,9,Manager_509,130000,Tel Aviv,Department_509,509
+10,10,Manager_510,140000,Jerusalem,Department_510,510
+11,11,Manager_511,150000,Tel Aviv,Department_511,511
+12,12,Manager_512,160000,Jerusalem,Department_512,512
+13,13,Manager_513,170000,Tel Aviv,Department_513,513
+14,14,Manager_514,180000,Jerusalem,Department_514,514
+15,15,Manager_515,190000,Tel Aviv,Department_515,515
+16,16,Manager_516,200000,Jerusalem,Department_516,516
+17,17,Manager_517,210000,Tel Aviv,Department_517,517
+18,18,Manager_518,220000,Jerusalem,Department_518,518
+19,19,Manager_519,230000,Tel Aviv,Department_519,519
+20,20,Manager_520,240000,Jerusalem,Department_520,520
+21,21,Manager_521,250000,Tel Aviv,Department_521,521
+22,22,Manager_522,260000,Jerusalem,Department_522,522
+23,23,Manager_523,270000,Tel Aviv,Department_523,523
+24,24,Manager_524,280000,Jerusalem,Department_524,524
+25,25,Manager_525,290000,Tel Aviv,Department_525,525
+26,26,Manager_526,300000,Jerusalem,Department_526,526
+27,27,Manager_527,310000,Tel Aviv,Department_527,527
+28,28,Manager_528,320000,Jerusalem,Department_528,528
+29,29,Manager_529,330000,Tel Aviv,Department_529,529
+30,30,Manager_530,340000,Jerusalem,Department_530,530
+31,31,Manager_531,350000,Tel Aviv,Department_531,531
+32,32,Manager_532,360000,Jerusalem,Department_532,532
+33,33,Manager_533,370000,Tel Aviv,Department_533,533
+34,34,Manager_534,380000,Jerusalem,Department_534,534
+35,35,Manager_535,390000,Tel Aviv,Department_535,535
+36,36,Manager_536,400000,Jerusalem,Department_536,536
+37,37,Manager_537,410000,Tel Aviv,Department_537,537
+38,38,Manager_538,420000,Jerusalem,Department_538,538
+39,39,Manager_539,430000,Tel Aviv,Department_539,539
+40,40,Manager_540,440000,Jerusalem,Department_540,540
+41,41,Manager_541,450000,Tel Aviv,Department_541,541
+42,42,Manager_542,460000,Jerusalem,Department_542,542
+43,43,Manager_543,470000,Tel Aviv,Department_543,543
+44,44,Manager_544,480000,Jerusalem,Department_544,544
+45,45,Manager_545,490000,Tel Aviv,Department_545,545
+46,46,Manager_546,500000,Jerusalem,Department_546,546
+47,47,Manager_547,510000,Tel Aviv,Department_547,547
+48,48,Manager_548,520000,Jerusalem,Department_548,548
+49,49,Manager_549,530000,Tel Aviv,Department_549,549
+50,50,Manager_550,540000,Jerusalem,Department_550,550
+51,51,Manager_551,550000,Tel Aviv,Department_551,551
+52,52,Manager_552,560000,Jerusalem,Department_552,552
+53,53,Manager_553,570000,Tel Aviv,Department_553,553
+54,54,Manager_554,580000,Jerusalem,Department_554,554
+55,55,Manager_555,590000,Tel Aviv,Department_555,555
+56,56,Manager_556,600000,Jerusalem,Department_556,556
+57,57,Manager_557,610000,Tel Aviv,Department_557,557
+58,58,Manager_558,620000,Jerusalem,Department_558,558
+59,59,Manager_559,630000,Tel Aviv,Department_559,559
+60,60,Manager_560,640000,Jerusalem,Department_560,560
+61,61,Manager_561,650000,Tel Aviv,Department_561,561
+62,62,Manager_562,660000,Jerusalem,Department_562,562
+63,63,Manager_563,670000,Tel Aviv,Department_563,563
+64,64,Manager_564,680000,Jerusalem,Department_564,564
+65,65,Manager_565,690000,Tel Aviv,Department_565,565
+66,66,Manager_566,700000,Jerusalem,Department_566,566
+67,67,Manager_567,710000,Tel Aviv,Department_567,567
+68,68,Manager_568,720000,Jerusalem,Department_568,568
+69,69,Manager_569,730000,Tel Aviv,Department_569,569
+70,70,Manager_570,740000,Jerusalem,Department_570,570
+71,71,Manager_571,750000,Tel Aviv,Department_571,571
+72,72,Manager_572,760000,Jerusalem,Department_572,572
+73,73,Manager_573,770000,Tel Aviv,Department_573,573
+74,74,Manager_574,780000,Jerusalem,Department_574,574
+75,75,Manager_575,790000,Tel Aviv,Department_575,575
+76,76,Manager_576,800000,Jerusalem,Department_576,576
+77,77,Manager_577,810000,Tel Aviv,Department_577,577
+78,78,Manager_578,820000,Jerusalem,Department_578,578
+79,79,Manager_579,830000,Tel Aviv,Department_579,579
+80,80,Manager_580,840000,Jerusalem,Department_580,580
+81,81,Manager_581,850000,Tel Aviv,Department_581,581
+82,82,Manager_582,860000,Jerusalem,Department_582,582
+83,83,Manager_583,870000,Tel Aviv,Department_583,583
+84,84,Manager_584,880000,Jerusalem,Department_584,584
+85,85,Manager_585,890000,Tel Aviv,Department_585,585
+86,86,Manager_586,900000,Jerusalem,Department_586,586
+87,87,Manager_587,910000,Tel Aviv,Department_587,587
+88,88,Manager_588,920000,Jerusalem,Department_588,588
+89,89,Manager_589,930000,Tel Aviv,Department_589,589
+90,90,Manager_590,940000,Jerusalem,Department_590,590
+91,91,Manager_591,950000,Tel Aviv,Department_591,591
+92,92,Manager_592,960000,Jerusalem,Department_592,592
+93,93,Manager_593,970000,Tel Aviv,Department_593,593
+94,94,Manager_594,980000,Jerusalem,Department_594,594
+95,95,Manager_595,990000,Tel Aviv,Department_595,595
+96,96,Manager_596,1000000,Jerusalem,Department_596,596
+97,97,Manager_597,1010000,Tel Aviv,Department_597,597
+98,98,Manager_598,1020000,Jerusalem,Department_598,598
+99,99,Manager_599,1030000,Tel Aviv,Department_599,599
+100,100,Manager_600,1040000,Jerusalem,Department_600,600
+101,101,Manager_601,1050000,Tel Aviv,Department_601,601
+102,102,Manager_602,1060000,Jerusalem,Department_602,602
+103,103,Manager_603,1070000,Tel Aviv,Department_603,603
+104,104,Manager_604,1080000,Jerusalem,Department_604,604
+105,105,Manager_605,1090000,Tel Aviv,Department_605,605
+106,106,Manager_606,1100000,Jerusalem,Department_606,606
+107,107,Manager_607,1110000,Tel Aviv,Department_607,607
+108,108,Manager_608,1120000,Jerusalem,Department_608,608
+109,109,Manager_609,1130000,Tel Aviv,Department_609,609
+110,110,Manager_610,1140000,Jerusalem,Department_610,610
+111,111,Manager_611,1150000,Tel Aviv,Department_611,611
+112,112,Manager_612,1160000,Jerusalem,Department_612,612
+113,113,Manager_613,1170000,Tel Aviv,Department_613,613
+114,114,Manager_614,1180000,Jerusalem,Department_614,614
+115,115,Manager_615,1190000,Tel Aviv,Department_615,615
+116,116,Manager_616,1200000,Jerusalem,Department_616,616
+117,117,Manager_617,1210000,Tel Aviv,Department_617,617
+118,118,Manager_618,1220000,Jerusalem,Department_618,618
+119,119,Manager_619,1230000,Tel Aviv,Department_619,619
+120,120,Manager_620,1240000,Jerusalem,Department_620,620
+121,121,Manager_621,1250000,Tel Aviv,Department_621,621
+122,122,Manager_622,1260000,Jerusalem,Department_622,622
+123,123,Manager_623,1270000,Tel Aviv,Department_623,623
+124,124,Manager_624,1280000,Jerusalem,Department_624,624
+125,125,Manager_625,1290000,Tel Aviv,Department_625,625
+126,126,Manager_626,1300000,Jerusalem,Department_626,626
+127,127,Manager_627,1310000,Tel Aviv,Department_627,627
+128,128,Manager_628,1320000,Jerusalem,Department_628,628
+129,129,Manager_629,1330000,Tel Aviv,Department_629,629
+130,130,Manager_630,1340000,Jerusalem,Department_630,630
+131,131,Manager_631,1350000,Tel Aviv,Department_631,631
+132,132,Manager_632,1360000,Jerusalem,Department_632,632
+133,133,Manager_633,1370000,Tel Aviv,Department_633,633
+134,134,Manager_634,1380000,Jerusalem,Department_634,634
+135,135,Manager_635,1390000,Tel Aviv,Department_635,635
+136,136,Manager_636,1400000,Jerusalem,Department_636,636
+137,137,Manager_637,1410000,Tel Aviv,Department_637,637
+138,138,Manager_638,1420000,Jerusalem,Department_638,638
+139,139,Manager_639,1430000,Tel Aviv,Department_639,639
+140,140,Manager_640,1440000,Jerusalem,Department_640,640
+141,141,Manager_641,1450000,Tel Aviv,Department_641,641
+142,142,Manager_642,1460000,Jerusalem,Department_642,642
+143,143,Manager_643,1470000,Tel Aviv,Department_643,643
+144,144,Manager_644,1480000,Jerusalem,Department_644,644
+145,145,Manager_645,1490000,Tel Aviv,Department_645,645
+146,146,Manager_646,1500000,Jerusalem,Department_646,646
+147,147,Manager_647,1510000,Tel Aviv,Department_647,647
+148,148,Manager_648,1520000,Jerusalem,Department_648,648
+149,149,Manager_649,1530000,Tel Aviv,Department_649,649
+150,150,Manager_650,1540000,Jerusalem,Department_650,650
+151,151,Manager_651,1550000,Tel Aviv,Department_651,651
+152,152,Manager_652,1560000,Jerusalem,Department_652,652
+153,153,Manager_653,1570000,Tel Aviv,Department_653,653
+154,154,Manager_654,1580000,Jerusalem,Department_654,654
+155,155,Manager_655,1590000,Tel Aviv,Department_655,655
+156,156,Manager_656,1600000,Jerusalem,Department_656,656
+157,157,Manager_657,1610000,Tel Aviv,Department_657,657
+158,158,Manager_658,1620000,Jerusalem,Department_658,658
+159,159,Manager_659,1630000,Tel Aviv,Department_659,659
+160,160,Manager_660,1640000,Jerusalem,Department_660,660
+161,161,Manager_661,1650000,Tel Aviv,Department_661,661
+162,162,Manager_662,1660000,Jerusalem,Department_662,662
+163,163,Manager_663,1670000,Tel Aviv,Department_663,663
+164,164,Manager_664,1680000,Jerusalem,Department_664,664
+165,165,Manager_665,1690000,Tel Aviv,Department_665,665
+166,166,Manager_666,1700000,Jerusalem,Department_666,666
+167,167,Manager_667,1710000,Tel Aviv,Department_667,667
+168,168,Manager_668,1720000,Jerusalem,Department_668,668
+169,169,Manager_669,1730000,Tel Aviv,Department_669,669
+170,170,Manager_670,1740000,Jerusalem,Department_670,670
+171,171,Manager_671,1750000,Tel Aviv,Department_671,671
+172,172,Manager_672,1760000,Jerusalem,Department_672,672
+173,173,Manager_673,1770000,Tel Aviv,Department_673,673
+174,174,Manager_674,1780000,Jerusalem,Department_674,674
+175,175,Manager_675,1790000,Tel Aviv,Department_675,675
+176,176,Manager_676,1800000,Jerusalem,Department_676,676
+177,177,Manager_677,1810000,Tel Aviv,Department_677,677
+178,178,Manager_678,1820000,Jerusalem,Department_678,678
+179,179,Manager_679,1830000,Tel Aviv,Department_679,679
+180,180,Manager_680,1840000,Jerusalem,Department_680,680
+181,181,Manager_681,1850000,Tel Aviv,Department_681,681
+182,182,Manager_682,1860000,Jerusalem,Department_682,682
+183,183,Manager_683,1870000,Tel Aviv,Department_683,683
+184,184,Manager_684,1880000,Jerusalem,Department_684,684
+185,185,Manager_685,1890000,Tel Aviv,Department_685,685
+186,186,Manager_686,1900000,Jerusalem,Department_686,686
+187,187,Manager_687,1910000,Tel Aviv,Department_687,687
+188,188,Manager_688,1920000,Jerusalem,Department_688,688
+189,189,Manager_689,1930000,Tel Aviv,Department_689,689
+190,190,Manager_690,1940000,Jerusalem,Department_690,690
+191,191,Manager_691,1950000,Tel Aviv,Department_691,691
+192,192,Manager_692,1960000,Jerusalem,Department_692,692
+193,193,Manager_693,1970000,Tel Aviv,Department_693,693
+194,194,Manager_694,1980000,Jerusalem,Department_694,694
+195,195,Manager_695,1990000,Tel Aviv,Department_695,695
+196,196,Manager_696,2000000,Jerusalem,Department_696,696
+197,197,Manager_697,2010000,Tel Aviv,Department_697,697
+198,198,Manager_698,2020000,Jerusalem,Department_698,698
+199,199,Manager_699,2030000,Tel Aviv,Department_699,699
+200,200,Manager_700,2040000,Jerusalem,Department_700,700
+201,201,Manager_701,2050000,Tel Aviv,Department_701,701
+202,202,Manager_702,2060000,Jerusalem,Department_702,702
+203,203,Manager_703,2070000,Tel Aviv,Department_703,703
+204,204,Manager_704,2080000,Jerusalem,Department_704,704
+205,205,Manager_705,2090000,Tel Aviv,Department_705,705
+206,206,Manager_706,2100000,Jerusalem,Department_706,706
+207,207,Manager_707,2110000,Tel Aviv,Department_707,707
+208,208,Manager_708,2120000,Jerusalem,Department_708,708
+209,209,Manager_709,2130000,Tel Aviv,Department_709,709
+210,210,Manager_710,2140000,Jerusalem,Department_710,710
+211,211,Manager_711,2150000,Tel Aviv,Department_711,711
+212,212,Manager_712,2160000,Jerusalem,Department_712,712
+213,213,Manager_713,2170000,Tel Aviv,Department_713,713
+214,214,Manager_714,2180000,Jerusalem,Department_714,714
+215,215,Manager_715,2190000,Tel Aviv,Department_715,715
+216,216,Manager_716,2200000,Jerusalem,Department_716,716
+217,217,Manager_717,2210000,Tel Aviv,Department_717,717
+218,218,Manager_718,2220000,Jerusalem,Department_718,718
+219,219,Manager_719,2230000,Tel Aviv,Department_719,719
+220,220,Manager_720,2240000,Jerusalem,Department_720,720
+221,221,Manager_721,2250000,Tel Aviv,Department_721,721
+222,222,Manager_722,2260000,Jerusalem,Department_722,722
+223,223,Manager_723,2270000,Tel Aviv,Department_723,723
+224,224,Manager_724,2280000,Jerusalem,Department_724,724
+225,225,Manager_725,2290000,Tel Aviv,Department_725,725
+226,226,Manager_726,2300000,Jerusalem,Department_726,726
+227,227,Manager_727,2310000,Tel Aviv,Department_727,727
+228,228,Manager_728,2320000,Jerusalem,Department_728,728
+229,229,Manager_729,2330000,Tel Aviv,Department_729,729
+230,230,Manager_730,2340000,Jerusalem,Department_730,730
+231,231,Manager_731,2350000,Tel Aviv,Department_731,731
+232,232,Manager_732,2360000,Jerusalem,Department_732,732
+233,233,Manager_733,2370000,Tel Aviv,Department_733,733
+234,234,Manager_734,2380000,Jerusalem,Department_734,734
+235,235,Manager_735,2390000,Tel Aviv,Department_735,735
+236,236,Manager_736,2400000,Jerusalem,Department_736,736
+237,237,Manager_737,2410000,Tel Aviv,Department_737,737
+238,238,Manager_738,2420000,Jerusalem,Department_738,738
+239,239,Manager_739,2430000,Tel Aviv,Department_739,739
+240,240,Manager_740,2440000,Jerusalem,Department_740,740
+241,241,Manager_741,2450000,Tel Aviv,Department_741,741
+242,242,Manager_742,2460000,Jerusalem,Department_742,742
+243,243,Manager_743,2470000,Tel Aviv,Department_743,743
+244,244,Manager_744,2480000,Jerusalem,Department_744,744
+245,245,Manager_745,2490000,Tel Aviv,Department_745,745
+246,246,Manager_746,2500000,Jerusalem,Department_746,746
+247,247,Manager_747,2510000,Tel Aviv,Department_747,747
+248,248,Manager_748,2520000,Jerusalem,Department_748,748
+249,249,Manager_749,2530000,Tel Aviv,Department_749,749
+250,250,Manager_750,2540000,Jerusalem,Department_750,750
+251,251,Manager_751,2550000,Tel Aviv,Department_751,751
+252,252,Manager_752,2560000,Jerusalem,Department_752,752
+253,253,Manager_753,2570000,Tel Aviv,Department_753,753
+254,254,Manager_754,2580000,Jerusalem,Department_754,754
+255,255,Manager_755,2590000,Tel Aviv,Department_755,755
+256,256,Manager_756,2600000,Jerusalem,Department_756,756
+257,257,Manager_757,2610000,Tel Aviv,Department_757,757
+258,258,Manager_758,2620000,Jerusalem,Department_758,758
+259,259,Manager_759,2630000,Tel Aviv,Department_759,759
+260,260,Manager_760,2640000,Jerusalem,Department_760,760
+261,261,Manager_761,2650000,Tel Aviv,Department_761,761
+262,262,Manager_762,2660000,Jerusalem,Department_762,762
+263,263,Manager_763,2670000,Tel Aviv,Department_763,763
+264,264,Manager_764,2680000,Jerusalem,Department_764,764
+265,265,Manager_765,2690000,Tel Aviv,Department_765,765
+266,266,Manager_766,2700000,Jerusalem,Department_766,766
+267,267,Manager_767,2710000,Tel Aviv,Department_767,767
+268,268,Manager_768,2720000,Jerusalem,Department_768,768
+269,269,Manager_769,2730000,Tel Aviv,Department_769,769
+270,270,Manager_770,2740000,Jerusalem,Department_770,770
+271,271,Manager_771,2750000,Tel Aviv,Department_771,771
+272,272,Manager_772,2760000,Jerusalem,Department_772,772
+273,273,Manager_773,2770000,Tel Aviv,Department_773,773
+274,274,Manager_774,2780000,Jerusalem,Department_774,774
+275,275,Manager_775,2790000,Tel Aviv,Department_775,775
+276,276,Manager_776,2800000,Jerusalem,Department_776,776
+277,277,Manager_777,2810000,Tel Aviv,Department_777,777
+278,278,Manager_778,2820000,Jerusalem,Department_778,778
+279,279,Manager_779,2830000,Tel Aviv,Department_779,779
+280,280,Manager_780,2840000,Jerusalem,Department_780,780
+281,281,Manager_781,2850000,Tel Aviv,Department_781,781
+282,282,Manager_782,2860000,Jerusalem,Department_782,782
+283,283,Manager_783,2870000,Tel Aviv,Department_783,783
+284,284,Manager_784,2880000,Jerusalem,Department_784,784
+285,285,Manager_785,2890000,Tel Aviv,Department_785,785
+286,286,Manager_786,2900000,Jerusalem,Department_786,786
+287,287,Manager_787,2910000,Tel Aviv,Department_787,787
+288,288,Manager_788,2920000,Jerusalem,Department_788,788
+289,289,Manager_789,2930000,Tel Aviv,Department_789,789
+290,290,Manager_790,2940000,Jerusalem,Department_790,790
+291,291,Manager_791,2950000,Tel Aviv,Department_791,791
+292,292,Manager_792,2960000,Jerusalem,Department_792,792
+293,293,Manager_793,2970000,Tel Aviv,Department_793,793
+294,294,Manager_794,2980000,Jerusalem,Department_794,794
+295,295,Manager_795,2990000,Tel Aviv,Department_795,795
+296,296,Manager_796,3000000,Jerusalem,Department_796,796
+297,297,Manager_797,3010000,Tel Aviv,Department_797,797
+298,298,Manager_798,3020000,Jerusalem,Department_798,798
+299,299,Manager_799,3030000,Tel Aviv,Department_799,799
+300,300,Manager_800,3040000,Jerusalem,Department_800,800
+301,301,Manager_801,3050000,Tel Aviv,Department_801,801
+302,302,Manager_802,3060000,Jerusalem,Department_802,802
+303,303,Manager_803,3070000,Tel Aviv,Department_803,803
+304,304,Manager_804,3080000,Jerusalem,Department_804,804
+305,305,Manager_805,3090000,Tel Aviv,Department_805,805
+306,306,Manager_806,3100000,Jerusalem,Department_806,806
+307,307,Manager_807,3110000,Tel Aviv,Department_807,807
+308,308,Manager_808,3120000,Jerusalem,Department_808,808
+309,309,Manager_809,3130000,Tel Aviv,Department_809,809
+310,310,Manager_810,3140000,Jerusalem,Department_810,810
+311,311,Manager_811,3150000,Tel Aviv,Department_811,811
+312,312,Manager_812,3160000,Jerusalem,Department_812,812
+313,313,Manager_813,3170000,Tel Aviv,Department_813,813
+314,314,Manager_814,3180000,Jerusalem,Department_814,814
+315,315,Manager_815,3190000,Tel Aviv,Department_815,815
+316,316,Manager_816,3200000,Jerusalem,Department_816,816
+317,317,Manager_817,3210000,Tel Aviv,Department_817,817
+318,318,Manager_818,3220000,Jerusalem,Department_818,818
+319,319,Manager_819,3230000,Tel Aviv,Department_819,819
+320,320,Manager_820,3240000,Jerusalem,Department_820,820
+321,321,Manager_821,3250000,Tel Aviv,Department_821,821
+322,322,Manager_822,3260000,Jerusalem,Department_822,822
+323,323,Manager_823,3270000,Tel Aviv,Department_823,823
+324,324,Manager_824,3280000,Jerusalem,Department_824,824
+325,325,Manager_825,3290000,Tel Aviv,Department_825,825
+326,326,Manager_826,3300000,Jerusalem,Department_826,826
+327,327,Manager_827,3310000,Tel Aviv,Department_827,827
+328,328,Manager_828,3320000,Jerusalem,Department_828,828
+329,329,Manager_829,3330000,Tel Aviv,Department_829,829
+330,330,Manager_830,3340000,Jerusalem,Department_830,830
+331,331,Manager_831,3350000,Tel Aviv,Department_831,831
+332,332,Manager_832,3360000,Jerusalem,Department_832,832
+333,333,Manager_833,3370000,Tel Aviv,Department_833,833
+334,334,Manager_834,3380000,Jerusalem,Department_834,834
+335,335,Manager_835,3390000,Tel Aviv,Department_835,835
+336,336,Manager_836,3400000,Jerusalem,Department_836,836
+337,337,Manager_837,3410000,Tel Aviv,Department_837,837
+338,338,Manager_838,3420000,Jerusalem,Department_838,838
+339,339,Manager_839,3430000,Tel Aviv,Department_839,839
+340,340,Manager_840,3440000,Jerusalem,Department_840,840
+341,341,Manager_841,3450000,Tel Aviv,Department_841,841
+342,342,Manager_842,3460000,Jerusalem,Department_842,842
+343,343,Manager_843,3470000,Tel Aviv,Department_843,843
+344,344,Manager_844,3480000,Jerusalem,Department_844,844
+345,345,Manager_845,3490000,Tel Aviv,Department_845,845
+346,346,Manager_846,3500000,Jerusalem,Department_846,846
+347,347,Manager_847,3510000,Tel Aviv,Department_847,847
+348,348,Manager_848,3520000,Jerusalem,Department_848,848
+349,349,Manager_849,3530000,Tel Aviv,Department_849,849
+350,350,Manager_850,3540000,Jerusalem,Department_850,850
+351,351,Manager_851,3550000,Tel Aviv,Department_851,851
+352,352,Manager_852,3560000,Jerusalem,Department_852,852
+353,353,Manager_853,3570000,Tel Aviv,Department_853,853
+354,354,Manager_854,3580000,Jerusalem,Department_854,854
+355,355,Manager_855,3590000,Tel Aviv,Department_855,855
+356,356,Manager_856,3600000,Jerusalem,Department_856,856
+357,357,Manager_857,3610000,Tel Aviv,Department_857,857
+358,358,Manager_858,3620000,Jerusalem,Department_858,858
+359,359,Manager_859,3630000,Tel Aviv,Department_859,859
+360,360,Manager_860,3640000,Jerusalem,Department_860,860
+361,361,Manager_861,3650000,Tel Aviv,Department_861,861
+362,362,Manager_862,3660000,Jerusalem,Department_862,862
+363,363,Manager_863,3670000,Tel Aviv,Department_863,863
+364,364,Manager_864,3680000,Jerusalem,Department_864,864
+365,365,Manager_865,3690000,Tel Aviv,Department_865,865
+366,366,Manager_866,3700000,Jerusalem,Department_866,866
+367,367,Manager_867,3710000,Tel Aviv,Department_867,867
+368,368,Manager_868,3720000,Jerusalem,Department_868,868
+369,369,Manager_869,3730000,Tel Aviv,Department_869,869
+370,370,Manager_870,3740000,Jerusalem,Department_870,870
+371,371,Manager_871,3750000,Tel Aviv,Department_871,871
+372,372,Manager_872,3760000,Jerusalem,Department_872,872
+373,373,Manager_873,3770000,Tel Aviv,Department_873,873
+374,374,Manager_874,3780000,Jerusalem,Department_874,874
+375,375,Manager_875,3790000,Tel Aviv,Department_875,875
+376,376,Manager_876,3800000,Jerusalem,Department_876,876
+377,377,Manager_877,3810000,Tel Aviv,Department_877,877
+378,378,Manager_878,3820000,Jerusalem,Department_878,878
+379,379,Manager_879,3830000,Tel Aviv,Department_879,879
+380,380,Manager_880,3840000,Jerusalem,Department_880,880
+381,381,Manager_881,3850000,Tel Aviv,Department_881,881
+382,382,Manager_882,3860000,Jerusalem,Department_882,882
+383,383,Manager_883,3870000,Tel Aviv,Department_883,883
+384,384,Manager_884,3880000,Jerusalem,Department_884,884
+385,385,Manager_885,3890000,Tel Aviv,Department_885,885
+386,386,Manager_886,3900000,Jerusalem,Department_886,886
+387,387,Manager_887,3910000,Tel Aviv,Department_887,887
+388,388,Manager_888,3920000,Jerusalem,Department_888,888
+389,389,Manager_889,3930000,Tel Aviv,Department_889,889
+390,390,Manager_890,3940000,Jerusalem,Department_890,890
+391,391,Manager_891,3950000,Tel Aviv,Department_891,891
+392,392,Manager_892,3960000,Jerusalem,Department_892,892
+393,393,Manager_893,3970000,Tel Aviv,Department_893,893
+394,394,Manager_894,3980000,Jerusalem,Department_894,894
+395,395,Manager_895,3990000,Tel Aviv,Department_895,895
+396,396,Manager_896,4000000,Jerusalem,Department_896,896
+397,397,Manager_897,4010000,Tel Aviv,Department_897,897
+398,398,Manager_898,4020000,Jerusalem,Department_898,898
+399,399,Manager_899,4030000,Tel Aviv,Department_899,899
+400,400,Manager_900,4040000,Jerusalem,Department_900,900
+401,401,Manager_901,4050000,Tel Aviv,Department_901,901
+402,402,Manager_902,4060000,Jerusalem,Department_902,902
+403,403,Manager_903,4070000,Tel Aviv,Department_903,903
+404,404,Manager_904,4080000,Jerusalem,Department_904,904
+405,405,Manager_905,4090000,Tel Aviv,Department_905,905
+406,406,Manager_906,4100000,Jerusalem,Department_906,906
+407,407,Manager_907,4110000,Tel Aviv,Department_907,907
+408,408,Manager_908,4120000,Jerusalem,Department_908,908
+409,409,Manager_909,4130000,Tel Aviv,Department_909,909
+410,410,Manager_910,4140000,Jerusalem,Department_910,910
+411,411,Manager_911,4150000,Tel Aviv,Department_911,911
+412,412,Manager_912,4160000,Jerusalem,Department_912,912
+413,413,Manager_913,4170000,Tel Aviv,Department_913,913
+414,414,Manager_914,4180000,Jerusalem,Department_914,914
+415,415,Manager_915,4190000,Tel Aviv,Department_915,915
+416,416,Manager_916,4200000,Jerusalem,Department_916,916
+417,417,Manager_917,4210000,Tel Aviv,Department_917,917
+418,418,Manager_918,4220000,Jerusalem,Department_918,918
+419,419,Manager_919,4230000,Tel Aviv,Department_919,919
+420,420,Manager_920,4240000,Jerusalem,Department_920,920
+421,421,Manager_921,4250000,Tel Aviv,Department_921,921
+422,422,Manager_922,4260000,Jerusalem,Department_922,922
+423,423,Manager_923,4270000,Tel Aviv,Department_923,923
+424,424,Manager_924,4280000,Jerusalem,Department_924,924
+425,425,Manager_925,4290000,Tel Aviv,Department_925,925
+426,426,Manager_926,4300000,Jerusalem,Department_926,926
+427,427,Manager_927,4310000,Tel Aviv,Department_927,927
+428,428,Manager_928,4320000,Jerusalem,Department_928,928
+429,429,Manager_929,4330000,Tel Aviv,Department_929,929
+430,430,Manager_930,4340000,Jerusalem,Department_930,930
+431,431,Manager_931,4350000,Tel Aviv,Department_931,931
+432,432,Manager_932,4360000,Jerusalem,Department_932,932
+433,433,Manager_933,4370000,Tel Aviv,Department_933,933
+434,434,Manager_934,4380000,Jerusalem,Department_934,934
+435,435,Manager_935,4390000,Tel Aviv,Department_935,935
+436,436,Manager_936,4400000,Jerusalem,Department_936,936
+437,437,Manager_937,4410000,Tel Aviv,Department_937,937
+438,438,Manager_938,4420000,Jerusalem,Department_938,938
+439,439,Manager_939,4430000,Tel Aviv,Department_939,939
+440,440,Manager_940,4440000,Jerusalem,Department_940,940
+441,441,Manager_941,4450000,Tel Aviv,Department_941,941
+442,442,Manager_942,4460000,Jerusalem,Department_942,942
+443,443,Manager_943,4470000,Tel Aviv,Department_943,943
+444,444,Manager_944,4480000,Jerusalem,Department_944,944
+445,445,Manager_945,4490000,Tel Aviv,Department_945,945
+446,446,Manager_946,4500000,Jerusalem,Department_946,946
+447,447,Manager_947,4510000,Tel Aviv,Department_947,947
+448,448,Manager_948,4520000,Jerusalem,Department_948,948
+449,449,Manager_949,4530000,Tel Aviv,Department_949,949
+450,450,Manager_950,4540000,Jerusalem,Department_950,950
+451,451,Manager_951,4550000,Tel Aviv,Department_951,951
+452,452,Manager_952,4560000,Jerusalem,Department_952,952
+453,453,Manager_953,4570000,Tel Aviv,Department_953,953
+454,454,Manager_954,4580000,Jerusalem,Department_954,954
+455,455,Manager_955,4590000,Tel Aviv,Department_955,955
+456,456,Manager_956,4600000,Jerusalem,Department_956,956
+457,457,Manager_957,4610000,Tel Aviv,Department_957,957
+458,458,Manager_958,4620000,Jerusalem,Department_958,958
+459,459,Manager_959,4630000,Tel Aviv,Department_959,959
+460,460,Manager_960,4640000,Jerusalem,Department_960,960
+461,461,Manager_961,4650000,Tel Aviv,Department_961,961
+462,462,Manager_962,4660000,Jerusalem,Department_962,962
+463,463,Manager_963,4670000,Tel Aviv,Department_963,963
+464,464,Manager_964,4680000,Jerusalem,Department_964,964
+465,465,Manager_965,4690000,Tel Aviv,Department_965,965
+466,466,Manager_966,4700000,Jerusalem,Department_966,966
+467,467,Manager_967,4710000,Tel Aviv,Department_967,967
+468,468,Manager_968,4720000,Jerusalem,Department_968,968
+469,469,Manager_969,4730000,Tel Aviv,Department_969,969
+470,470,Manager_970,4740000,Jerusalem,Department_970,970
+471,471,Manager_971,4750000,Tel Aviv,Department_971,971
+472,472,Manager_972,4760000,Jerusalem,Department_972,972
+473,473,Manager_973,4770000,Tel Aviv,Department_973,973
+474,474,Manager_974,4780000,Jerusalem,Department_974,974
+475,475,Manager_975,4790000,Tel Aviv,Department_975,975
+476,476,Manager_976,4800000,Jerusalem,Department_976,976
+477,477,Manager_977,4810000,Tel Aviv,Department_977,977
+478,478,Manager_978,4820000,Jerusalem,Department_978,978
+479,479,Manager_979,4830000,Tel Aviv,Department_979,979
+480,480,Manager_980,4840000,Jerusalem,Department_980,980
+481,481,Manager_981,4850000,Tel Aviv,Department_981,981
+482,482,Manager_982,4860000,Jerusalem,Department_982,982
+483,483,Manager_983,4870000,Tel Aviv,Department_983,983
+484,484,Manager_984,4880000,Jerusalem,Department_984,984
+485,485,Manager_985,4890000,Tel Aviv,Department_985,985
+486,486,Manager_986,4900000,Jerusalem,Department_986,986
+487,487,Manager_987,4910000,Tel Aviv,Department_987,987
+488,488,Manager_988,4920000,Jerusalem,Department_988,988
+489,489,Manager_989,4930000,Tel Aviv,Department_989,989
+490,490,Manager_990,4940000,Jerusalem,Department_990,990
+491,491,Manager_991,4950000,Tel Aviv,Department_991,991
+492,492,Manager_992,4960000,Jerusalem,Department_992,992
+493,493,Manager_993,4970000,Tel Aviv,Department_993,993
+494,494,Manager_994,4980000,Jerusalem,Department_994,994
+495,495,Manager_995,4990000,Tel Aviv,Department_995,995
+496,496,Manager_996,5000000,Jerusalem,Department_996,996
+497,497,Manager_997,5010000,Tel Aviv,Department_997,997
+498,498,Manager_998,5020000,Jerusalem,Department_998,998
+499,499,Manager_999,5030000,Tel Aviv,Department_999,999
+500,500,Manager_1000,5040000,Jerusalem,Department_1000,1000
