@@ -362,6 +362,10 @@ DE_id, DE_name, Location, Budget, Manager_Name, E_id, PL_id.
 
 # שלב ב – שאילתות ואילוצים
 
+<details>
+<summary><b>כל השאילתות והאילוצים של שלב ב'</b></summary>
+<br>
+
 ## הקדמה
 בשלב זה ביצענו שאילתות SQL מורכבות על בסיס הנתונים, כולל:
 - SELECT מורכבות עם JOIN
@@ -397,6 +401,7 @@ GROUP BY
     EXTRACT(YEAR FROM so.Order_date),
     EXTRACT(MONTH FROM so.Order_date)
 ORDER BY order_year, order_month, total_amount DESC;
+```
 
 ![הרצה](dbFiles/select1_run.png)
 ![תוצאה](dbFiles/select1_result.png)
@@ -428,6 +433,7 @@ GROUP BY
     d.D_id,
     d.D_name
 ORDER BY raw_materials_count DESC;
+```
 
 ![הרצה](dbFiles/select2_run.png)
 ![תוצאה](dbFiles/select2_result.png)
@@ -457,6 +463,7 @@ GROUP BY
     rm.Stock_Quantity
 HAVING COUNT(DISTINCT r.D_id) > 0
 ORDER BY used_in_designs_count DESC, included_in_orders_count DESC;
+```
 
 ![הרצה](dbFiles/select3_run.png)
 ![תוצאה](dbFiles/select3_result.png)
@@ -481,6 +488,7 @@ WHERE p.P_price > (
     FROM Product
 )
 ORDER BY p.P_price DESC;
+```
 
 ![הרצה](dbFiles/select4_run.png)
 ![תוצאה](dbFiles/select4_result.png)
@@ -507,10 +515,12 @@ WHERE s.S_id IN (
     SELECT so.S_id
     FROM SupplyOrder so
 );
+```
 
 ![הרצה](dbFiles/select5A_run.png)
 ![תוצאה](dbFiles/select5A_result.png)
 
+```sql
 SELECT
     s.S_id,
     s.Company_Name,
@@ -522,6 +532,7 @@ WHERE EXISTS (
     FROM SupplyOrder so
     WHERE so.S_id = s.S_id
 );
+```
 
 ![הרצה](dbFiles/select5B_run.png)
 ![תוצאה](dbFiles/select5B_result.png)
@@ -559,10 +570,12 @@ WHERE p.P_id IN (
     SELECT d.P_id
     FROM Design d
 );
+```
 
 ![הרצה](dbFiles/select6A_run.png)
 ![תוצאה](dbFiles/select6A_result.png)
 
+```sql
 SELECT DISTINCT
     p.P_id,
     p.P_name,
@@ -571,6 +584,7 @@ SELECT DISTINCT
     p.P_data
 FROM Product p
 JOIN Design d ON p.P_id = d.P_id;
+```
 
 ![הרצה](dbFiles/select6B_run.png)
 ![תוצאה](dbFiles/select6B_result.png)
@@ -613,10 +627,12 @@ WHERE EXISTS (
     FROM Requires r
     WHERE r.R_id = rm.R_id
 );
+```
 
 ![הרצה](dbFiles/select7A_run.png)
 ![תוצאה](dbFiles/select7A_result.png)
 
+```sql
 SELECT DISTINCT
     rm.R_id,
     rm.R_name,
@@ -625,6 +641,7 @@ SELECT DISTINCT
     rm.Stock_Quantity
 FROM RawMaterial rm
 JOIN Requires r ON rm.R_id = r.R_id;
+```
 ![הרצה](dbFiles/select7B_run.png)
 ![תוצאה](dbFiles/select7B_result.png)
 
@@ -663,10 +680,11 @@ WHERE e.E_id IN (
     SELECT ews.E_id
     FROM Employee_WorkShip ews
 );
+```
 
 ![הרצה](dbFiles/select8A_run.png)
 ![תוצאה](dbFiles/select8A_result.png)
-
+```sql
 SELECT DISTINCT
     e.E_id,
     e.E_name,
@@ -675,6 +693,6 @@ SELECT DISTINCT
     e.E_date
 FROM Employee e
 JOIN Employee_WorkShip ews ON e.E_id = ews.E_id;
-
+```
 ![הרצה](dbFiles/select8B_run.png)
 ![תוצאה](dbFiles/select8B_result.png)
