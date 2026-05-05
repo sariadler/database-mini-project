@@ -360,3 +360,128 @@ DE_id, DE_name, Location, Budget, Manager_Name, E_id, PL_id.
 </details>
 ---
 
+# שלב ב – שאילתות ואילוצים
+
+## הקדמה
+בשלב זה ביצענו שאילתות SQL מורכבות על בסיס הנתונים, כולל:
+- SELECT מורכבות עם JOIN
+- תתי שאילתות
+- GROUP BY ו־ORDER BY
+- שימוש בשדות תאריכים
+- שאילתות UPDATE ו־DELETE
+- שימוש ב־ROLLBACK ו־COMMIT
+- הוספת אילוצים (Constraints)
+- הוספת אינדקסים והשוואת ביצועים
+
+## SELECT 1 – סיכום הזמנות לפי ספק ותאריך
+
+### מטרת השאילתה
+השאילתה מציגה עבור כל ספק את מספר ההזמנות ואת הסכום הכולל של ההזמנות,
+כאשר הנתונים מחולקים לפי שנה וחודש.  
+מטרת השאילתה היא לאפשר ניתוח פעילות הספקים לאורך זמן.
+
+### קוד SQL
+```sql
+SELECT
+    s.S_id,
+    s.Company_Name,
+    EXTRACT(YEAR FROM so.Order_date) AS order_year,
+    EXTRACT(MONTH FROM so.Order_date) AS order_month,
+    COUNT(so.Order_id) AS total_orders,
+    SUM(so.Total) AS total_amount
+FROM Supplier s
+JOIN SupplyOrder so ON s.S_id = so.S_id
+GROUP BY
+    s.S_id,
+    s.Company_Name,
+    EXTRACT(YEAR FROM so.Order_date),
+    EXTRACT(MONTH FROM so.Order_date)
+ORDER BY order_year, order_month, total_amount DESC;
+
+![הרצה](dbFiles/select1_run.png)
+![תוצאה](dbFiles/select1_result.png)
+
+## SELECT 2 – מוצרים, עיצובים וכמות חומרי גלם נדרשים
+
+### מטרת השאילתה
+השאילתה מציגה עבור כל מוצר את העיצוב שלו, מספר חומרי הגלם הדרושים לעיצוב, ואת סך כמות המלאי של חומרי הגלם האלו.  
+מטרת השאילתה היא לעזור להבין אילו מוצרים דורשים יותר חומרי גלם ומה מצב המלאי עבורם.
+
+### קוד SQL
+```sql
+SELECT
+    p.P_id,
+    p.P_name,
+    p.P_price,
+    d.D_id,
+    d.D_name,
+    COUNT(r.R_id) AS raw_materials_count,
+    SUM(rm.Stock_Quantity) AS total_stock_quantity
+FROM Product p
+JOIN Design d ON p.P_id = d.P_id
+JOIN Requires r ON d.D_id = r.D_id
+JOIN RawMaterial rm ON r.R_id = rm.R_id
+GROUP BY
+    p.P_id,
+    p.P_name,
+    p.P_price,
+    d.D_id,
+    d.D_name
+ORDER BY raw_materials_count DESC;
+
+![הרצה](dbFiles/select2_run.png)
+![תוצאה](dbFiles/select2_result.png)
+
+## SELECT 3 – חומרי גלם המשמשים בעיצובים ובהזמנות
+
+### מטרת השאילתה
+השאילתה מציגה חומרי גלם שמשמשים בעיצובים, יחד עם מספר העיצובים שבהם הם מופיעים ומספר ההזמנות שבהן הם נכללו.  
+מטרת השאילתה היא לזהות חומרי גלם חשובים שחוזרים בהרבה עיצובים והזמנות.
+
+### קוד SQL
+```sql
+SELECT
+    rm.R_id,
+    rm.R_name,
+    rm.Unit_Measure,
+    rm.Stock_Quantity,
+    COUNT(DISTINCT r.D_id) AS used_in_designs_count,
+    COUNT(DISTINCT i.Order_id) AS included_in_orders_count
+FROM RawMaterial rm
+LEFT JOIN Requires r ON rm.R_id = r.R_id
+LEFT JOIN Includes i ON rm.R_id = i.R_id
+GROUP BY
+    rm.R_id,
+    rm.R_name,
+    rm.Unit_Measure,
+    rm.Stock_Quantity
+HAVING COUNT(DISTINCT r.D_id) > 0
+ORDER BY used_in_designs_count DESC, included_in_orders_count DESC;
+
+![הרצה](dbFiles/select3_run.png)
+![תוצאה](dbFiles/select3_result.png)
+
+## SELECT 4 – מוצרים שמחירם גבוה מהממוצע
+
+### מטרת השאילתה
+השאילתה מציגה את כל המוצרים שמחירם גבוה מהממוצע של כלל המוצרים.  
+מטרת השאילתה היא לזהות מוצרים יקרים יחסית לשוק המוצרים הקיים.
+
+### קוד SQL
+```sql
+SELECT
+    p.P_id,
+    p.P_name,
+    p.P_price,
+    p.P_weight,
+    p.P_data
+FROM Product p
+WHERE p.P_price > (
+    SELECT AVG(P_price)
+    FROM Product
+)
+ORDER BY p.P_price DESC;
+
+![הרצה](dbFiles/select4_run.png)
+![תוצאה](dbFiles/select4_result.png)
+
