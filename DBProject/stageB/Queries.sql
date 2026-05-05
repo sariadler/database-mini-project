@@ -241,6 +241,7 @@ WHERE P_id IN (
 );
 
 
+
 -- =========================================================
 -- UPDATE 2
 -- Mark old product lines as needing maintenance

@@ -696,3 +696,77 @@ JOIN Employee_WorkShip ews ON e.E_id = ews.E_id;
 ```
 ![הרצה](dbFiles/select8B_run.png)
 ![תוצאה](dbFiles/select8B_result.png)
+
+<details>
+<summary>▶ UPDATE – שאילתות עדכון נתונים</summary>
+
+---
+
+## UPDATE 1 – עדכון מחיר מוצרים לפי תאריך עיצוב
+
+### מטרת השאילתה
+השאילתה מעדכנת את מחיר המוצרים ומעלה אותו ב־5% עבור מוצרים שיש להם עיצוב מתאריך 2024-01-01 והלאה.
+
+### קוד SQL
+```sql
+UPDATE Product
+SET P_price = P_price * 1.05
+WHERE P_id IN (
+    SELECT P_id
+    FROM Design
+    WHERE D_data >= '2024-01-01
+);
+```
+
+
+![update_run](dbFiles/update_run.png)
+![update_before](dbFiles/update_before.png)
+![update_after](dbFiles/update_after.png)
+
+
+
+## UPDATE – שאילתות עדכון נתונים
+
+---
+
+## UPDATE 2 – סימון קווי ייצור שדורשים תחזוקה
+
+### מטרת השאילתה
+השאילתה מזהה קווי ייצור שלא בוצעה להם תחזוקה במשך יותר משנה,  
+ומעדכנת את הסטטוס שלהם ל־"Needs Maintenance".
+
+### קוד SQL
+```sql
+UPDATE Product_Line
+SET Status = 'Needs Maintenance'
+WHERE Last_Maintenance < CURRENT_DATE - INTERVAL '1 year';
+```
+![update2_run](dbFiles/update2_run.png)
+![update2_run](dbFiles/update2_before.png)
+![update2_run](dbFiles/update2_after.png)
+
+
+## UPDATE – שאילתות עדכון נתונים
+
+---
+
+## UPDATE 3 – הפחתת תקציב למחלקות עם קווי ייצור לא פעילים
+
+### מטרת השאילתה
+השאילתה מפחיתה ב־10% את התקציב של מחלקות שיש להן קווי ייצור במצב "Inactive".  
+המטרה היא לשקף ירידה בפעילות ולהתאים את התקציב בהתאם.
+
+### קוד SQL
+```sql
+UPDATE Department
+SET Budget = Budget * 0.90
+WHERE PL_id IN (
+    SELECT PL_id
+    FROM Product_Line
+    WHERE Status = 'Inactive'
+);
+```
+![update3_run](dbFiles/update3_run.png)
+![update3_run](dbFiles/update3_before.png)
+![update3_run](dbFiles/update3_after.png)
+
