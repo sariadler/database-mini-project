@@ -696,6 +696,7 @@ JOIN Employee_WorkShip ews ON e.E_id = ews.E_id;
 ```
 ![הרצה](dbFiles/select8B_run.png)
 ![תוצאה](dbFiles/select8B_result.png)
+</details>
 
 <details>
 <summary>▶ UPDATE – שאילתות עדכון נתונים</summary>
@@ -769,4 +770,197 @@ WHERE PL_id IN (
 ![update3_run](dbFiles/update3_run.png)
 ![update3_run](dbFiles/update3_before.png)
 ![update3_run](dbFiles/update3_after.png)
+
+</details>
+
+<details>
+<summary>▶ DELETE – שאילתות מחיקת נתונים</summary>
+
+---
+
+## DELETE 1 – מחיקת הזמנות ישנות ומבוטלות ללא חומרי גלם
+
+### מטרת השאילתה
+השאילתה מוחקת הזמנות מספקים אשר סטטוס ההזמנה שלהן הוא "Cancelled" (מבוטל), תאריך ההזמנה שלהן ישן ביותר משנתיים, ואינן מקושרות לאף חומר גלם בטבלת Includes.
+
+מטרת השאילתה היא לנקות את בסיס הנתונים מהזמנות לא רלוונטיות שאינן פעילות ואינן קשורות לנתונים נוספים במערכת, ובכך לשפר את יעילות ואמינות הנתונים.
+
+### קוד SQL
+```sql
+DELETE FROM SupplyOrder
+WHERE Order_status = 'Cancelled'
+  AND Order_date < CURRENT_DATE - INTERVAL '2 years'
+  AND Order_id NOT IN (
+      SELECT Order_id
+      FROM Includes
+  );
+```
+**צילום מצב לפני ההרצה:**  
+מציג את הרשומות בטבלה לפני ביצוע פעולת המחיקה, כולל הנתונים שעומדים להימחק.
+![לפני](dbFiles/delete1_before.jpeg)
+
+**צילום הרצה:**  
+מציג את הרצת שאילתת ה־DELETE והודעת המערכת על מספר הרשומות שנמחקו.
+![הרצה](dbFiles/delete1_run.jpeg)
+
+**צילום מצב אחרי ההרצה:**  
+מציג את הטבלה לאחר המחיקה, כאשר ניתן לראות שהרשומות המתאימות הוסרו.
+![אחרי](dbFiles/delete1_after.jpeg)
+
+## DELETE 2 – מחיקת משמרות ללא עובדים
+
+### מטרת השאילתה
+השאילתה מוחקת משמרות בטבלה Work_Ship אשר אינן מקושרות לאף עובד בטבלת Employee_WorkShip.
+
+מטרת השאילתה היא להסיר משמרות שאינן פעילות בפועל (ללא עובדים משויכים), ובכך לשמור על בסיס נתונים נקי ורלוונטי.
+
+### קוד SQL
+```sql
+DELETE FROM Work_Ship
+WHERE WS_id NOT IN (
+    SELECT WS_id
+    FROM Employee_WorkShip
+);
+```
+**צילום מצב לפני ההרצה:** 
+מציג את המשמרות לפני המחיקה, כולל משמרות ללא עובדים.
+![לפני](dbFiles/delete2_before.jpeg)
+
+**צילום הרצה:** 
+מציג את הרצת שאילתת ה־DELETE והודעת המערכת על מספר הרשומות שנמחקו.
+![הרצה](dbFiles/delete2_run.jpeg)
+
+**צילום מצב אחרי ההרצה:**
+מציג את הטבלה לאחר המחיקה, כאשר המשמרות ללא עובדים הוסרו.
+![אחרי](dbFiles/delete2_after.jpeg)
+
+
+---
+
+## DELETE 3 – מחיקת חומרי גלם שאינם בשימוש
+
+### מטרת השאילתה
+השאילתה מוחקת חומרי גלם מטבלת RawMaterial אשר אינם משויכים לאף עיצוב בטבלת Requires ואינם כלולים באף הזמנה בטבלת Includes.
+
+מטרת השאילתה היא להסיר חומרי גלם שאינם בשימוש במערכת, ובכך לשפר את איכות ויעילות הנתונים.
+
+### קוד SQL
+```sql
+DELETE FROM RawMaterial
+WHERE R_id NOT IN (
+    SELECT R_id FROM Requires
+)
+AND R_id NOT IN (
+    SELECT R_id FROM Includes
+);
+```
+**צילום מצב לפני ההרצה:** 
+מציג את חומרי הגלם לפני המחיקה, כולל חומרים שאינם בשימוש.
+![לפני](dbFiles/delete3_before.jpeg)
+
+**צילום הרצה:** 
+מציג את הרצת שאילתת ה־DELETE והודעת המערכת על מספר הרשומות שנמחקו.
+![הרצה](dbFiles/delete3_run.jpeg)
+
+**צילום מצב אחרי ההרצה:**
+מציג את הטבלה לאחר המחיקה, כאשר חומרי הגלם שאינם בשימוש הוסרו.
+![אחרי](dbFiles/delete3_after.jpeg)
+
+</details>
+
+## ROLLBACK – ביטול שינוי במחיר חומר גלם
+
+### מטרת השאילתה
+השאילתה מדגימה כיצד ניתן לבצע עדכון זמני בבסיס הנתונים באמצעות Transaction, ולאחר מכן לבטל את השינוי באמצעות פקודת ROLLBACK.
+
+במקרה זה, עודכן המחיר של חומר גלם מסוים ולאחר מכן בוטל השינוי כדי להחזיר את הנתונים למצבם המקורי.
+
+### קוד SQL
+```sql
+BEGIN;
+
+UPDATE rawmaterial
+SET r_price = r_price + 11
+WHERE r_id = 5002;
+
+SELECT *
+FROM rawmaterial
+WHERE r_id = 5002;
+
+ROLLBACK;
+
+SELECT *
+FROM rawmaterial
+WHERE r_id = 5002;
+```
+### ROLLBACK – תיעוד תהליך
+
+**צילום מצב לפני העדכון:**  
+מציג את ערך המחיר המקורי לפני ביצוע השינוי.  
+![לפני](dbFiles/rollback_before.jpeg)
+
+---
+
+**צילום הרצה של העדכון:**  
+מציג את ביצוע פעולת ה־UPDATE על הרשומה.  
+![הרצה](dbFiles/rollback_run.jpeg)
+
+---
+
+**צילום מצב לאחר העדכון:**  
+מציג את הערך לאחר שינוי המחיר לפני ביצוע ה־ROLLBACK.  
+![אחרי עדכון](dbFiles/rollback_after_update.jpeg)
+
+---
+
+**צילום מצב לאחר ROLLBACK:**  
+מציג שהערך חזר למצבו המקורי לאחר ביטול השינוי.  
+![אחרי](dbFiles/rollback_after.jpeg)
+
+## COMMIT – שמירת שינוי בבסיס הנתונים
+
+### מטרת הפעולה
+השאילתה מדגימה כיצד ניתן לבצע עדכון בבסיס הנתונים בתוך Transaction, ולאחר מכן לשמור את השינוי באופן קבוע באמצעות פקודת COMMIT.
+
+במקרה זה עודכן התקציב של מחלקה מסוימת, ולאחר מכן בוצע COMMIT כך שהשינוי נשמר בבסיס הנתונים.
+
+---
+
+### קוד SQL
+```sql
+BEGIN;
+
+UPDATE department
+SET budget = budget + 5000
+WHERE de_id = 1;
+
+SELECT *
+FROM department
+WHERE de_id = 1;
+
+COMMIT;
+
+SELECT *
+FROM department
+WHERE de_id = 1;
+```
+### COMMIT – תיעוד תהליך
+
+**צילום מצב לפני העדכון:**  
+מציג את ערך התקציב לפני ביצוע השינוי.  
+![לפני](dbFiles/commit_before.jpeg)
+
+---
+![עדכון](dbFiles/commit_update.jpeg)
+
+**צילום מצב לאחר העדכון:**  
+מציג את הערך לאחר ביצוע העדכון אך לפני שמירתו לצמיתות.  
+![אחרי עדכון](dbFiles/commit_update.jpeg)
+![הרצה](dbFiles/commit_run.jpeg)
+---
+
+**צילום מצב לאחר COMMIT:**  
+מציג שהשינוי נשמר בבסיס הנתונים ונשאר קבוע.  
+![אחרי](dbFiles/commit_after.jpeg)
+
 
