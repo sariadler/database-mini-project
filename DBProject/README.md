@@ -485,3 +485,196 @@ ORDER BY p.P_price DESC;
 ![הרצה](dbFiles/select4_run.png)
 ![תוצאה](dbFiles/select4_result.png)
 
+## SELECT 5 – ספקים שיש להם הזמנות (השוואה בין IN ל־EXISTS)
+
+### מטרת השאילתה
+השאילתה מציגה את כל הספקים שיש להם לפחות הזמנה אחת במערכת.  
+מטרת השאילתה היא לזהות ספקים פעילים.
+
+---
+
+## גרסה 1 – שימוש ב־IN
+
+### קוד SQL
+```sql
+SELECT
+    s.S_id,
+    s.Company_Name,
+    s.Phone,
+    s.Address
+FROM Supplier s
+WHERE s.S_id IN (
+    SELECT so.S_id
+    FROM SupplyOrder so
+);
+
+![הרצה](dbFiles/select5A_run.png)
+![תוצאה](dbFiles/select5A_result.png)
+
+SELECT
+    s.S_id,
+    s.Company_Name,
+    s.Phone,
+    s.Address
+FROM Supplier s
+WHERE EXISTS (
+    SELECT 1
+    FROM SupplyOrder so
+    WHERE so.S_id = s.S_id
+);
+
+![הרצה](dbFiles/select5B_run.png)
+![תוצאה](dbFiles/select5B_result.png)
+
+## מה יותר יעיל ולמה
+
+השימוש בEXIST בדכ יותר יעיל מהשימוש בIN.
+
+IN מחזיר רשימה של ערכים מתת־השאילתה ומשווה אליה,  
+בעוד EXISTS בודק רק אם קיימת שורה מתאימה ועוצר ברגע שמצא אחת.
+
+לכן, בטבלאות גדולות EXISTS לרוב יעיל יותר.  
+עם זאת, PostgreSQL יכול לבצע אופטימיזציה ולכן לעיתים ההבדל לא משמעותי.
+
+## SELECT 6 – מוצרים שיש להם עיצוב (השוואה בין IN ל־JOIN)
+
+### מטרת השאילתה
+השאילתה מציגה את כל המוצרים שיש להם לפחות עיצוב אחד במערכת.  
+מטרת השאילתה היא לזהות מוצרים שעברו שלב תכנון ועיצוב.
+
+---
+
+## גרסה 1 – שימוש ב־IN
+
+### קוד SQL
+```sql
+SELECT
+    p.P_id,
+    p.P_name,
+    p.P_price,
+    p.P_weight,
+    p.P_data
+FROM Product p
+WHERE p.P_id IN (
+    SELECT d.P_id
+    FROM Design d
+);
+
+![הרצה](dbFiles/select6A_run.png)
+![תוצאה](dbFiles/select6A_result.png)
+
+SELECT DISTINCT
+    p.P_id,
+    p.P_name,
+    p.P_price,
+    p.P_weight,
+    p.P_data
+FROM Product p
+JOIN Design d ON p.P_id = d.P_id;
+
+![הרצה](dbFiles/select6B_run.png)
+![תוצאה](dbFiles/select6B_result.png)
+
+## הסבר והבדל בין השיטות
+
+שתי השאילתות מחזירות את אותם מוצרים — מוצרים שיש להם לפחות עיצוב אחד בטבלת Design.
+
+בגרסת IN, תת־השאילתה מחזירה רשימה של מזהי מוצרים מטבלת Design,  
+והשאילתה הראשית בודקת האם כל מוצר נמצא ברשימה זו.
+
+בגרסת JOIN, מתבצע חיבור ישיר בין הטבלאות Product ו־Design לפי מזהה המוצר (P_id).  
+במקרה זה השתמשנו ב־DISTINCT כדי למנוע כפילויות, מאחר שלמוצר יכול להיות יותר מעיצוב אחד.
+
+מבחינת יעילות, JOIN נחשב בדרך כלל ליעיל יותר כאשר מדובר בקשר בין טבלאות,  
+מאחר שמערכת ניהול בסיס הנתונים יכולה לבצע אופטימיזציה טובה יותר לחיבור בין הטבלאות.  
+לעומת זאת, IN מתאים יותר למצבים של בדיקה מול רשימה של ערכים.
+
+## SELECT 7 – חומרי גלם המשמשים בעיצובים (השוואה בין EXISTS ל־JOIN)
+
+### מטרת השאילתה
+השאילתה מציגה את כל חומרי הגלם שנדרשים לפחות עבור עיצוב אחד במערכת.  
+מטרת השאילתה היא לזהות חומרי גלם פעילים שמשמשים בתהליך התכנון והייצור.
+
+---
+
+## גרסה 1 – שימוש ב־EXISTS
+
+### קוד SQL
+```sql
+SELECT
+    rm.R_id,
+    rm.R_name,
+    rm.R_price,
+    rm.Unit_Measure,
+    rm.Stock_Quantity
+FROM RawMaterial rm
+WHERE EXISTS (
+    SELECT 1
+    FROM Requires r
+    WHERE r.R_id = rm.R_id
+);
+
+![הרצה](dbFiles/select7A_run.png)
+![תוצאה](dbFiles/select7A_result.png)
+
+SELECT DISTINCT
+    rm.R_id,
+    rm.R_name,
+    rm.R_price,
+    rm.Unit_Measure,
+    rm.Stock_Quantity
+FROM RawMaterial rm
+JOIN Requires r ON rm.R_id = r.R_id;
+![הרצה](dbFiles/select7B_run.png)
+![תוצאה](dbFiles/select7B_result.png)
+
+## הסבר והבדל בין השיטות
+
+שתי השאילתות מחזירות את אותם חומרי גלם — כאלה שמופיעים בטבלת Requires.
+
+בגרסת EXISTS מתבצעת בדיקה עבור כל חומר גלם האם קיימת לפחות רשומה אחת מתאימה.  
+ברגע שנמצאת התאמה, הבדיקה נעצרת.
+
+בגרסת JOIN מתבצע חיבור בין הטבלאות, ולכן אותו חומר גלם יכול להופיע מספר פעמים, ולכן נדרש שימוש ב־DISTINCT.
+
+מבחינת יעילות, EXISTS בדרך כלל יעיל יותר כאשר רוצים רק לבדוק קיום,  
+בעוד JOIN מתאים כאשר רוצים גם לשלוף נתונים מהטבלה המקושרת.
+
+## SELECT 8 – עובדים שעבדו במשמרות (השוואה בין IN ל־JOIN)
+
+### מטרת השאילתה
+השאילתה מציגה את כל העובדים שעבדו לפחות במשמרת אחת.  
+מטרת השאילתה היא לזהות עובדים פעילים שביצעו עבודה בפועל במערכת.
+
+---
+
+## גרסה 1 – שימוש ב־IN
+
+### קוד SQL
+```sql
+SELECT
+    e.E_id,
+    e.E_name,
+    e.E_familyName,
+    e.Role,
+    e.E_date
+FROM Employee e
+WHERE e.E_id IN (
+    SELECT ews.E_id
+    FROM Employee_WorkShip ews
+);
+
+![הרצה](dbFiles/select8A_run.png)
+![תוצאה](dbFiles/select8A_result.png)
+
+SELECT DISTINCT
+    e.E_id,
+    e.E_name,
+    e.E_familyName,
+    e.Role,
+    e.E_date
+FROM Employee e
+JOIN Employee_WorkShip ews ON e.E_id = ews.E_id;
+
+![הרצה](dbFiles/select8B_run.png)
+![תוצאה](dbFiles/select8B_result.png)

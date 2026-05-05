@@ -128,6 +128,8 @@ WHERE EXISTS (
 );
 
 
+n d
+);
 -- =========================================================
 -- SELECT 6A
 -- Products that have designs - using IN
@@ -142,9 +144,7 @@ SELECT
 FROM Product p
 WHERE p.P_id IN (
     SELECT d.P_id
-    FROM Design d
-);
-
+    FROM Desig
 
 -- =========================================================
 -- SELECT 6B
