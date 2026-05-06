@@ -973,7 +973,7 @@ WHERE de_id = 1;
 מציג שהשינוי נשמר בבסיס הנתונים ונשאר קבוע.  
 ![אחרי](dbFiles/commit_after.jpeg)
 
-<details>
+</details>
 
 <details>
 <summary>🔹 Constraints (אילוצים)</summary>
