@@ -1025,4 +1025,150 @@ WHERE de_id = 1;
 
 </details>
 
+<details>
+<summary>▶ אינדקסים והשוואת ביצועים</summary>
+
+---
+
+## INDEX 1 – אינדקס לפי תאריך הזמנה
+
+### מטרת האינדקס
+האינדקס נוצר על השדה `order_date` בטבלת `SupplyOrder`, כדי לשפר ביצועים של שאילתות שמחפשות הזמנות לפי טווח תאריכים וממיינות לפי תאריך.
+
+### קוד SQL
+```sql
+EXPLAIN ANALYZE
+SELECT
+    order_id,
+    order_date,
+    total,
+    order_status,
+    s_id
+FROM SupplyOrder
+WHERE order_date BETWEEN '2024-01-01' AND '2024-03-31'
+ORDER BY order_date;
+
+CREATE INDEX idx_supplyorder_order_date
+ON SupplyOrder(order_date);
+
+EXPLAIN ANALYZE
+SELECT
+    order_id,
+    order_date,
+    total,
+    order_status,
+    s_id
+FROM SupplyOrder
+WHERE order_date BETWEEN '2024-01-01' AND '2024-03-31'
+ORDER BY order_date;
+```
+
+**צילום לפני הוספת האינדקס**
+מציג את זמן הריצה ותוכנית הביצוע של השאילתה לפני יצירת האינדקס.
+![index1_before](dbFiles/index1_before.png)
+
+**צילום אחרי הוספת האינדקס**
+מציג את זמן הריצה ותוכנית הביצוע של אותה שאילתה לאחר יצירת האינדקס.
+![index1_after](dbFiles/index1_after.png)
+
+**הסבר התוצאה**
+לאחר הוספת האינדקס, בסיס הנתונים יכול לאתר הזמנות לפי order_date בצורה יעילה יותר, במקום לסרוק את כל הטבלה.
+
+## INDEX 2 – אינדקס לפי מחיר מוצר
+
+### מטרת האינדקס
+האינדקס נוצר על השדה `p_price` בטבלת `Product`, כדי לשפר ביצועים של שאילתות שמחפשות מוצרים לפי מחיר וממיינות לפי מחיר.
+
+---
+
+### קוד SQL
+```sql
+EXPLAIN ANALYZE
+SELECT
+    p_id,
+    p_name,
+    p_price,
+    p_weight,
+    p_data
+FROM Product
+WHERE p_price > 1000
+ORDER BY p_price DESC;
+
+CREATE INDEX idx_product_price
+ON Product(p_price);
+
+EXPLAIN ANALYZE
+SELECT
+    p_id,
+    p_name,
+    p_price,
+    p_weight,
+    p_data
+FROM Product
+WHERE p_price > 1000
+ORDER BY p_price DESC;
+```
+**לפני הוספת האינדקס:**  
+מציג את זמן הריצה ותוכנית הביצוע של השאילתה לפני יצירת האינדקס.
+![index1_before](dbFiles/index2_before.png)
+
+**אחרי הוספת האינדקס:** 
+מציג את זמן הריצה ותוכנית הביצוע של אותה שאילתה לאחר יצירת האינדקס. 
+![index1_after](dbFiles/index2_after.png)
+
+**הסבר תוצאה**
+האינדקס מאפשר חיפוש ומיון מהירים יותר לפי מחיר, במיוחד כאשר מספר הרשומות גדול.
+
+
+### אינדקס 3: ייעול חיפוש עובד לפי מזהה (Employee ID)
+
+**1. מוטיבציה ותועלת:**
+במערכת לניהול דגמים וייצור, השליפה של פרטי עובד לפי המזהה הייחודי שלו (`e_id`) היא אחת הפעולות הנפוצות ביותר (למשל: בכניסה למערכת, בשיוך עובד להזמנה, או בעדכון פרטי שכר). ללא אינדקס, ככל שנתוני העובדים בטבלה יגדלו, מסד הנתונים ייאלץ לסרוק את כל הטבלה כדי למצוא רשומה אחת. הוספת האינדקס מאפשרת גישה ישירה (O(log n) במקום O(n)), מה שמשפר את חווית המשתמש ומוריד עומס מהשרת.
+
+**2. שאילתת הבדיקה (Query):**
+### קוד SQL
+```sql
+EXPLAIN ANALYZE
+SELECT
+    e_id,
+    e_name,
+    e_familyname,
+    role,
+    e_id
+FROM Employee
+WHERE e_id = 1;
+
+CREATE INDEX idx_employee_department
+ON Employee(e_id);
+
+EXPLAIN ANALYZE
+SELECT
+    e_id,
+    e_name,
+    e_familyname,
+    role,
+    e_id
+FROM Employee
+WHERE e_id = 1;
+```
+
+**לפני הוספת האינדקס:**  
+בתמונה ניתן לראות כי השאילתה מבוצעת באמצעות Seq Scan (סריקה מלאה של הטבלה).  
+כלומר, בסיס הנתונים עובר על כל הרשומות בטבלת Employee כדי למצוא את העובד עם e_id = 1, דבר שעלול להיות איטי כאשר הטבלה גדולה.
+![index1_before](dbFiles/index3_before.png)
+
+**אחרי הוספת האינדקס:** 
+בתמונה ניתן לראות כי השאילתה משתמשת ב־Index Scan במקום Seq Scan.  
+במקרה זה, בסיס הנתונים נעזר באינדקס שנוצר על השדה e_id כדי לגשת ישירות לרשומה המתאימה, מבלי לסרוק את כל הטבלה. 
+![index1_after](dbFiles/index3_after.png)
+
+**הסבר תוצאה**
+לאחר יצירת האינדקס, זמן הריצה של השאילתה השתפר מאחר ובסיס הנתונים כבר לא צריך לבצע סריקה מלאה של הטבלה.
+
+האינדקס יוצר מבנה נתונים שמאפשר גישה ישירה לערכים לפי e_id, ולכן החיפוש הופך למהיר יותר.
+
+במקרה זה השיפור עשוי להיות קטן, מכיוון שמדובר בחיפוש לפי מפתח ייחודי (Primary Key), ולעיתים בסיס הנתונים כבר מבצע אופטימיזציה פנימית.
+
+עם זאת, בטבלאות גדולות יותר או בשדות שאינם מפתחות ראשיים, השימוש באינדקס יכול לשפר בצורה משמעותית את ביצועי השאילתות.
+
 
