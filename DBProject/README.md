@@ -490,8 +490,10 @@ WHERE p.P_price > (
 ORDER BY p.P_price DESC;
 ```
 
-![הרצה](dbFiles/select4_run.png)
+
+![תוצאה](dbFiles/select4_run.png)
 ![תוצאה](dbFiles/select4_result.png)
+
 
 ## SELECT 5 – ספקים שיש להם הזמנות (השוואה בין IN ל־EXISTS)
 
