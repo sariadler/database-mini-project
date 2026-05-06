@@ -870,6 +870,9 @@ AND R_id NOT IN (
 
 </details>
 
+
+<details>
+<summary>▶ ROLLBACK </summary>
 ## ROLLBACK – ביטול שינוי במחיר חומר גלם
 
 ### מטרת השאילתה
@@ -919,6 +922,11 @@ WHERE r_id = 5002;
 מציג שהערך חזר למצבו המקורי לאחר ביטול השינוי.  
 ![אחרי](dbFiles/rollback_after.jpeg)
 
+</details>
+
+<details>
+<summary>▶ COMMIT </summary>
+
 ## COMMIT – שמירת שינוי בבסיס הנתונים
 
 ### מטרת הפעולה
@@ -964,6 +972,8 @@ WHERE de_id = 1;
 **צילום מצב לאחר COMMIT:**  
 מציג שהשינוי נשמר בבסיס הנתונים ונשאר קבוע.  
 ![אחרי](dbFiles/commit_after.jpeg)
+
+<details>
 
 <details>
 <summary>🔹 Constraints (אילוצים)</summary>
@@ -1020,9 +1030,6 @@ WHERE de_id = 1;
 ![אחרי](dbFiles/constaint3_error.png)
 
 ---
-
- 
-
 </details>
 
 <details>
