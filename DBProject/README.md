@@ -6,7 +6,7 @@
 **קורס:** מיני פרויקט בבסיסי נתונים  
 **נושא האגף:** עיצוב וייצור (דגמים, חומרי גלם, מוצרים, ספקים ועובדים)
 ---
-
+## שלב א – תכנון, עיצוב וייצור בסיס הנתונים
 <details>
 <summary><b> מבוא וניתוח המערכת</b></summary>
 
@@ -65,7 +65,7 @@
 </details>
 
 <details>
-<summary><b>📊 נירמול ותלויות פונקציונליות (BCNF)</b></summary>
+<summary><b> נירמול ותלויות פונקציונליות (BCNF)</b></summary>
 <br>
 ## 3. נירמול ותלויות פונקציונליות (Normalization & Functional Dependencies)
 
@@ -122,7 +122,7 @@
 </details>
 
 <details>
-<summary><b>📥 4. מימוש פיזי, מילוי נתונים וגיבוי המערכת </b></summary>
+<summary><b>  מימוש פיזי, מילוי נתונים וגיבוי המערכת </b></summary>
 <br>
 
 ### מעבר מהתכנון הלוגי למימוש הפיזי
@@ -360,10 +360,10 @@ DE_id, DE_name, Location, Budget, Manager_Name, E_id, PL_id.
 </details>
 ---
 
-# שלב ב – שאילתות ואילוצים
+## שלב ב – שאילתות ואילוצים
 
 <details>
-<summary><b>כל השאילתות והאילוצים של שלב ב'</b></summary>
+<summary><b>▶ שאילתות SELECT</b></summary>
 <br>
 
 ## הקדמה
@@ -701,7 +701,8 @@ JOIN Employee_WorkShip ews ON e.E_id = ews.E_id;
 </details>
 
 <details>
-<summary>▶ UPDATE – שאילתות עדכון נתונים</summary>
+<summary><b>▶ UPDATE – שאילתות עדכון נתונים</b></summary>
+<br>
 
 ---
 
@@ -776,7 +777,8 @@ WHERE PL_id IN (
 </details>
 
 <details>
-<summary>▶ DELETE – שאילתות מחיקת נתונים</summary>
+<summary><b>▶ DELETE – שאילתות מחיקת נתונים</b></summary>
+<br>
 
 ---
 
@@ -872,7 +874,8 @@ AND R_id NOT IN (
 
 
 <details>
-<summary>▶ ROLLBACK </summary>
+<summary><b>▶ ROLLBACK </b></summary>
+<br>
 ## ROLLBACK – ביטול שינוי במחיר חומר גלם
 
 ### מטרת השאילתה
@@ -925,7 +928,8 @@ WHERE r_id = 5002;
 </details>
 
 <details>
-<summary>▶ COMMIT </summary>
+<summary><b>▶ COMMIT </b></summary>
+<br>
 
 ## COMMIT – שמירת שינוי בבסיס הנתונים
 
@@ -976,7 +980,8 @@ WHERE de_id = 1;
 </details>
 
 <details>
-<summary>🔹 Constraints (אילוצים)</summary>
+<summary><b>▶ Constraints (אילוצים)</b></summary>
+<br>
 
 בשלב זה הוספנו אילוצים (Constraints) לבסיס הנתונים במטרה לשמור על תקינות הנתונים ולמנוע הכנסת ערכים לא חוקיים.
 
@@ -1030,10 +1035,10 @@ WHERE de_id = 1;
 ![אחרי](dbFiles/constaint3_error.png)
 
 </details>
----
 
 <details>
-<summary>▶ אינדקסים והשוואת ביצועים</summary>
+<summary><b>▶ אינדקסים והשוואת ביצועים</b></summary>
+<br>
 
 ---
 
@@ -1178,6 +1183,6 @@ WHERE e_id = 1;
 
 עם זאת, בטבלאות גדולות יותר או בשדות שאינם מפתחות ראשיים, השימוש באינדקס יכול לשפר בצורה משמעותית את ביצועי השאילתות.
 </details>
----
+
 
 
