@@ -251,7 +251,7 @@
 
 ![Schema Create](DBProject/dbFiles/schema_create.png)
 ![Product Insert](DBProject/dbFiles/product_insert.png)
-![Product Count](DBProject/dbFiles/product_count.png)
+![Product Count](DBProject/dbFiles/product_count.JPG)
 ![Design Insert](DBProject/dbFiles/design_insert.png)
 ![Design Count](DBProject/dbFiles/design_count.png)
 
