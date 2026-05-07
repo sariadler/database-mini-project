@@ -12,3 +12,8 @@ SELECT * FROM Department;
 SELECT * FROM Includes;
 SELECT * FROM Requires;
 SELECT * FROM Employee_WorkShip;
+
+
+
+
+

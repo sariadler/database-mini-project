@@ -17,19 +17,19 @@
 
 **לוח בקרה (Dashboard):**
 מציג סטטיסטיקות על תהליכי הייצור ומלאי חומרי הגלם.
-![Dashboard UI](dbFiles/ui_dashboard.png)
+![Dashboard UI](DBProject/dbFiles/ui_dashboard.png)
 
 **ניהול מוצרים:**
 טבלת מעקב אחר מוצרים קיימים והקשר שלהם לדגמי העיצוב.
-![Product Management UI](dbFiles/ui_products.png)
+![Product Management UI](DBProject/dbFiles/ui_products.png)
 
 **טופס הזנת עיצוב חדש:**
 ממשק להזנת מפרטים טכניים כולל תמיכה בפורמט JSON.
-![New Design Form](dbFiles/ui_design_form.png)
+![New Design Form](DBProject/dbFiles/ui_design_form.png)
 
 **ניהול ספקים:**
 מסך לניהול ספקים, כולל צפייה, הוספה ועדכון פרטי ספקים במערכת.
-![Supplier Management UI](dbFiles/ui_suppliers.png)
+![Supplier Management UI](DBProject/dbFiles/ui_suppliers.png)
 
 ### מבוא ותיאור המערכת
 פרויקט זה מתמקד ב**אגף עיצוב וייצור** כחלק ממערכת כוללת לניהול רשת חנויות. 
@@ -49,7 +49,7 @@
 המערכת מורכבת מ-**9 ישויות מרכזיות**. לכל ישות הוגדרו לפחות 5 תכונות (Attributes) כדי להבטיח פירוט נתונים מרבי ודיוק בתהליכי העבודה.
 
 ### דיאגרמת ERD:
-![ERD Diagram](dbFiles/erd_diagram.jpeg)
+![ERD Diagram](DBProject/dbFiles/erd_diagram.jpeg)
 
 ### מאפייני המודל הלוגי
 
@@ -134,9 +134,9 @@
 
 לאחר בניית הטבלאות ב-PostgreSQL, הופק תרשים ה-DSD (Data Structure Diagram) המשקף את מבנה הנתונים הסופי. התרשים מציג את טיפוסי הנתונים המדויקים, המפתחות הראשיים והקשרים הפיזיים (Foreign Keys) בין הישויות באגף הייצור.
 
-![DSD Diagram](dsd_diagram.png)
+![DSD Diagram](DBProject/dbFiles/dsd_diagram.png)
 
-![DSD Diagram](dbFiles/pgadmin_view_data.png)
+![DSD Diagram](DBProject/dbFiles/pgadmin_view_data.png)
 
 <details>
 <summary><b>שיטת Python</b></summary>
@@ -150,7 +150,7 @@
 **תיאור המימוש:**
 באמצעות ממשק ה-pgAdmin, הרצנו סקריפטים של SQL ליצירת הסכימה המלאה הכוללת את כל הטבלאות והקשרים. התמונה להלן מציגה את מבנה הטבלאות כפי שנוצרו:
 
-![Tables View](dbFiles/pgadmin_view_data.png)
+![Tables View](DBProject/dbFiles/pgadmin_view_data.png)
 ניתן לראות כי כל הטבלאות שהוגדרו בתכנון אכן נוצרו בהצלחה בבסיס הנתונים.
 
 * **אימות מימוש**: ניתן לראות כי כל הישויות שהוגדרו בתכנון נוצרו בהצלחה תחת הסכימה הציבורית (public).
@@ -167,25 +167,25 @@
 #### 🛠 שלב 1: יצירת תשתית המוצרים (`fill_products.py`)
 בשלב הראשון כתבנו קוד Python שמייצר נתונים רנדומליים אך הגיוניים עבור המוצרים שלנו. הקוד יוצר קובץ SQL מוכן להרצה.
 
-![VS Code Script](dbFiles/vscode_screenshot.png)
+![VS Code Script](DBProject/dbFiles/vscode_screenshot.png)
 
 ---
 
 #### 🎨 שלב 2: יצירת פקודות ה-Insert
 כאן ניתן לראות את קובץ ה-SQL שנוצר (`insert_products.sql`) עם פקודות ה-INSERT המוכנות. כללנו לוגיקה שיוצרת גם ערכי **NULL** באופן רנדומלי כדי לעמוד בדרישות הפרויקט לטיפול בנתונים חסרים.
 
-![Insert Commands](dbFiles/insert_commands.png)
+![Insert Commands](DBProject/dbFiles/insert_commands.png)
 
 ---
 
 #### 🚀 שלב 3: ייבוא ואימות ב-pgAdmin
 העתקנו את פקודות ה-Insert לתוך ה-Query Tool ב-**pgAdmin** והרצנו אותן כדי למלא את הטבלאות בפועל.
 
-![pgAdmin Execution](dbFiles/pgadmin_insert.png)
+![pgAdmin Execution](DBProject/dbFiles/pgadmin_insert.png)
 
 בסיום התהליך, ביצענו שאילתת **COUNT** על טבלת העיצובים (design) כדי לוודא שכל 500 הרשומות נקלטו בהצלחה בבסיס הנתונים.
 
-![pgAdmin Count](dbFiles/pgadmin_count.png)
+![pgAdmin Count](DBProject/dbFiles/pgadmin_count.png)
 הנתונים שנוצרו באמצעות סקריפט Python הוזנו בהצלחה לבסיס הנתונים כפי שניתן לראות בתוצאה.
 
 </details>
@@ -201,35 +201,35 @@
 **1. הגדרת הנתונים באתר:**
 בצילום המסך אפשר לראות איך התאמנו את סוגי השדות (שם חברה, כתובת, טלפון) למבנה הטבלה שלנו. כדי לעמוד בדרישה של המטלה לערכים חסרים, הגדרנו אחוזי **Blank** (ערכי NULL) בשדות הטלפון והכתובת.
 
-![Mockaroo Settings](dbFiles/mockaroo_settings.png)
+![Mockaroo Settings](DBProject/dbFiles/mockaroo_settings.png)
 
 ---
 
 **2. בדיקת הנתונים לפני ההורדה:**
 כאן אפשר לראות בתצוגה המקדימה שהאתר אכן ייצר נתונים בפורמט הנכון, כולל שמות חברות באנגלית ונתוני ה-JSON, מה שמוודא שהקובץ יהיה תקין לפני הייבוא.
 
-![Data Preview](dbFiles/mockaroo_data_preview.png)
+![Data Preview](DBProject/dbFiles/mockaroo_data_preview.png)
 
 ---
 
 **3. שמירה וניהול ב-VS Code:**
 הורדנו את הנתונים כקובץ SQL ושמרנו אותו בתיקיית הפרויקט שלנו. בתמונה רואים איך הקוד נראה בתוך ה-**VS Code** – שמירת הקובץ כאן מאפשרת לכל הבנות בצוות למשוך את הקובץ מה-GitHub ולהשתמש בו בבסיס הנתונים המקומי שלהן.
 
-![VS Code SQL View](dbFiles/vscode_sql_preview.png)
+![VS Code SQL View](DBProject/dbFiles/vscode_sql_preview.png)
 
 ---
 
 **4. הרצה ב-pgAdmin:**
 העתקנו את פקודות ה-Insert מהקובץ והרצנו אותן ב-Query Tool. התמונה מראה את רגע ההרצה בתוך התוכנה והזנת הנתונים למחסן הנתונים הפיזי.
 
-![pgAdmin Execution](dbFiles/pgadmin_insert_query.png)
+![pgAdmin Execution](DBProject/dbFiles/pgadmin_insert_query.png)
 
 ---
 
 **5. התוצאה הסופית:**
 בבדיקה בבסיס הנתונים אפשר לראות שהטבלה התמלאה ב-500 שורות. ניתן לראות בבירור את ערכי ה-**NULL** (השדות הריקים) שנוצרו רנדומלית, בדיוק לפי דרישות הפרויקט.
 
-![Final Supplier Table](dbFiles/supplier_table_results.png)
+![Final Supplier Table](DBProject/dbFiles/supplier_table_results.png)
 ניתן לראות כי חלק מהשדות מכילים ערכי NULL בהתאם לדרישות המטלה.
 
 </details>
@@ -243,17 +243,17 @@
 
 בשלב הראשון הגדרנו את השדות בהתאם למבנה הטבלאות, ולאחר מכן ייצאנו את הנתונים בפורמט SQL.
 
-![Mockaroo Schema](dbFiles/mockaroo_product.png)
+![Mockaroo Schema](DBProject/dbFiles/mockaroo_product.png)
 
 את קובצי ה־SQL הרצנו ב־pgAdmin, וכך הוזנו הנתונים לטבלאות Product ו־Design.
 
 לאחר ההרצה ביצענו בדיקת COUNT על מנת לוודא שכל הנתונים הוכנסו בהצלחה.
 
-![Schema Create](dbFiles/schema_create.png)
-![Product Insert](dbFiles/product_insert.png)
-![Product Count](dbFiles/product_count.png)
-![Design Insert](dbFiles/design_insert.png)
-![Design Count](dbFiles/design_count.png)
+![Schema Create](DBProject/dbFiles/schema_create.png)
+![Product Insert](DBProject/dbFiles/product_insert.png)
+![Product Count](DBProject/dbFiles/product_count.png)
+![Design Insert](DBProject/dbFiles/design_insert.png)
+![Design Count](DBProject/dbFiles/design_count.png)
 
 </details>
 
@@ -270,11 +270,11 @@
 
 לאחר ההרצה ביצענו בדיקת COUNT כדי לוודא שהנתונים הוכנסו בהצלחה.
 
-![RawMaterial Insert](dbFiles/rawmaterial_insert.png)
-![RawMaterial Count](dbFiles/rawmaterial_count.png)
+![RawMaterial Insert](DBProject/dbFiles/rawmaterial_insert.png)
+![RawMaterial Count](DBProject/dbFiles/rawmaterial_count.png)
 
 בתמונה הבאה ניתן לראות בדיקה מרוכזת של כמות הרשומות בכל הטבלאות לאחר הכנסת הנתונים:
-![Generate Series Query](dbFiles/all_tables_count.png)
+![Generate Series Query](DBProject/dbFiles/all_tables_count.png)
 
 </details>
 
@@ -289,13 +289,13 @@ DE_id, DE_name, Location, Budget, Manager_Name, E_id, PL_id.
 
 הנתונים נוצרו בצורה אוטומטית באמצעות גרירה (fill) באקסל, כך שנוצרו רשומות רבות בצורה מהירה ויעילה.
 
-![Excel Data](dbFiles/excel_department.png)
+![Excel Data](DBProject/dbFiles/excel_department.png)
 
 לאחר מכן שמרנו את הקובץ בפורמט CSV (UTF-8), והשתמשנו ב־pgAdmin כדי לייבא את הנתונים לטבלה באמצעות האפשרות Import.
 
-![Import Settings](dbFiles/import_department.png)
+![Import Settings](DBProject/dbFiles/import_department.png)
 
-![Department Data](dbFiles/department_result.png)
+![Department Data](DBProject/dbFiles/department_result.png)
 
 שיטה זו מאפשרת יצירת נתונים בצורה ידידותית ונוחה למשתמש, תוך הפרדה בין יצירת הנתונים לבין הכנסת הנתונים בפועל למערכת.
 
@@ -315,8 +315,8 @@ DE_id, DE_name, Location, Budget, Manager_Name, E_id, PL_id.
 
 שגיאות אלו סייעו לנו להבין את מגבלות המערכת ואת הקשרים בין הטבלאות.
 
-![Duplicate Key Error](dbFiles/duplicate_error.png)
-![Foreign Key Error](dbFiles/foreign_key_error.png)
+![Duplicate Key Error](DBProject/dbFiles/duplicate_error.png)
+![Foreign Key Error](DBProject/dbFiles/foreign_key_error.png)
 
 
 </details>
@@ -332,12 +332,12 @@ DE_id, DE_name, Location, Budget, Manager_Name, E_id, PL_id.
 הגיבוי כולל גם את מבנה הטבלאות וגם את הנתונים (Schema + Data), ולכן מאפשר שחזור מלא של המערכת.
 
 
-![Backup](dbFiles/backup.png)
+![Backup](DBProject/dbFiles/backup.png)
 
 בנוסף לגיבוי שבוצע באמצעות pgAdmin, בוצע גיבוי נוסף באמצעות שורת פקודה (pg_dump) מתוך Docker container.
 הגיבוי בוצע בהצלחה והקובץ נשמר בתיקיית backup של הפרויקט.
 
-![Backup via Command Line](dbFiles/backup_cmd.png)
+![Backup via Command Line](DBProject/dbFiles/backup_cmd.png)
 
 </details>
 
@@ -354,8 +354,8 @@ DE_id, DE_name, Location, Budget, Manager_Name, E_id, PL_id.
 
 השחזור בוצע על מנת לוודא שקובץ הגיבוי תקין וניתן להשתמש בו לשחזור מלא של בסיס הנתונים.
 
-![Create Restore DB](dbFiles/create_restore_db.png)
-![Restore Count](dbFiles/restore_count.png)
+![Create Restore DB](DBProject/dbFiles/create_restore_db.png)
+![Restore Count](DBProject/dbFiles/restore_count.png)
 
 </details>
 ---
@@ -403,8 +403,8 @@ GROUP BY
 ORDER BY order_year, order_month, total_amount DESC;
 ```
 
-![הרצה](dbFiles/select1_run.png)
-![תוצאה](dbFiles/select1_result.png)
+![הרצה](DBProject/dbFiles/select1_run.png)
+![תוצאה](DBProject/dbFiles/select1_result.png)
 
 ## SELECT 2 – מוצרים, עיצובים וכמות חומרי גלם נדרשים
 
@@ -435,8 +435,8 @@ GROUP BY
 ORDER BY raw_materials_count DESC;
 ```
 
-![הרצה](dbFiles/select2_run.png)
-![תוצאה](dbFiles/select2_result.png)
+![הרצה](DBProject/dbFiles/select2_run.png)
+![תוצאה](DBProject/dbFiles/select2_result.png)
 
 ## SELECT 3 – חומרי גלם המשמשים בעיצובים ובהזמנות
 
@@ -465,8 +465,8 @@ HAVING COUNT(DISTINCT r.D_id) > 0
 ORDER BY used_in_designs_count DESC, included_in_orders_count DESC;
 ```
 
-![הרצה](dbFiles/select3_run.png)
-![תוצאה](dbFiles/select3_result.png)
+![הרצה](DBProject/dbFiles/select3_run.png)
+![תוצאה](DBProject/dbFiles/select3_result.png)
 
 ## SELECT 4 – מוצרים שמחירם גבוה מהממוצע
 
@@ -491,8 +491,8 @@ ORDER BY p.P_price DESC;
 ```
 
 
-![תוצאה](dbFiles/select4_run.png)
-![תוצאה](dbFiles/select4_result.png)
+![תוצאה](DBProject/dbFiles/select4_run.png)
+![תוצאה](DBProject/dbFiles/select4_result.png)
 
 
 ## SELECT 5 – ספקים שיש להם הזמנות (השוואה בין IN ל־EXISTS)
@@ -519,8 +519,8 @@ WHERE s.S_id IN (
 );
 ```
 
-![הרצה](dbFiles/select5A_run.png)
-![תוצאה](dbFiles/select5A_result.png)
+![הרצה](DBProject/dbFiles/select5A_run.png)
+![תוצאה](DBProject/dbFiles/select5A_result.png)
 
 ```sql
 SELECT
@@ -536,8 +536,8 @@ WHERE EXISTS (
 );
 ```
 
-![הרצה](dbFiles/select5B_run.png)
-![תוצאה](dbFiles/select5B_result.png)
+![הרצה](DBProject/dbFiles/select5B_run.png)
+![תוצאה](DBProject/dbFiles/select5B_result.png)
 
 ## מה יותר יעיל ולמה
 
@@ -574,8 +574,8 @@ WHERE p.P_id IN (
 );
 ```
 
-![הרצה](dbFiles/select6A_run.png)
-![תוצאה](dbFiles/select6A_result.png)
+![הרצה](DBProject/dbFiles/select6A_run.png)
+![תוצאה](DBProject/dbFiles/select6A_result.png)
 
 ```sql
 SELECT DISTINCT
@@ -588,8 +588,8 @@ FROM Product p
 JOIN Design d ON p.P_id = d.P_id;
 ```
 
-![הרצה](dbFiles/select6B_run.png)
-![תוצאה](dbFiles/select6B_result.png)
+![הרצה](DBProject/dbFiles/select6B_run.png)
+![תוצאה](DBProject/dbFiles/select6B_result.png)
 
 ## הסבר והבדל בין השיטות
 
@@ -631,8 +631,8 @@ WHERE EXISTS (
 );
 ```
 
-![הרצה](dbFiles/select7A_run.png)
-![תוצאה](dbFiles/select7A_result.png)
+![הרצה](DBProject/dbFiles/select7A_run.png)
+![תוצאה](DBProject/dbFiles/select7A_result.png)
 
 ```sql
 SELECT DISTINCT
@@ -644,8 +644,8 @@ SELECT DISTINCT
 FROM RawMaterial rm
 JOIN Requires r ON rm.R_id = r.R_id;
 ```
-![הרצה](dbFiles/select7B_run.png)
-![תוצאה](dbFiles/select7B_result.png)
+![הרצה](DBProject/dbFiles/select7B_run.png)
+![תוצאה](DBProject/dbFiles/select7B_result.png)
 
 ## הסבר והבדל בין השיטות
 
@@ -684,8 +684,8 @@ WHERE e.E_id IN (
 );
 ```
 
-![הרצה](dbFiles/select8A_run.png)
-![תוצאה](dbFiles/select8A_result.png)
+![הרצה](DBProject/dbFiles/select8A_run.png)
+![תוצאה](DBProject/dbFiles/select8A_result.png)
 ```sql
 SELECT DISTINCT
     e.E_id,
@@ -696,8 +696,8 @@ SELECT DISTINCT
 FROM Employee e
 JOIN Employee_WorkShip ews ON e.E_id = ews.E_id;
 ```
-![הרצה](dbFiles/select8B_run.png)
-![תוצאה](dbFiles/select8B_result.png)
+![הרצה](DBProject/dbFiles/select8B_run.png)
+![תוצאה](DBProject/dbFiles/select8B_result.png)
 </details>
 
 <details>
@@ -723,9 +723,9 @@ WHERE P_id IN (
 ```
 
 
-![update_run](dbFiles/update_run.png)
-![update_before](dbFiles/update_before.png)
-![update_after](dbFiles/update_after.png)
+![update_run](DBProject/dbFiles/update_run.png)
+![update_before](DBProject/dbFiles/update_before.png)
+![update_after](DBProject/dbFiles/update_after.png)
 
 
 
@@ -745,9 +745,9 @@ UPDATE Product_Line
 SET Status = 'Needs Maintenance'
 WHERE Last_Maintenance < CURRENT_DATE - INTERVAL '1 year';
 ```
-![update2_run](dbFiles/update2_run.png)
-![update2_run](dbFiles/update2_before.png)
-![update2_run](dbFiles/update2_after.png)
+![update2_run](DBProject/dbFiles/update2_run.png)
+![update2_run](DBProject/dbFiles/update2_before.png)
+![update2_run](DBProject/dbFiles/update2_after.png)
 
 
 ## UPDATE – שאילתות עדכון נתונים
@@ -770,9 +770,9 @@ WHERE PL_id IN (
     WHERE Status = 'Inactive'
 );
 ```
-![update3_run](dbFiles/update3_run.png)
-![update3_run](dbFiles/update3_before.png)
-![update3_run](dbFiles/update3_after.png)
+![update3_run](DBProject/dbFiles/update3_run.png)
+![update3_run](DBProject/dbFiles/update3_before.png)
+![update3_run](DBProject/dbFiles/update3_after.png)
 
 </details>
 
@@ -801,15 +801,15 @@ WHERE Order_status = 'Cancelled'
 ```
 **צילום מצב לפני ההרצה:**  
 מציג את הרשומות בטבלה לפני ביצוע פעולת המחיקה, כולל הנתונים שעומדים להימחק.
-![לפני](dbFiles/delete1_before.jpeg)
+![לפני](DBProject/dbFiles/delete1_before.jpeg)
 
 **צילום הרצה:**  
 מציג את הרצת שאילתת ה־DELETE והודעת המערכת על מספר הרשומות שנמחקו.
-![הרצה](dbFiles/delete1_run.jpeg)
+![הרצה](DBProject/dbFiles/delete1_run.jpeg)
 
 **צילום מצב אחרי ההרצה:**  
 מציג את הטבלה לאחר המחיקה, כאשר ניתן לראות שהרשומות המתאימות הוסרו.
-![אחרי](dbFiles/delete1_after.jpeg)
+![אחרי](DBProject/dbFiles/delete1_after.jpeg)
 
 ## DELETE 2 – מחיקת משמרות ללא עובדים
 
@@ -828,15 +828,15 @@ WHERE WS_id NOT IN (
 ```
 **צילום מצב לפני ההרצה:** 
 מציג את המשמרות לפני המחיקה, כולל משמרות ללא עובדים.
-![לפני](dbFiles/delete2_before.jpeg)
+![לפני](DBProject/dbFiles/delete2_before.jpeg)
 
 **צילום הרצה:** 
 מציג את הרצת שאילתת ה־DELETE והודעת המערכת על מספר הרשומות שנמחקו.
-![הרצה](dbFiles/delete2_run.jpeg)
+![הרצה](DBProject/dbFiles/delete2_run.jpeg)
 
 **צילום מצב אחרי ההרצה:**
 מציג את הטבלה לאחר המחיקה, כאשר המשמרות ללא עובדים הוסרו.
-![אחרי](dbFiles/delete2_after.jpeg)
+![אחרי](DBProject/dbFiles/delete2_after.jpeg)
 
 
 ---
@@ -860,15 +860,15 @@ AND R_id NOT IN (
 ```
 **צילום מצב לפני ההרצה:** 
 מציג את חומרי הגלם לפני המחיקה, כולל חומרים שאינם בשימוש.
-![לפני](dbFiles/delete3_before.jpeg)
+![לפני](DBProject/dbFiles/delete3_before.jpeg)
 
 **צילום הרצה:** 
 מציג את הרצת שאילתת ה־DELETE והודעת המערכת על מספר הרשומות שנמחקו.
-![הרצה](dbFiles/delete3_run.jpeg)
+![הרצה](DBProject/dbFiles/delete3_run.jpeg)
 
 **צילום מצב אחרי ההרצה:**
 מציג את הטבלה לאחר המחיקה, כאשר חומרי הגלם שאינם בשימוש הוסרו.
-![אחרי](dbFiles/delete3_after.jpeg)
+![אחרי](DBProject/dbFiles/delete3_after.jpeg)
 
 </details>
 
@@ -905,25 +905,25 @@ WHERE r_id = 5002;
 
 **צילום מצב לפני העדכון:**  
 מציג את ערך המחיר המקורי לפני ביצוע השינוי.  
-![לפני](dbFiles/rollback_before.jpeg)
+![לפני](DBProject/dbFiles/rollback_before.jpeg)
 
 ---
 
 **צילום הרצה של העדכון:**  
 מציג את ביצוע פעולת ה־UPDATE על הרשומה.  
-![הרצה](dbFiles/rollback_run.jpeg)
+![הרצה](DBProject/dbFiles/rollback_run.jpeg)
 
 ---
 
 **צילום מצב לאחר העדכון:**  
 מציג את הערך לאחר שינוי המחיר לפני ביצוע ה־ROLLBACK.  
-![אחרי עדכון](dbFiles/rollback_after_update.jpeg)
+![אחרי עדכון](DBProject/dbFiles/rollback_after_update.jpeg)
 
 ---
 
 **צילום מצב לאחר ROLLBACK:**  
 מציג שהערך חזר למצבו המקורי לאחר ביטול השינוי.  
-![אחרי](dbFiles/rollback_after.jpeg)
+![אחרי](DBProject/dbFiles/rollback_after.jpeg)
 
 </details>
 
@@ -962,20 +962,20 @@ WHERE de_id = 1;
 
 **צילום מצב לפני העדכון:**  
 מציג את ערך התקציב לפני ביצוע השינוי.  
-![לפני](dbFiles/commit_before.jpeg)
+![לפני](DBProject/dbFiles/commit_before.jpeg)
 
 ---
-![עדכון](dbFiles/commit_update.jpeg)
+![עדכון](DBProject/dbFiles/commit_update.jpeg)
 
 **צילום מצב לאחר העדכון:**  
 מציג את הערך לאחר ביצוע העדכון אך לפני שמירתו לצמיתות.  
-![אחרי עדכון](dbFiles/commit_update.jpeg)
-![הרצה](dbFiles/commit_run.jpeg)
+![אחרי עדכון](DBProject/dbFiles/commit_update.jpeg)
+![הרצה](DBProject/dbFiles/commit_run.jpeg)
 ---
 
 **צילום מצב לאחר COMMIT:**  
 מציג שהשינוי נשמר בבסיס הנתונים ונשאר קבוע.  
-![אחרי](dbFiles/commit_after.jpeg)
+![אחרי](DBProject/dbFiles/commit_after.jpeg)
 
 </details>
 
@@ -993,13 +993,13 @@ WHERE de_id = 1;
 אילוץ זה מבטיח שלא ניתן להכניס חומר גלם עם מחיר שלילי או אפס.  
 כך נשמרת תקינות עסקית של הנתונים, מאחר ומחיר חייב להיות ערך חיובי.
 
-![אחרי](dbFiles/constraints.png)
+![אחרי](DBProject/dbFiles/constraints.png)
 
 **בדיקת שגיאה:**  
 בוצע ניסיון להכניס חומר גלם עם מחיר שלילי, והמערכת החזירה שגיאה.  
 השגיאה מוכיחה שהאילוץ נאכף ולא מאפשר הכנסת נתונים לא תקינים.
 
-![אחרי](dbFiles/constraints_error.png)
+![אחרי](DBProject/dbFiles/constraints_error.png)
 
 ---
 
@@ -1008,13 +1008,13 @@ WHERE de_id = 1;
 **הסבר:**  
 אילוץ זה מגביל את הערכים האפשריים של סטטוס ההזמנה לרשימה מוגדרת מראש.  
 מטרתו למנוע הכנסת ערכים לא תקינים ולשמור על אחידות הנתונים במערכת.
-![אחרי](dbFiles/constraint2.png)
+![אחרי](DBProject/dbFiles/constraint2.png)
 
 **בדיקת שגיאה:**  
 בוצע ניסיון להכניס סטטוס שאינו קיים ברשימה החוקית, והתקבלה שגיאה.  
 השגיאה מוכיחה שהמערכת חוסמת ערכים לא חוקיים.
 
-![אחרי](dbFiles/constraint2_error.png)
+![אחרי](DBProject/dbFiles/constraint2_error.png)
 
 ---
 
@@ -1024,7 +1024,7 @@ WHERE de_id = 1;
 אילוץ זה מבטיח שלא ניתן להכניס עובד עם תאריך עתידי.  
 כך נשמרת אמינות הנתונים, מאחר ואין היגיון בהוספת עובד עם תאריך עתידי.
 
-![אחרי](dbFiles/constaint3.png)
+![אחרי](DBProject/dbFiles/constaint3.png)
 
 
 
@@ -1032,7 +1032,7 @@ WHERE de_id = 1;
 בוצע ניסיון להכניס עובד עם תאריך עתידי, והמערכת החזירה שגיאה.  
 השגיאה מוכיחה שהאילוץ פועל בצורה תקינה.
 
-![אחרי](dbFiles/constaint3_error.png)
+![אחרי](DBProject/dbFiles/constaint3_error.png)
 
 </details>
 
@@ -1077,11 +1077,11 @@ ORDER BY order_date;
 
 **צילום לפני הוספת האינדקס**
 מציג את זמן הריצה ותוכנית הביצוע של השאילתה לפני יצירת האינדקס.
-![index1_before](dbFiles/index1_before.png)
+![index1_before](DBProject/dbFiles/index1_before.png)
 
 **צילום אחרי הוספת האינדקס**
 מציג את זמן הריצה ותוכנית הביצוע של אותה שאילתה לאחר יצירת האינדקס.
-![index1_after](dbFiles/index1_after.png)
+![index1_after](DBProject/dbFiles/index1_after.png)
 
 **הסבר התוצאה**
 לאחר הוספת האינדקס, בסיס הנתונים יכול לאתר הזמנות לפי order_date בצורה יעילה יותר, במקום לסרוק את כל הטבלה.
@@ -1122,11 +1122,11 @@ ORDER BY p_price DESC;
 ```
 **לפני הוספת האינדקס:**  
 מציג את זמן הריצה ותוכנית הביצוע של השאילתה לפני יצירת האינדקס.
-![index1_before](dbFiles/index2_before.png)
+![index1_before](DBProject/dbFiles/index2_before.png)
 
 **אחרי הוספת האינדקס:** 
 מציג את זמן הריצה ותוכנית הביצוע של אותה שאילתה לאחר יצירת האינדקס. 
-![index1_after](dbFiles/index2_after.png)
+![index1_after](DBProject/dbFiles/index2_after.png)
 
 **הסבר תוצאה**
 האינדקס מאפשר חיפוש ומיון מהירים יותר לפי מחיר, במיוחד כאשר מספר הרשומות גדול.
@@ -1167,12 +1167,12 @@ WHERE e_id = 1;
 **לפני הוספת האינדקס:**  
 בתמונה ניתן לראות כי השאילתה מבוצעת באמצעות Seq Scan (סריקה מלאה של הטבלה).  
 כלומר, בסיס הנתונים עובר על כל הרשומות בטבלת Employee כדי למצוא את העובד עם e_id = 1, דבר שעלול להיות איטי כאשר הטבלה גדולה.
-![index1_before](dbFiles/index3_before.png)
+![index1_before](DBProject/dbFiles/index3_before.png)
 
 **אחרי הוספת האינדקס:** 
 בתמונה ניתן לראות כי השאילתה משתמשת ב־Index Scan במקום Seq Scan.  
 במקרה זה, בסיס הנתונים נעזר באינדקס שנוצר על השדה e_id כדי לגשת ישירות לרשומה המתאימה, מבלי לסרוק את כל הטבלה. 
-![index1_after](dbFiles/index3_after.png)
+![index1_after](DBProject/dbFiles/index3_after.png)
 
 **הסבר תוצאה**
 לאחר יצירת האינדקס, זמן הריצה של השאילתה השתפר מאחר ובסיס הנתונים כבר לא צריך לבצע סריקה מלאה של הטבלה.
