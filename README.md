@@ -701,6 +701,11 @@ JOIN Employee_WorkShip ews ON e.E_id = ews.E_id;
 ![תוצאה](DBProject/dbFiles/select8B_result.png)
 
 
+<details>
+<summary><b> ## SELECT 9 – איתור מוצרים מעל 1000 ש"ח שיש להם עיצוב</b></summary>
+<br>
+
+
 ## SELECT 9 – איתור מוצרים מעל 1000 ש"ח שיש להם עיצוב
 
 ### מטרת השאילתה
@@ -756,7 +761,7 @@ WHERE p.P_price > 1000;
 ![תוצאה](DBProject/dbFiles/Select9BResult.JPG)
 </details>
 
-
+</details>
 
 <details>
 <summary><b>▶ UPDATE – שאילתות עדכון נתונים</b></summary>
