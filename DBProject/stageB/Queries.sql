@@ -227,6 +227,48 @@ SELECT DISTINCT
 FROM Employee e
 JOIN Employee_WorkShip ews ON e.E_id = ews.E_id;
 
+
+
+
+-- =========================================================
+-- SELECT 9A
+-- High price products that have a design - using IN
+-- =========================================================
+
+SELECT 
+    p.P_id AS "Product_ID", 
+    p.P_name AS "Product_Name", 
+    p.P_price AS "Unit_Price"
+FROM Product p
+WHERE p.P_price > 1000 
+  AND p.P_id IN (
+    SELECT d.P_id 
+    FROM Design d
+);
+
+
+
+
+-- =========================================================
+-- SELECT 9B
+-- High price products that have a design - using JOIN
+-- =========================================================
+
+SELECT DISTINCT
+    p.P_id AS "Product_ID", 
+    p.P_name AS "Product_Name", 
+    p.P_price AS "Unit_Price"
+FROM Product p
+JOIN Design d ON p.P_id = d.P_id
+WHERE p.P_price > 1000;
+
+
+
+
+
+
+
+
 -- =========================================================
 -- UPDATE 1
 -- Increase price of products that have a design created after 2024

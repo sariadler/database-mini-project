@@ -684,6 +684,7 @@ WHERE e.E_id IN (
 );
 ```
 
+
 ![הרצה](DBProject/dbFiles/select8A_run.png)
 ![תוצאה](DBProject/dbFiles/select8A_result.png)
 ```sql
@@ -698,7 +699,64 @@ JOIN Employee_WorkShip ews ON e.E_id = ews.E_id;
 ```
 ![הרצה](DBProject/dbFiles/select8B_run.png)
 ![תוצאה](DBProject/dbFiles/select8B_result.png)
+
+
+## SELECT 9 – איתור מוצרים מעל 1000 ש"ח שיש להם עיצוב
+
+### מטרת השאילתה
+למצוא את כל המוצרים שמחירם מעל 1000 ש"ח ושכבר קיים עבורם דגם עיצובי במערכת. זה מאפשר לנו לוודא שלכל המוצרים בסכום זה יש תכנון תקין.
+
+
+
+---
+
+## הסבר והבדל בין השיטות
+
+שתי השאילתות מציגות את אותה התוצאה בדרכים שונות:
+
+* **בגרסת ה-IN (בדיקת רשימה):** המחשב עובר על טבלת המוצרים ובודק האם כל מוצר מופיע ברשימת העיצובים. זו דרך פשוטה שמונעת כפילויות באופן אוטומטי.
+* **בגרסת ה-JOIN (חיבור טבלאות):** המחשב ממש "מדביק" את שתי הטבלאות זו לזו לפי מספר המוצר. בגלל שחיבור כזה עלול להציג את אותו מוצר כמה פעמים, השתמשנו בפקודת DISTINCT כדי שכל מוצר יופיע רק פעם אחת ברשימה.
+
+---
+
+## גרסה 1 – שימוש ב-IN
+
+### קוד SQL
+
+```sql
+SELECT 
+    p.P_id AS "Product_ID", 
+    p.P_name AS "Product_Name", 
+    p.P_price AS "Unit_Price"
+FROM Product p
+WHERE p.P_price > 1000 
+  AND p.P_id IN (
+    SELECT d.P_id 
+    FROM Design d
+);
+```
+
+![הרצה](DBProject/dbFiles/Select9ARun.JPG)
+![תוצאה](DBProject/dbFiles/Select9AResult.JPG)
+
+
+## גרסה 2 – שימוש ב-JOIN
+
+### קוד SQL
+```sql
+SELECT DISTINCT
+    p.P_id AS "Product_ID", 
+    p.P_name AS "Product_Name", 
+    p.P_price AS "Unit_Price"
+FROM Product p
+JOIN Design d ON p.P_id = d.P_id
+WHERE p.P_price > 1000;
+```
+![הרצה](DBProject/dbFiles/Select9BRun.JPG)
+![תוצאה](DBProject/dbFiles/Select9BResult.JPG)
 </details>
+
+
 
 <details>
 <summary><b>▶ UPDATE – שאילתות עדכון נתונים</b></summary>
