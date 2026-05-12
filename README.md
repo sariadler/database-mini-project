@@ -832,6 +832,8 @@ HAVING COUNT(p.p_id) > 5
 ORDER BY "Total_Products" DESC;
 ```
 ![הרצה](DBProject/dbFiles/Select10AResult.JPG)
+</details>
+
 
 <details>
 
