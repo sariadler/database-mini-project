@@ -753,8 +753,6 @@ JOIN Employee_WorkShip ews ON e.E_id = ews.E_id;
 <details>
 <summary><b>  SELECT 9 – איתור מוצרים מעל 1000 ש"ח שיש להם עיצוב</b></summary>
 <br>
-
-
 ## SELECT 9 – איתור מוצרים מעל 1000 ש"ח שיש להם עיצוב
 
 ### מטרת השאילתה
@@ -809,8 +807,10 @@ WHERE p.P_price > 1000;
 ```
 ![הרצה](DBProject/dbFiles/Select9BRun.JPG)
 ![תוצאה](DBProject/dbFiles/Select9BResult.JPG)
-</details>
 
+
+
+</details>
 
 <details>
 <summary><b> SELECT 10 – איתור קווי ייצור המייצרים מעל 5 מוצרים שונים</b></summary>
@@ -836,8 +836,6 @@ ORDER BY "Total_Products" DESC;
 
 
 <details>
-
-
 <summary><b> SELECT 11 – ניתוח עומס ייצור לפי מחלקות (GROUP BY & HAVING)</b></summary>
 <br>
 
@@ -862,6 +860,7 @@ ORDER BY "Total_Products" DESC;
 
 </details>
 
+</details>
 <details>
 <summary><b>▶ UPDATE – שאילתות עדכון נתונים</b></summary>
 <br>
