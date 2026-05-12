@@ -937,6 +937,7 @@ WHERE PL_id IN (
 ![update3_run](DBProject/dbFiles/update3_before.png)
 ![update3_run](DBProject/dbFiles/update3_after.png)
 
+</details>
 
 
 
@@ -982,7 +983,7 @@ COMMIT;
 ```
 **3. אחרי השינוי (After):** מחירי חומרי הגלם לאחר ההוזלה ב-10%:
 ![update4_after](DBProject/dbFiles/update5_after.JPG)
-
+</details>
 
 <details>
 <summary><b>UPDATE 6: הגדלת מלאי לעיצובים חדשים (Stock Update)</b></summary>
@@ -1044,6 +1045,7 @@ WHERE Order_status = 'Cancelled'
 **צילום מצב אחרי ההרצה:**  
 מציג את הטבלה לאחר המחיקה, כאשר ניתן לראות שהרשומות המתאימות הוסרו.
 ![אחרי](DBProject/dbFiles/delete1_after.jpeg)
+
 
 ## DELETE 2 – מחיקת משמרות ללא עובדים
 
