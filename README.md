@@ -863,12 +863,16 @@ ORDER BY "Total_Products" DESC;
 </details>
 
 </details>
+
+
 <details>
 <summary><b>▶ UPDATE – שאילתות עדכון נתונים</b></summary>
 <br>
 
 ---
-
+<details>
+<summary><b>UPDATE 1 – עדכון מחיר מוצרים לפי תאריך עיצוב</b></summary>
+<br
 ## UPDATE 1 – עדכון מחיר מוצרים לפי תאריך עיצוב
 
 ### מטרת השאילתה
@@ -891,7 +895,13 @@ WHERE P_id IN (
 ![update_after](DBProject/dbFiles/update_after.png)
 
 
+</details>
 
+
+<details>
+<summary><b>UPDATE 2 – סימון קווי ייצור שדורשים תחזוקה
+</b></summary>
+<br>
 <*## UPDATE – שאילתות עדכון נתונים*>
 
 ---
@@ -912,7 +922,12 @@ WHERE Last_Maintenance < CURRENT_DATE - INTERVAL '1 year';
 ![update2_run](DBProject/dbFiles/update2_before.png)
 ![update2_run](DBProject/dbFiles/update2_after.png)
 
+</details>
 
+
+<details>
+<summary><b>UPDATE 3 – הפחתת תקציב למחלקות עם קווי ייצור לא פעילים</b></summary>
+<br>
 <*## UPDATE – שאילתות עדכון נתונים*>
 
 ---
@@ -1010,6 +1025,7 @@ COMMIT;
 ![update4_after](DBProject/dbFiles/update6_after.JPG)
 </details>
 
+</details>
 
 <details>
 <summary><b>▶ DELETE – שאילתות מחיקת נתונים</b></summary>
