@@ -751,7 +751,8 @@ JOIN Employee_WorkShip ews ON e.E_id = ews.E_id;
 
 
 <details>
-<summary><b>  SELECT 9 – איתור מוצרים מעל 1000 ש"ח שיש להם עיצוב</b></summary>
+<summary><b> SELECT 9 – איתור מוצרים מעל 1000 ש"ח שיש להם עיצוב</b></summary>
+
 <br>
 ## SELECT 9 – איתור מוצרים מעל 1000 ש"ח שיש להם עיצוב
 
@@ -807,14 +808,14 @@ WHERE p.P_price > 1000;
 ```
 ![הרצה](DBProject/dbFiles/Select9BRun.JPG)
 ![תוצאה](DBProject/dbFiles/Select9BResult.JPG)
-
-
-
 </details>
 
+
 <details>
-<summary><b> SELECT 10 – איתור קווי ייצור המייצרים מעל 5 מוצרים שונים</b></summary>
+<summary><b>SELECT 10 – איתור קווי ייצור המייצרים מעל 5 מוצרים שונים</b></summary>
+
 <br>
+
 
 ### מטרת השאילתה
 לזהות קווי ייצור עמוסים במיוחד. השאילתה סופרת כמה מוצרים שונים משויכים לכל קו ייצור ומציגה רק את הקווים שאחראים על יותר מ-5 מוצרים.
@@ -832,6 +833,7 @@ HAVING COUNT(p.p_id) > 5
 ORDER BY "Total_Products" DESC;
 ```
 ![הרצה](DBProject/dbFiles/Select10AResult.JPG)
+
 </details>
 
 
