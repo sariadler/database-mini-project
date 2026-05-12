@@ -410,7 +410,7 @@ ORDER BY order_year, order_month, total_amount DESC;
 ```
 
 ![הרצה](DBProject/dbFiles/select1_run.png)
-![תוצאה](DBProject/dbFiles/select1_result.png)
+<*![תוצאה](DBProject/dbFiles/select1_result.png)*>
 </details>
 
 
@@ -448,7 +448,7 @@ ORDER BY raw_materials_count DESC;
 ```
 
 ![הרצה](DBProject/dbFiles/select2_run.png)
-![תוצאה](DBProject/dbFiles/select2_result.png)
+<*![תוצאה](DBProject/dbFiles/select2_result.png)*>
 
 </details>
 
@@ -773,6 +773,7 @@ JOIN Employee_WorkShip ews ON e.E_id = ews.E_id;
 
 ---
 
+
 ## גרסה 1 – שימוש ב-IN
 
 ### קוד SQL
@@ -810,6 +811,53 @@ WHERE p.P_price > 1000;
 ![תוצאה](DBProject/dbFiles/Select9BResult.JPG)
 </details>
 
+
+<details>
+<summary><b> SELECT 10 – איתור קווי ייצור המייצרים מעל 5 מוצרים שונים</b></summary>
+<br>
+
+### מטרת השאילתה
+לזהות קווי ייצור עמוסים במיוחד. השאילתה סופרת כמה מוצרים שונים משויכים לכל קו ייצור ומציגה רק את הקווים שאחראים על יותר מ-5 מוצרים.
+
+### קוד SQL
+```sql
+SELECT 
+    pl.pl_id AS "Line_ID", 
+    pl.factory_location AS "Factory_Location", 
+    COUNT(p.p_id) AS "Total_Products"
+FROM Product_Line pl
+JOIN Product p ON pl.pl_id = p.p_id
+GROUP BY pl.pl_id, pl.factory_location
+HAVING COUNT(p.p_id) > 5
+ORDER BY "Total_Products" DESC;
+```
+![הרצה](DBProject/dbFiles/Select10AResult.JPG)
+
+<details>
+
+
+<summary><b> SELECT 11 – ניתוח עומס ייצור לפי מחלקות (GROUP BY & HAVING)</b></summary>
+<br>
+
+### מטרת השאילתה
+לזהות אילו מחלקות במפעל אחראיות על ייצור של מספר גדול של מוצרים שונים. מידע זה קריטי להקצאת כוח אדם ומשאבים.
+
+### הסבר הלוגיקה
+השאילתה מחברת בין טבלת המחלקות לטבלת המוצרים. אנו משתמשים ב-`GROUP BY` כדי לרכז את הנתונים לפי שם המחלקה, וב-`HAVING` כדי להציג רק מחלקות שמשויכים אליהן יותר ממוצר אחד שונה.
+
+### קוד SQL
+```sql
+SELECT 
+    d.de_name AS "Department_Name", 
+    COUNT(p.P_id) AS "Total_Products"
+FROM Department d
+JOIN Product p ON d.e_id = p.p_id
+GROUP BY d.de_name
+HAVING COUNT(p.p_id) > 0
+ORDER BY "Total_Products" DESC;
+```
+![הרצה](DBProject/dbFiles/Select11AResult.JPG)
+
 </details>
 
 <details>
@@ -841,7 +889,7 @@ WHERE P_id IN (
 
 
 
-## UPDATE – שאילתות עדכון נתונים
+<*## UPDATE – שאילתות עדכון נתונים*>
 
 ---
 
@@ -862,7 +910,7 @@ WHERE Last_Maintenance < CURRENT_DATE - INTERVAL '1 year';
 ![update2_run](DBProject/dbFiles/update2_after.png)
 
 
-## UPDATE – שאילתות עדכון נתונים
+<*## UPDATE – שאילתות עדכון נתונים*>
 
 ---
 
@@ -886,7 +934,78 @@ WHERE PL_id IN (
 ![update3_run](DBProject/dbFiles/update3_before.png)
 ![update3_run](DBProject/dbFiles/update3_after.png)
 
+
+
+
+
+<details>
+<summary><b>UPDATE 4: הוזלת חומרי גלם יקרים (Raw Material)</b></summary>
+<br>
+
+**1. לפני השינוי (Before):** מחירי חומרי הגלם המקוריים הגבוהים מ-99:
+![update4_before](DBProject/dbFiles/update4_before.JPG)
+
+**2. קוד SQL לביצוע העדכון:**
+```sql
+-- Purpose: Apply a 10% discount to high-cost materials
+UPDATE rawmaterial
+SET r_price = r_price * 0.90
+WHERE r_price > 99;
+
+COMMIT;
+```
+**3. אחרי השינוי (After):** מחירי חומרי הגלם לאחר ההוזלה ב-10%:
+![update4_after](DBProject/dbFiles/update4_after.JPG)
+
+
 </details>
+
+
+<details>
+<summary><b>UPDATE 5: שדרוג משלוח להזמנות גדולות (Supply Order)</b></summary>
+<br>
+
+**1. לפני השינוי (Before):** איתור הזמנות שסכומן הכולל עולה על 200 ש"ח ושיטת המשלוח שלהן אינה אקספרס:
+![update5_before](DBProject/dbFiles/update5_before.JPG)
+
+**2. קוד SQL לביצוע העדכון:**
+```sql
+-- Purpose: Upgrade shipping to Express for orders over 200
+UPDATE supplyorder
+SET shipping_method = 'Express'
+WHERE total > 200;
+
+COMMIT;
+```
+**3. אחרי השינוי (After):** מחירי חומרי הגלם לאחר ההוזלה ב-10%:
+![update4_after](DBProject/dbFiles/update5_after.JPG)
+
+
+<details>
+<summary><b>UPDATE 6: הגדלת מלאי לעיצובים חדשים (Stock Update)</b></summary>
+<br>
+
+**1. לפני השינוי (Before):** בדיקת כמות המלאי הנוכחית של חומרי גלם המשמשים בעיצובים משנת 2025 ואילך:
+![update6_before](DBProject/dbFiles/update6_before.JPG)
+
+**2. קוד SQL לביצוע העדכון:**
+```sql
+-- Purpose: Increase stock by 20% for materials used in designs from 2025 onwards
+UPDATE rawmaterial
+SET stock_quantity = stock_quantity * 1.20
+WHERE r_id IN (
+    SELECT r.r_id
+    FROM requires r
+    JOIN design d ON r.d_id = d.d_id
+    WHERE d.d_data >= '2025-01-01'
+);
+
+COMMIT;
+```
+**3. אחרי השינוי (After):** מחירי חומרי הגלם לאחר ההוזלה ב-10%:
+![update4_after](DBProject/dbFiles/update6_after.JPG)
+</details>
+
 
 <details>
 <summary><b>▶ DELETE – שאילתות מחיקת נתונים</b></summary>

@@ -263,11 +263,37 @@ JOIN Design d ON p.P_id = d.P_id
 WHERE p.P_price > 1000;
 
 
+-- =========================================================
+-- SELECT 10
+-- =========================================================
+
+
+SELECT 
+    pl.pl_id AS "Line_ID", 
+    pl.factory_location AS "Factory_Location", 
+    COUNT(p.p_id) AS "Total_Products"
+FROM Product_Line pl
+JOIN Product p ON pl.pl_id = p.p_id
+GROUP BY pl.pl_id, pl.factory_location
+HAVING COUNT(p.p_id) > 5
+ORDER BY "Total_Products" DESC;
 
 
 
+-- =========================================================
+-- SELECT 11
+-- =========================================================
 
 
+
+SELECT 
+    d.de_name AS "Department_Name", 
+    COUNT(p.P_id) AS "Total_Products"
+FROM Department d
+JOIN Product p ON d.e_id = p.p_id
+GROUP BY d.de_name
+HAVING COUNT(p.p_id) > 0
+ORDER BY "Total_Products" DESC;
 
 -- =========================================================
 -- UPDATE 1
@@ -307,6 +333,53 @@ WHERE PL_id IN (
     WHERE Status = 'Inactive'
 );
 
+
+
+
+
+
+-- =========================================================
+-- UPDATE 4: Discount for expensive raw materials
+-- Purpose: Reduce the price of raw materials that exceed 99 units by 10%.
+-- =========================================================
+
+UPDATE rawmaterial
+SET r_price = r_price * 0.90 -- Apply a 10% discount to the unit price
+WHERE r_price > 99; -- Target only high-cost materials
+
+
+
+-- =========================================================
+-- UPDATE 5: Upgrade shipping for high-value supply orders
+-- Purpose: Automatically set the shipping method to 'Express' for orders over 10,000.
+-- =========================================================
+
+UPDATE supplyorder
+SET shipping_method = 'Express' -- Set faster delivery method
+WHERE total > 10000; -- Condition: Total order value exceeds 10,000
+
+
+
+
+-- =========================================================
+-- UPDATE 6: Emergency stock increase for recent designs
+-- מטרת השאילתה: הגדלת מלאי ב-20% לחומרים המשמשים בעיצובים חדשים.
+-- =========================================================
+UPDATE rawmaterial
+SET stock_quantity = stock_quantity * 1.20 -- Increase stock by 20%
+WHERE r_id IN (
+    SELECT r.r_id
+    FROM requires r
+    JOIN design d ON r.d_id = d.d_id
+    WHERE d.d_data >= '2025-01-01' -- Using d_data as the reference column
+);
+
+
+
+
+-- Commit the changes to the database to ensure data persistence
+-- שמירת השינויים לצמיתות בבסיס הנתונים
+COMMIT;
 
 -- =========================================================
 -- DELETE 1
