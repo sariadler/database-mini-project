@@ -1005,7 +1005,7 @@ COMMIT;
 <br>
 
 **1. לפני השינוי (Before):** בדיקת כמות המלאי הנוכחית של חומרי גלם המשמשים בעיצובים משנת 2025 ואילך:
-![update6_before](DBProject/dbFiles/update6_before.JPG)
+![update6_before](DBProject/dbFiles/updateBefor6.JPG)
 
 **2. קוד SQL לביצוע העדכון:**
 ```sql
