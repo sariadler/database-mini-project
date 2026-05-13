@@ -1370,6 +1370,10 @@ WHERE de_id = 1;
 
 ---
 
+
+<details>
+<summary><b> Constraint 1 – RawMaterial (מחיר חייב להיות חיובי)</b></summary>
+<br>
 ## 🔸 Constraint 1 – RawMaterial (מחיר חייב להיות חיובי)
 
 **הסבר:**  
@@ -1385,7 +1389,12 @@ WHERE de_id = 1;
 ![אחרי](DBProject/dbFiles/constraints_error.png)
 
 ---
+</details>
 
+
+<details>
+<summary><b> Constraint 2 – SupplyOrder (סטטוס חוקי בלבד)</b></summary>
+<br>
 ## 🔸 Constraint 2 – SupplyOrder (סטטוס חוקי בלבד)
 
 **הסבר:**  
@@ -1400,7 +1409,12 @@ WHERE de_id = 1;
 ![אחרי](DBProject/dbFiles/constraint2_error.png)
 
 ---
+</details>
 
+
+<details>
+<summary><b> Constraint 3 – Employee (תאריך לא יכול להיות בעתיד)</b></summary>
+<br>
 ## 🔸 Constraint 3 – Employee (תאריך לא יכול להיות בעתיד)
 
 **הסבר:**  
@@ -1418,6 +1432,77 @@ WHERE de_id = 1;
 ![אחרי](DBProject/dbFiles/constaint3_error.png)
 
 </details>
+
+
+<details>
+<summary><b> Constraint 4 – Product (משקל מוצר חייב להיות חיובי)</b></summary>
+<br>
+## 🔸 Constraint 4 – Product (משקל מוצר חייב להיות חיובי)
+
+
+**הסבר:**
+ בענף הנעליים, משקל המוצר הוא נתון קריטי לחישוב עלויות שילוח ולוגיסטיקה. 
+ אילוץ זה מוודא שלא יוזן מוצר עם משקל אפס או שלילי, מה שמונע טעויות אנוש בשלב הזנת הקטלוג.
+
+![אחרי](DBProject/dbFiles/constraint4.png)
+
+**בדיקת שגיאה:**
+ בוצע ניסיון להכניס מוצר עם משקל `0`. המערכת זיהתה את הפרת האילוץ וחסמה את הפעולה באופן אוטומטי.
+
+![אחרי](DBProject/dbFiles/constraint4_error.png)
+
+---
+
+</details>
+
+
+<details>
+<summary><b> Constraint 5 – Department (תקציב מינימלי למחלקה)</b></summary>
+<br>
+
+## 🔸 Constraint 5 – Department (תקציב מינימלי למחלקה)
+
+
+**הסבר:** 
+זהו אילוץ המבוסס על חוק עסקי: לכל מחלקה פעילה במפעל חייב להיות מוקצה תקציב מינימלי של לפחות 1,000 ש"ח. 
+אילוץ זה מונע יצירת מחלקות ללא תקציב תפעולי בסיסי.
+
+![אחרי](DBProject/dbFiles/constraint5.png)
+
+**בדיקת שגיאה:**
+ בוצע ניסיון להכניס מחלקה חדשה עם תקציב של `500` ש"ח. כפי שניתן לראות בהודעת השגיאה, בסיס הנתונים מנע את שמירת השורה במערכת.
+
+![אחרי](DBProject/dbFiles/constraint5_error.png)
+
+---
+</details>
+
+
+<details>
+<summary><b> Constraint 6 – Supplier (אימות פורמט טלפון)</b></summary>
+<br>
+## 🔸 Constraint 6 – Supplier (אימות פורמט טלפון)
+
+
+**הסבר:**
+ כדי לשמור על אחידות בנתוני הקשר של הספקים ולוודא שלא מוזנים מספרים חלקיים, 
+ הגדרנו אילוץ הבודק את אורך המחרוזת.
+  האילוץ מוודא שהטלפון מורכב בדיוק מ-12 תווים (כולל המקפים בפורמט הקיים בבסיס הנתונים).
+
+![אחרי](DBProject/dbFiles/constraint6.png)
+
+**בדיקת שגיאה:** 
+בוצע ניסיון לעדכן מספר טלפון לערך קצר מדי (`123-456`).
+ המערכת חסמה את העדכון והציגה שגיאת `Check Constraint`, מה שמבטיח איכות נתונים גבוהה.
+
+![אחרי](DBProject/dbFiles/constraint6_error.png)
+
+---
+</details>
+
+</details>
+
+
 
 <details>
 <summary><b>▶ אינדקסים והשוואת ביצועים</b></summary>
