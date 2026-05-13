@@ -144,7 +144,8 @@ SELECT
 FROM Product p
 WHERE p.P_id IN (
     SELECT d.P_id
-    FROM Desig
+    FROM Design d
+);
 
 -- =========================================================
 -- SELECT 6B
@@ -295,6 +296,33 @@ GROUP BY d.de_name
 HAVING COUNT(p.p_id) > 0
 ORDER BY "Total_Products" DESC;
 
+
+
+-- =========================================================
+-- SELECT 12A
+-- Suppliers of specific raw materials - using JOIN
+-- =========================================================
+SELECT DISTINCT s.company_name, s.phone
+FROM Supplier s
+JOIN rawmaterial m ON m.r_id = s.s_id
+WHERE m.r_name LIKE 'Material_10%'
+ORDER BY s.company_name;
+
+-- =========================================================
+-- SELECT 12B
+-- Suppliers of specific raw materials - using IN
+-- =========================================================
+SELECT s.company_name, s.phone
+FROM Supplier s
+WHERE s.s_id IN (
+    SELECT m.r_id 
+    FROM rawmaterial m 
+    WHERE m.r_name LIKE 'Material_10%'
+)
+ORDER BY s.company_name;
+
+
+
 -- =========================================================
 -- UPDATE 1
 -- Increase price of products that have a design created after 2024
@@ -332,8 +360,6 @@ WHERE PL_id IN (
     FROM Product_Line
     WHERE Status = 'Inactive'
 );
-
-
 
 
 -- =========================================================
@@ -413,3 +439,27 @@ WHERE R_id NOT IN (
 AND R_id NOT IN (
     SELECT R_id FROM Includes
 );
+
+
+
+-- =========================================================
+-- DELETE 4
+-- Purge new product prototypes without orders or approved designs
+-- מחיקת דגמי מוצרים חדשים (מ-2026) ללא פעילות עסקית או עיצובית
+-- =========================================================
+
+DELETE FROM Product p
+WHERE p.p_data > '2026-01-01' 
+  AND NOT EXISTS (
+      -- Verification: Product does not appear in any customer orders
+      SELECT 1 
+      FROM Includes i 
+      WHERE i.order_id = p.p_id
+  )
+  AND NOT EXISTS (
+      -- Verification: Product does not have an associated approved design
+      SELECT 1 
+      FROM Design d 
+      WHERE d.p_id = p.p_id
+  );
+
