@@ -973,10 +973,10 @@ WHERE r_price > 99;
 
 COMMIT;
 ```
-**3. אחרי השינוי (After):** מחירי חומרי הגלם לאחר ההוזלה ב-10%:
+
+
+**3. אחרי השינוי (After):** בדיקה חוזרת מראה 0 תוצאות. הדבר מעיד על כך שבעקבות ההוזלה, כל מחירי חומרי הגלם שהיו גבוהים מ-99 ש"ח עודכנו וירדו מתחת לסף זה:
 ![update4_after](DBProject/dbFiles/update4_after.JPG)
-
-
 </details>
 
 
@@ -984,7 +984,7 @@ COMMIT;
 <summary><b>UPDATE 5: שדרוג משלוח להזמנות גדולות (Supply Order)</b></summary>
 <br>
 
-**1. לפני השינוי (Before):** איתור הזמנות שסכומן הכולל עולה על 200 ש"ח ושיטת המשלוח שלהן אינה אקספרס:
+**1. לפני השינוי (Before):** איתור הזמנות שסכומן עולה על 200 ש"ח ושיטת המשלוח שלהן היא 'Truck':
 ![update5_before](DBProject/dbFiles/update5_before.JPG)
 
 **2. קוד SQL לביצוע העדכון:**
@@ -996,7 +996,7 @@ WHERE total > 200;
 
 COMMIT;
 ```
-**3. אחרי השינוי (After):** מחירי חומרי הגלם לאחר ההוזלה ב-10%:
+**3. אחרי השינוי (After):**הרצה חוזרת של שאילתת הבדיקה מחזירה 0 שורות. הדבר מאשר שכל ההזמנות הגדולות עודכנו בהצלחה למשלוח אקספרס (Express):
 ![update4_after](DBProject/dbFiles/update5_after.JPG)
 </details>
 
@@ -1005,7 +1005,7 @@ COMMIT;
 <br>
 
 **1. לפני השינוי (Before):** בדיקת כמות המלאי הנוכחית של חומרי גלם המשמשים בעיצובים משנת 2025 ואילך:
-![update6_before](DBProject/dbFiles/updateBefor6.JPG)
+![update6_before](DBProject/dbFiles/UPDATAfter6.JPG)
 
 **2. קוד SQL לביצוע העדכון:**
 ```sql
@@ -1021,8 +1021,8 @@ WHERE r_id IN (
 
 COMMIT;
 ```
-**3. אחרי השינוי (After):** מחירי חומרי הגלם לאחר ההוזלה ב-10%:
-![update4_after](DBProject/dbFiles/update6_after.JPG)
+**3. אחרי השינוי (After):** ניתן לראות כי כמות המלאי (stock_quantity) עודכנה וגדלה ב-20% עבור חומרי הגלם שנמצאו בתנאי השאילתה:
+![update4_after](DBProject/dbFiles/updateBefor6.JPG)
 </details>
 
 </details>

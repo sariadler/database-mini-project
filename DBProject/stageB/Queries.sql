@@ -336,8 +336,6 @@ WHERE PL_id IN (
 
 
 
-
-
 -- =========================================================
 -- UPDATE 4: Discount for expensive raw materials
 -- Purpose: Reduce the price of raw materials that exceed 99 units by 10%.
@@ -351,14 +349,12 @@ WHERE r_price > 99; -- Target only high-cost materials
 
 -- =========================================================
 -- UPDATE 5: Upgrade shipping for high-value supply orders
--- Purpose: Automatically set the shipping method to 'Express' for orders over 10,000.
+-- Purpose: Automatically set the shipping method to 'Express' for orders over 200.
 -- =========================================================
 
 UPDATE supplyorder
 SET shipping_method = 'Express' -- Set faster delivery method
-WHERE total > 10000; -- Condition: Total order value exceeds 10,000
-
-
+WHERE total > 200; -- Condition: Total order value exceeds 200
 
 
 -- =========================================================
@@ -373,8 +369,6 @@ WHERE r_id IN (
     JOIN design d ON r.d_id = d.d_id
     WHERE d.d_data >= '2025-01-01' -- Using d_data as the reference column
 );
-
-
 
 
 -- Commit the changes to the database to ensure data persistence
