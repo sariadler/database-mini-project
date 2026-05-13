@@ -37,3 +37,45 @@ CHECK (e_date <= CURRENT_DATE);
 -- מצופה: שגיאה
 INSERT INTO employee (e_id, e_name, e_familyname, e_date, role)
 VALUES (9001, 'Future', 'User', '2030-01-01', 'Worker');
+
+
+
+
+
+-- =========================================
+-- Constraint 4: Product - משקל מוצר חייב להיות חיובי
+-- =========================================
+ALTER TABLE Product
+ADD CONSTRAINT check_product_weight_positive
+CHECK (p_weight > 0);
+
+-- בדיקת שגיאה: ניסיון להכניס משקל אפס
+INSERT INTO Product (p_id, p_name, p_price, p_weight, p_data, c_id)
+VALUES (9999, 'Test Shoe', 200, 0, '2024-01-01', 501);
+
+
+-- =========================================
+-- Constraint 5: Department - תקציב מחלקה חייב להיות מעל 1000
+-- =========================================
+ALTER TABLE department
+ADD CONSTRAINT check_min_department_budget
+CHECK (budget >= 1000);
+
+-- בדיקת שגיאה: ניסיון להכניס תקציב נמוך מדי
+INSERT INTO department (de_id, de_name, budget)
+VALUES (999, 'Small Dept', 500);
+
+
+-- =========================================
+-- Constraint 6: Supplier - אימות פורמט טלפון (12 תווים)
+-- מוודא שהטלפון מוזן בפורמט הכולל מקפים כפי שקיים בנתונים
+-- =========================================
+ALTER TABLE Supplier
+ADD CONSTRAINT check_supplier_phone_format
+CHECK (LENGTH(Phone) = 12);
+
+-- בדיקת שגיאה: ניסיון לעדכן לפורמט קצר מדי
+UPDATE Supplier
+SET Phone = '123-456'
+WHERE S_id = 1;
+
