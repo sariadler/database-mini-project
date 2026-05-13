@@ -1213,7 +1213,7 @@ AND R_id NOT IN (
 <details>
 <summary><b>DELETE 4 –מחיקת דגמי מוצרים  ללא פעילות </b></summary>
 <br>
-</details>
+
 
 ## DELETE 4 – מחיקת דגמי מוצרים  ללא פעילות
 
@@ -1253,6 +1253,8 @@ WHERE p.p_data > '2026-01-1'
 **צילום מצב אחרי ההרצה:**
 כאן ניתן לראות את הקטלוג המעודכן – המוצרים שלא היה בהם שימוש הוסרו, ונשארו רק המוצרים הרלוונטיים לעסק.
 ![אחרי](DBProject/dbFiles/delete4_after.JPG)
+</details>
+
 </details>
 
 <details>
