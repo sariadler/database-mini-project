@@ -1324,14 +1324,14 @@ WHERE r_id = 5002;
 
 ### קוד SQL
 ```sql
+SELECT *
+FROM department
+WHERE de_id = 1;
+
 BEGIN;
 
 UPDATE department
 SET budget = budget + 5000
-WHERE de_id = 1;
-
-SELECT *
-FROM department
 WHERE de_id = 1;
 
 COMMIT;
@@ -1347,12 +1347,11 @@ WHERE de_id = 1;
 ![לפני](DBProject/dbFiles/commit_before.jpeg)
 
 ---
-![עדכון](DBProject/dbFiles/commit_update.jpeg)
 
 **צילום מצב לאחר העדכון:**  
-מציג את הערך לאחר ביצוע העדכון אך לפני שמירתו לצמיתות.  
 ![אחרי עדכון](DBProject/dbFiles/commit_update.jpeg)
 ![הרצה](DBProject/dbFiles/commit_run.jpeg)
+
 ---
 
 **צילום מצב לאחר COMMIT:**  
@@ -1427,10 +1426,16 @@ WHERE de_id = 1;
 ## INDEX 1 – אינדקס לפי תאריך הזמנה
 
 ### מטרת האינדקס
-האינדקס נוצר על השדה `order_date` בטבלת `SupplyOrder`, כדי לשפר ביצועים של שאילתות שמחפשות הזמנות לפי טווח תאריכים וממיינות לפי תאריך.
+במערכת לניהול דגמים וייצור קיימות שאילתות רבות שמבצעות חיפוש הזמנות לפי תאריך, למשל חיפוש הזמנות שבוצעו ביום מסוים או בתקופה מסוימת.  
+ללא אינדקס, בסיס הנתונים נדרש לבצע סריקה מלאה של טבלת `SupplyOrder` כדי למצוא את הרשומות המתאימות. כאשר כמות ההזמנות גדלה, פעולה זו עלולה להיות איטית ולגרום לעומס על השרת.
+
+הוספת אינדקס על השדה `order_date` מאפשרת ל־PostgreSQL להגיע ישירות להזמנות המתאימות לפי תאריך, במקום לסרוק את כל הטבלה. בנוסף, האינדקס מסייע גם בפעולות מיון לפי תאריך.
+
+---
 
 ### קוד SQL
 ```sql
+-- BEFORE INDEX
 EXPLAIN ANALYZE
 SELECT
     order_id,
@@ -1439,12 +1444,14 @@ SELECT
     order_status,
     s_id
 FROM SupplyOrder
-WHERE order_date BETWEEN '2024-01-01' AND '2024-03-31'
+WHERE order_date = '2024-01-01'
 ORDER BY order_date;
 
+-- CREATE INDEX
 CREATE INDEX idx_supplyorder_order_date
 ON SupplyOrder(order_date);
 
+-- AFTER INDEX
 EXPLAIN ANALYZE
 SELECT
     order_id,
@@ -1453,7 +1460,7 @@ SELECT
     order_status,
     s_id
 FROM SupplyOrder
-WHERE order_date BETWEEN '2024-01-01' AND '2024-03-31'
+WHERE order_date = '2024-01-01'
 ORDER BY order_date;
 ```
 
@@ -1504,66 +1511,77 @@ ORDER BY p_price DESC;
 ```
 **לפני הוספת האינדקס:**  
 מציג את זמן הריצה ותוכנית הביצוע של השאילתה לפני יצירת האינדקס.
-![index1_before](DBProject/dbFiles/index2_before.png)
+![index2_before](DBProject/dbFiles/index2_before.png)
 
 **אחרי הוספת האינדקס:** 
 מציג את זמן הריצה ותוכנית הביצוע של אותה שאילתה לאחר יצירת האינדקס. 
-![index1_after](DBProject/dbFiles/index2_after.png)
+![index2_after](DBProject/dbFiles/index2_after.png)
 
 **הסבר תוצאה**
 האינדקס מאפשר חיפוש ומיון מהירים יותר לפי מחיר, במיוחד כאשר מספר הרשומות גדול.
 
 
-### אינדקס 3: ייעול חיפוש עובד לפי מזהה (Employee ID)
+### אינדקס 3: ייעול חיפוש עובדים לפי תאריך (Employee Date)
 
-**1. מוטיבציה ותועלת:**
-במערכת לניהול דגמים וייצור, השליפה של פרטי עובד לפי המזהה הייחודי שלו (`e_id`) היא אחת הפעולות הנפוצות ביותר (למשל: בכניסה למערכת, בשיוך עובד להזמנה, או בעדכון פרטי שכר). ללא אינדקס, ככל שנתוני העובדים בטבלה יגדלו, מסד הנתונים ייאלץ לסרוק את כל הטבלה כדי למצוא רשומה אחת. הוספת האינדקס מאפשרת גישה ישירה (O(log n) במקום O(n)), מה שמשפר את חווית המשתמש ומוריד עומס מהשרת.
+**1. מוטיבציה ותועלת:**  
+במערכת לניהול דגמים וייצור קיימות שאילתות רבות שמבצעות חיפוש וסינון עובדים לפי תאריכים, למשל עובדים שנקלטו בתקופה מסוימת או עובדים בטווח תאריכים מסוים.  
+ללא אינדקס, בסיס הנתונים נדרש לבצע סריקה מלאה של טבלת `Employee` כדי לבדוק אילו רשומות עומדות בתנאי התאריך. כאשר הטבלה גדלה, פעולה זו עלולה להיות איטית ולגרום לעומס על השרת.
+
+הוספת אינדקס על השדה `e_date` מאפשרת ל־PostgreSQL לגשת ישירות לרשומות המתאימות לפי טווח התאריכים, במקום לעבור על כל הרשומות בטבלה. כתוצאה מכך, ביצועי החיפוש והמיון משתפרים.
+
+---
 
 **2. שאילתת הבדיקה (Query):**
+
 ### קוד SQL
+
 ```sql
+-- BEFORE INDEX
 EXPLAIN ANALYZE
 SELECT
     e_id,
     e_name,
     e_familyname,
-    role,
-    e_id
+    e_date,
+    role
 FROM Employee
-WHERE e_id = 1;
+WHERE e_date BETWEEN '2023-01-01' AND '2023-12-31'
+ORDER BY e_date;
 
-CREATE INDEX idx_employee_department
-ON Employee(e_id);
+-- CREATE INDEX
+CREATE INDEX idx_employee_date
+ON Employee(e_date);
 
+-- AFTER INDEX
 EXPLAIN ANALYZE
 SELECT
     e_id,
     e_name,
     e_familyname,
-    role,
-    e_id
+    e_date,
+    role
 FROM Employee
-WHERE e_id = 1;
+WHERE e_date BETWEEN '2023-01-01' AND '2023-12-31'
+ORDER BY e_date;
 ```
 
 **לפני הוספת האינדקס:**  
-בתמונה ניתן לראות כי השאילתה מבוצעת באמצעות Seq Scan (סריקה מלאה של הטבלה).  
-כלומר, בסיס הנתונים עובר על כל הרשומות בטבלת Employee כדי למצוא את העובד עם e_id = 1, דבר שעלול להיות איטי כאשר הטבלה גדולה.
-![index1_before](DBProject/dbFiles/index3_before.png)
+בתמונה ניתן לראות כי PostgreSQL משתמש ב־Seq Scan (סריקה מלאה של הטבלה).
+כלומר, בסיס הנתונים עובר על כל הרשומות בטבלת Employee כדי לבדוק אילו עובדים נמצאים בטווח התאריכים המבוקש.
+![index3_before](DBProject/dbFiles/index3_before.png)
 
 **אחרי הוספת האינדקס:** 
-בתמונה ניתן לראות כי השאילתה משתמשת ב־Index Scan במקום Seq Scan.  
-במקרה זה, בסיס הנתונים נעזר באינדקס שנוצר על השדה e_id כדי לגשת ישירות לרשומה המתאימה, מבלי לסרוק את כל הטבלה. 
-![index1_after](DBProject/dbFiles/index3_after.png)
+לאחר יצירת האינדקס idx_employee_date, ניתן לראות כי PostgreSQL משתמש ב־Index Scan במקום Seq Scan.
+
+במקרה זה, בסיס הנתונים נעזר באינדקס על השדה e_date כדי להגיע ישירות לרשומות המתאימות לפי טווח התאריכים, ללא צורך בסריקה מלאה של הטבלה. 
+![index3_after](DBProject/dbFiles/index3_after.png)
 
 **הסבר תוצאה**
-לאחר יצירת האינדקס, זמן הריצה של השאילתה השתפר מאחר ובסיס הנתונים כבר לא צריך לבצע סריקה מלאה של הטבלה.
+לאחר יצירת האינדקס, זמן הריצה של השאילתה השתפר מאחר ובסיס הנתונים כבר לא צריך לבצע סריקה לאחר יצירת האינדקס, תוכנית הביצוע של PostgreSQL השתנתה מ־Sequential Scan ל־Index Scan, כלומר בסיס הנתונים החל להשתמש באינדקס כדי לבצע את החיפוש בצורה יעילה יותר.
 
-האינדקס יוצר מבנה נתונים שמאפשר גישה ישירה לערכים לפי e_id, ולכן החיפוש הופך למהיר יותר.
+במקרה זה, ההבדל בזמני הריצה אינו גדול במיוחד משום שטבלת Employee יחסית קטנה, ולכן גם סריקה מלאה מתבצעת במהירות.
 
-במקרה זה השיפור עשוי להיות קטן, מכיוון שמדובר בחיפוש לפי מפתח ייחודי (Primary Key), ולעיתים בסיס הנתונים כבר מבצע אופטימיזציה פנימית.
-
-עם זאת, בטבלאות גדולות יותר או בשדות שאינם מפתחות ראשיים, השימוש באינדקס יכול לשפר בצורה משמעותית את ביצועי השאילתות.
+עם זאת, המעבר ל־Index Scan מוכיח כי PostgreSQL משתמש באינדקס שנוצר, ובמערכות גדולות יותר עם כמויות מידע גדולות, השימוש באינדקס כזה יכול לשפר משמעותית את ביצועי השאילתות.
 </details>
 
 

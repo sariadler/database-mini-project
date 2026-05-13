@@ -1,8 +1,3 @@
--- =========================================================
--- INDEX 1
--- Improve search by supply order date
--- =========================================================
-
 -- BEFORE INDEX
 EXPLAIN ANALYZE
 SELECT
@@ -12,7 +7,7 @@ SELECT
     order_status,
     s_id
 FROM SupplyOrder
-WHERE order_date BETWEEN '2024-01-01' AND '2024-03-31'
+WHERE order_date = '2024-01-01'
 ORDER BY order_date;
 
 -- CREATE INDEX
@@ -28,7 +23,7 @@ SELECT
     order_status,
     s_id
 FROM SupplyOrder
-WHERE order_date BETWEEN '2024-01-01' AND '2024-03-31'
+WHERE order_date = '2024-01-01'
 ORDER BY order_date;
 
 
@@ -68,7 +63,7 @@ ORDER BY p_price DESC;
 
 -- =========================================================
 -- INDEX 3
--- Improve search by employee department
+-- Improve search by employee date
 -- =========================================================
 
 -- BEFORE INDEX
@@ -77,14 +72,15 @@ SELECT
     e_id,
     e_name,
     e_familyname,
-    role,
-    e_id
+    e_date,
+    role
 FROM Employee
-WHERE e_id = 1;
+WHERE e_date BETWEEN '2023-01-01' AND '2023-12-31'
+ORDER BY e_date;
 
 -- CREATE INDEX
-CREATE INDEX idx_employee_department
-ON Employee(e_id);
+CREATE INDEX idx_employee_date
+ON Employee(e_date);
 
 -- AFTER INDEX
 EXPLAIN ANALYZE
@@ -92,7 +88,8 @@ SELECT
     e_id,
     e_name,
     e_familyname,
-    role,
-    e_id
+    e_date,
+    role
 FROM Employee
-WHERE e_id = 1;
+WHERE e_date BETWEEN '2023-01-01' AND '2023-12-31'
+ORDER BY e_date;
