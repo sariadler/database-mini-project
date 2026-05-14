@@ -1213,7 +1213,7 @@ AND R_id NOT IN (
 <details>
 <summary><b>DELETE 4 –מחיקת דגמי מוצרים  ללא פעילות </b></summary>
 <br>
-</details>
+
 
 ## DELETE 4 – מחיקת דגמי מוצרים  ללא פעילות
 
@@ -1253,6 +1253,8 @@ WHERE p.p_data > '2026-01-1'
 **צילום מצב אחרי ההרצה:**
 כאן ניתן לראות את הקטלוג המעודכן – המוצרים שלא היה בהם שימוש הוסרו, ונשארו רק המוצרים הרלוונטיים לעסק.
 ![אחרי](DBProject/dbFiles/delete4_after.JPG)
+</details>
+
 </details>
 
 <details>
@@ -1368,6 +1370,10 @@ WHERE de_id = 1;
 
 ---
 
+
+<details>
+<summary><b> Constraint 1 – RawMaterial (מחיר חייב להיות חיובי)</b></summary>
+<br>
 ## 🔸 Constraint 1 – RawMaterial (מחיר חייב להיות חיובי)
 
 **הסבר:**  
@@ -1383,7 +1389,12 @@ WHERE de_id = 1;
 ![אחרי](DBProject/dbFiles/constraints_error.png)
 
 ---
+</details>
 
+
+<details>
+<summary><b> Constraint 2 – SupplyOrder (סטטוס חוקי בלבד)</b></summary>
+<br>
 ## 🔸 Constraint 2 – SupplyOrder (סטטוס חוקי בלבד)
 
 **הסבר:**  
@@ -1398,7 +1409,12 @@ WHERE de_id = 1;
 ![אחרי](DBProject/dbFiles/constraint2_error.png)
 
 ---
+</details>
 
+
+<details>
+<summary><b> Constraint 3 – Employee (תאריך לא יכול להיות בעתיד)</b></summary>
+<br>
 ## 🔸 Constraint 3 – Employee (תאריך לא יכול להיות בעתיד)
 
 **הסבר:**  
@@ -1417,12 +1433,86 @@ WHERE de_id = 1;
 
 </details>
 
+
 <details>
-<summary><b>▶ אינדקסים והשוואת ביצועים</b></summary>
+<summary><b> Constraint 4 – Product (משקל מוצר חייב להיות חיובי)</b></summary>
+<br>
+## 🔸 Constraint 4 – Product (משקל מוצר חייב להיות חיובי)
+
+
+**הסבר:**
+ בענף הנעליים, משקל המוצר הוא נתון קריטי לחישוב עלויות שילוח ולוגיסטיקה. 
+ אילוץ זה מוודא שלא יוזן מוצר עם משקל אפס או שלילי, מה שמונע טעויות אנוש בשלב הזנת הקטלוג.
+
+![אחרי](DBProject/dbFiles/constraint4.png)
+
+**בדיקת שגיאה:**
+ בוצע ניסיון להכניס מוצר עם משקל `0`. המערכת זיהתה את הפרת האילוץ וחסמה את הפעולה באופן אוטומטי.
+
+![אחרי](DBProject/dbFiles/constraint4_error.png)
+
+---
+
+</details>
+
+
+<details>
+<summary><b> Constraint 5 – Department (תקציב מינימלי למחלקה)</b></summary>
+<br>
+
+## 🔸 Constraint 5 – Department (תקציב מינימלי למחלקה)
+
+
+**הסבר:** 
+זהו אילוץ המבוסס על חוק עסקי: לכל מחלקה פעילה במפעל חייב להיות מוקצה תקציב מינימלי של לפחות 1,000 ש"ח. 
+אילוץ זה מונע יצירת מחלקות ללא תקציב תפעולי בסיסי.
+
+![אחרי](DBProject/dbFiles/constraint5.png)
+
+**בדיקת שגיאה:**
+ בוצע ניסיון להכניס מחלקה חדשה עם תקציב של `500` ש"ח. כפי שניתן לראות בהודעת השגיאה, בסיס הנתונים מנע את שמירת השורה במערכת.
+
+![אחרי](DBProject/dbFiles/constraint5_error.png)
+
+---
+</details>
+
+
+<details>
+<summary><b> Constraint 6 – Supplier (אימות פורמט טלפון)</b></summary>
+<br>
+## 🔸 Constraint 6 – Supplier (אימות פורמט טלפון)
+
+
+**הסבר:**
+ כדי לשמור על אחידות בנתוני הקשר של הספקים ולוודא שלא מוזנים מספרים חלקיים, 
+ הגדרנו אילוץ הבודק את אורך המחרוזת.
+  האילוץ מוודא שהטלפון מורכב בדיוק מ-12 תווים (כולל המקפים בפורמט הקיים בבסיס הנתונים).
+
+![אחרי](DBProject/dbFiles/constraint6.png)
+
+**בדיקת שגיאה:** 
+בוצע ניסיון לעדכן מספר טלפון לערך קצר מדי (`123-456`).
+ המערכת חסמה את העדכון והציגה שגיאת `Check Constraint`, מה שמבטיח איכות נתונים גבוהה.
+
+![אחרי](DBProject/dbFiles/constraint6_error.png)
+
+---
+</details>
+
+</details>
+
+
+
+<details>
+<summary><b>▶ INDEX-אינדקסים והשוואת ביצועים</b></summary>
 <br>
 
 ---
 
+<details>
+<summary><b>INDEX 1 – אינדקס לפי תאריך הזמנה</b></summary>
+<br>
 ## INDEX 1 – אינדקס לפי תאריך הזמנה
 
 ### מטרת האינדקס
@@ -1475,6 +1565,14 @@ ORDER BY order_date;
 **הסבר התוצאה**
 לאחר הוספת האינדקס, בסיס הנתונים יכול לאתר הזמנות לפי order_date בצורה יעילה יותר, במקום לסרוק את כל הטבלה.
 
+</details>
+
+
+
+<details>
+<summary><b>INDEX 2 – אינדקס לפי מחיר מוצר</b></summary>
+<br>
+
 ## INDEX 2 – אינדקס לפי מחיר מוצר
 
 ### מטרת האינדקס
@@ -1520,6 +1618,14 @@ ORDER BY p_price DESC;
 **הסבר תוצאה**
 האינדקס מאפשר חיפוש ומיון מהירים יותר לפי מחיר, במיוחד כאשר מספר הרשומות גדול.
 
+
+</details>
+
+
+
+<details>
+<summary><b> אינדקס 3: ייעול חיפוש עובדים לפי תאריך (Employee Date)</b></summary>
+<br>
 
 ### אינדקס 3: ייעול חיפוש עובדים לפי תאריך (Employee Date)
 
@@ -1585,4 +1691,179 @@ ORDER BY e_date;
 </details>
 
 
+
+<details>
+<summary><b> INDEX 4:  שיפור מהירות החיפוש לפי שם חברת הספק</b></summary>
+<br>
+
+## INDEX 4 – אינדקס לפי שם חברת הספק
+
+###  מוטיבציה ותועלת
+
+
+המערכת מבצעת חיפושים תכופים אחר ספקים ספציפיים לצורך ניהול הזמנות מלאי.
+ ללא אינדקס, בסיס הנתונים נדרש לבצע סריקה מלאה של טבלת `Supplier`
+ . הוספת אינדקס על השדה `Company_Name` מאפשרת איתור מיידי של הספק, מה שחיוני לניהול יעיל של שרשרת האספקה.
+
+---
+
+### קוד SQL
+```sql
+-- BEFORE INDEX
+EXPLAIN ANALYZE
+SELECT * FROM Supplier WHERE Company_Name LIKE 'S%';
+
+-- CREATE INDEX
+CREATE INDEX idx_supplier_name ON Supplier(Company_Name);
+
+-- AFTER INDEX
+EXPLAIN ANALYZE
+SELECT * FROM Supplier WHERE Company_Name LIKE 'S%';
+```
+
+**לפני הוספת האינדקס:**  
+בתמונה ניתן לראות כי PostgreSQL משתמש ב־Seq Scan (סריקה מלאה של הטבלה).
+כלומר, בסיס הנתונים עובר על כל הרשומות בטבלת Supplier כדי למצוא את הספק הספציפי.
+
+![index4_before](DBProject/dbFiles/index4_before.png)
+
+**הרצת הפקודה ליצירת אאינקס**
+![index4_now](DBProject/dbFiles/index4_now.png)
+
+**אחרי הוספת האינדקס:** 
+לאחר יצירת האינדקס idx_supplier_name, ניתן לראות כי PostgreSQL משתמש ב־Index Scan במקום Seq Scan.
+
+במקרה זה, בסיס הנתונים נעזר באינדקס על השדה Company_Name כדי להגיע ישירות לרשומה המתאימה, ללא צורך בסריקה מלאה של הטבלה.
+
+![index4_after](DBProject/dbFiles/index4_after.png)
+
+**הסבר תוצאה**
+לאחר יצירת האינדקס, זמן הריצה של השאילתה השתפר מאחר ובסיס הנתונים כבר לא צריך לבצע סריקה לאחר יצירת האינדקס, תוכנית הביצוע של PostgreSQL השתנתה מ־Sequential Scan ל־Index Scan, כלומר בסיס הנתונים החל להשתמש באינדקס כדי לבצע את החיפוש בצורה יעילה יותר.
+
+במקרה זה, המעבר ל־Index Scan מוכיח כי PostgreSQL משתמש באינדקס שנוצר, ובמערכות גדולות יותר עם כמויות מידע גדולות, השימוש באינדקס כזה יכול לשפר משמעותית את ביצועי השאילתות.
+</details>
+
+
+
+
+<details>
+<summary><b> INDEX 5:  ייעול סינון מוצרים לפי משקל </b></summary>
+<br>
+
+## INDEX 5 – ייעול סינון מוצרים לפי משקל 
+
+
+
+###  מוטיבציה ותועלת
+  
+המערכת מבצעת חיפושים תכופים אחר מוצרים בטווחי משקל ספציפיים לצורך ניהול לוגיסטיקה ומשלוחים.
+ללא אינדקס, בסיס הנתונים נדרש לבצע סריקה מלאה של טבלת Product.
+ הוספת אינדקס על השדה p_weight מאפשרת איתור מיידי של המוצרים הרלוונטיים,
+  מה שחיוני לניהול יעיל של שרשרת האספקה.
+
+
+---
+
+### קוד SQL
+```sql
+
+-- BEFORE INDEX
+EXPLAIN ANALYZE
+SELECT * FROM Product 
+WHERE p_weight > 500;
+
+-- CREATE INDEX
+CREATE INDEX idx_product_weight 
+ON Product(p_weight);
+
+-- AFTER INDEX
+EXPLAIN ANALYZE
+SELECT * FROM Product 
+WHERE p_weight > 500;
+```
+
+**לפני הוספת האינדקס:**  
+בתמונה ניתן לראות כי PostgreSQL משתמש ב־Seq Scan (סריקה מלאה של הטבלה).
+כלומר, בסיס הנתונים עובר על כל הרשומות בטבלת Product כדי לבדוק אילו מוצרים עומדים בתנאי המשקל.
+
+
+![index5_before](DBProject/dbFiles/index5_before.png)
+
+**הרצת הפקודה ליצירת אאינקס**
+![index5_now](DBProject/dbFiles/index5_now.png)
+
+**אחרי הוספת האינדקס:** 
+לאחר יצירת האינדקס idx_product_weight, ניתן לראות כי PostgreSQL משתמש ב־Index Scan במקום Seq Scan.
+
+במקרה זה, בסיס הנתונים נעזר באינדקס על השדה p_weight כדי להגיע ישירות לרשומות המתאימות, ללא צורך בסריקה מלאה של הטבלה.
+
+![index5_after](DBProject/dbFiles/index5_after.png)
+
+**הסבר תוצאה**
+לאחר יצירת האינדקס, זמן הריצה של השאילתה השתפר מאחר ובסיס הנתונים כבר לא צריך לבצע סריקה לאחר יצירת האינדקס, תוכנית הביצוע של PostgreSQL השתנתה מ־Sequential Scan ל־Index Scan, כלומר בסיס הנתונים החל להשתמש באינדקס כדי לבצע את החיפוש בצורה יעילה יותר.
+
+במקרה זה, המעבר ל־Index Scan מוכיח כי PostgreSQL משתמש באינדקס שנוצר, ובמערכות גדולות יותר עם כמויות מידע גדולות, השימוש באינדקס כזה יכול לשפר משמעותית את ביצועי השאילתות.
+</details>
+
+
+
+
+<details>
+<summary><b> INDEX 6:  איתור מהיר של מלאי חומרי גלם</b></summary>
+<br>
+
+## INDEX 6 – איתור מהיר של מלאי חומרי גלם
+
+
+
+###  מוטיבציה ותועלת
+  
+המערכת מבצעת חיפושים תכופים אחר חומרי גלם עם כמות מלאי נמוכה לצורך חידוש הזמנות.
+ללא אינדקס, בסיס הנתונים נדרש לבצע סריקה מלאה של טבלת RawMaterial.
+הוספת אינדקס על השדה Stock_Quantity מאפשרת איתור מיידי של החוסרים, מה שחיוני לניהול יעיל של שרשרת האספקה.
+
+---
+
+### קוד SQL
+```sql
+-- BEFORE INDEX
+EXPLAIN ANALYZE
+SELECT * FROM RawMaterial 
+WHERE Stock_Quantity < 100;
+
+-- CREATE INDEX
+CREATE INDEX idx_rawmaterial_stock 
+ON RawMaterial(Stock_Quantity);
+
+-- AFTER INDEX
+EXPLAIN ANALYZE
+SELECT * FROM RawMaterial 
+WHERE Stock_Quantity < 100;
+```
+
+
+**לפני הוספת האינדקס:**  
+בתמונה ניתן לראות כי PostgreSQL משתמש ב־Seq Scan (סריקה מלאה של הטבלה).
+כלומר, בסיס הנתונים עובר על כל הרשומות בטבלת RawMaterial כדי לבדוק אילו חומרים נמצאים מתחת לסף המלאי.
+
+![index6_before](DBProject/dbFiles/index6_before.png)
+
+**הרצת הפקודה ליצירת אאינקס**
+![index6_now](DBProject/dbFiles/index6_now.png)
+
+**אחרי הוספת האינדקס:** 
+לאחר יצירת האינדקס idx_rawmaterial_stock, ניתן לראות כי PostgreSQL משתמש ב־Index Scan במקום Seq Scan.
+
+במקרה זה, בסיס הנתונים נעזר באינדקס על השדה Stock_Quantity כדי להגיע ישירות לרשומות המתאימות, ללא צורך בסריקה מלאה של הטבלה
+
+![index6_after](DBProject/dbFiles/index6_after.png)
+
+**הסבר תוצאה**
+
+לאחר יצירת האינדקס, זמן הריצה של השאילתה השתפר מאחר ובסיס הנתונים כבר לא צריך לבצע סריקה לאחר יצירת האינדקס, תוכנית הביצוע של PostgreSQL השתנתה מ־Sequential Scan ל־Index Scan, כלומר בסיס הנתונים החל להשתמש באינדקס כדי לבצע את החיפוש בצורה יעילה יותר.
+
+במקרה זה, המעבר ל־Index Scan מוכיח כי PostgreSQL משתמש באינדקס שנוצר, ובמערכות גדולות יותר עם כמויות מידע גדולות, השימוש באינדקס כזה יכול לשפר משמעותית את ביצועי השאילתות.
+</details>
+
+</details>
 
