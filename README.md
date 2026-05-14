@@ -1267,14 +1267,14 @@ WHERE p.p_data > '2026-01-1'
 
 ### קוד SQL
 ```sql
+SELECT *
+FROM rawmaterial
+WHERE r_id = 5002;
+
 BEGIN;
 
 UPDATE rawmaterial
 SET r_price = r_price + 11
-WHERE r_id = 5002;
-
-SELECT *
-FROM rawmaterial
 WHERE r_id = 5002;
 
 ROLLBACK;
