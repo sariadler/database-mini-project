@@ -2048,3 +2048,145 @@ stageC/Integrate.sql
 בוצעה הוספת העמודה `model_id` לטבלת `Product`, ולאחר מכן הוגדר Foreign Key המקשר בין `Product` לבין `Model`.
 
 ![product model integration](./DBProject/dbFiles/product_model.jpeg)
+
+---
+
+#### יצירת טבלת Collection
+
+במסגרת האינטגרציה נוספה הטבלה `collection`, המייצגת קולקציות של דגמים במערכת החדשה.
+
+הטבלה כוללת מזהה ייחודי `collection_id`, שם קולקציה, עונה, שנה ותאריך יציאה.
+
+![create collection](./DBProject/dbFiles/create_collection.jpeg)
+
+---
+
+#### יצירת טבלת Model
+
+נוספה הטבלה `model`, המייצגת דגם של מוצר.
+
+הטבלה כוללת פרטים כגון שם הדגם, סוג הבגד, זמן עבודה, תיאור בפורמט JSON, וקישור לקולקציה באמצעות `collection_id`.
+
+![create model](./DBProject/dbFiles/create_model.jpeg)
+
+---
+
+#### הוספת תכונות חדשות לטבלת Product
+
+כדי להתאים את טבלת `product` ל־ERD המשולב, נוספו לה תכונות נוספות:
+
+- `size` – מידת המוצר
+- `quality_score` – ציון איכות של המוצר
+
+תכונות אלו נוספו באמצעות פקודות `ALTER TABLE`, מבלי ליצור מחדש את הטבלה.
+
+![add product size](./DBProject/dbFiles/add_product_size.jpeg)
+
+![add product quality score](./DBProject/dbFiles/add_product_quality_score.jpeg)
+
+---
+
+#### הוספת תכונות חדשות לטבלת RawMaterial
+
+לטבלת `rawmaterial` נוספו תכונות חדשות כדי לשלב מידע שהופיע באגף שהתקבל:
+
+- `color` – צבע חומר הגלם
+- `properties_json` – מאפיינים נוספים בפורמט JSON
+
+![add rawmaterial columns](./DBProject/dbFiles/add_rawmaterial_columns.jpeg)
+
+---
+
+#### הוספת תכונות חדשות לטבלת Employee
+
+לטבלת `employee` נוספו התכונות:
+
+- `employee_phone` – מספר טלפון של העובד
+- `salary` – שכר העובד
+
+הוספת התכונות בוצעה באמצעות `ALTER TABLE`, בהתאם להנחיה שלא ליצור מחדש טבלאות קיימות.
+
+![add employee columns](./DBProject/dbFiles/add_employee_columns.jpeg)
+
+---
+
+#### הוספת תכונה לטבלת Supplier
+
+לטבלת `supplier` נוספה התכונה `rating`, המייצגת דירוג של הספק.
+
+![add supplier rating](./DBProject/dbFiles/add_supplier_rating.jpeg)
+
+---
+
+#### יצירת טבלת Required_M
+
+נוצרה טבלת הקשר `required_m`, המייצגת קשר Many-to-Many בין `model` לבין `rawmaterial`.
+
+הטבלה כוללת:
+
+- `model_id`
+- `r_id`
+- `amount`
+
+כלומר, עבור כל דגם ניתן לשמור אילו חומרי גלם נדרשים עבורו ובאיזו כמות.
+
+![create required_m](./DBProject/dbFiles/create_required_m.jpeg)
+
+---
+
+#### הוספת Foreign Key בין Model ל־Collection
+
+לאחר יצירת הטבלאות, נוסף קשר בין `model` לבין `collection`.
+
+הקשר מבטא שכל דגם שייך לקולקציה מסוימת.
+
+![model collection fk](./DBProject/dbFiles/model_collection_fk.jpeg)
+
+---
+
+#### הוספת Foreign Key בין SupplyOrder ל־Supplier
+
+נוסף קשר בין `supplyorder` לבין `supplier`, כך שכל הזמנת אספקה מקושרת לספק שממנו בוצעה ההזמנה.
+
+![supplyorder supplier fk](./DBProject/dbFiles/supplyorder_supplier_fk.jpeg)
+
+---
+
+## בדיקת תקינות מפתחות וקשרים לאחר האינטגרציה
+
+לאחר סיום פקודות האינטגרציה, בוצעה בדיקה של כלל המפתחות הזרים במערכת המשולבת.
+
+מטרת הבדיקה הייתה לוודא שכל הקשרים שהוגדרו ב־ERD המשולב אכן קיימים בפועל במסד הנתונים.
+
+```sql
+SELECT
+    tc.table_name AS table_name,
+    kcu.column_name AS column_name,
+    ccu.table_name AS referenced_table,
+    ccu.column_name AS referenced_column,
+    tc.constraint_name AS constraint_name
+FROM information_schema.table_constraints AS tc
+JOIN information_schema.key_column_usage AS kcu
+    ON tc.constraint_name = kcu.constraint_name
+JOIN information_schema.constraint_column_usage AS ccu
+    ON ccu.constraint_name = tc.constraint_name
+WHERE tc.constraint_type = 'FOREIGN KEY'
+  AND tc.table_schema = 'public'
+ORDER BY tc.table_name, kcu.column_name;
+
+```
+הבדיקה הראתה שכל קשרי ה־Foreign Key קיימים ופועלים בהתאם ל־ERD המשולב.
+
+## הוספת טבלת Works_On
+
+במסגרת האינטגרציה נוספה טבלת הקשר `works_on`, המייצגת קשר Many-to-Many בין `employee` לבין `model`.
+
+הטבלה כוללת:
+
+- `e_id`
+- `model_id`
+- `hour`
+
+וכן מפתחות זרים לטבלאות `employee` ו־`model`.
+
+![works on fk check](./DBProject/dbFiles/works_on_fk_check.png)

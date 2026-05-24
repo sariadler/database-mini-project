@@ -1,20 +1,18 @@
 -- =========================================================
 -- Stage C - Integration
--- This file contains the SQL commands used to integrate
--- the original database with the received department database.
--- Existing tables are not recreated. Instead, we add only the
--- missing tables, columns, and relationships needed for integration.
+-- Existing tables are not recreated.
+-- Only missing tables, columns and relationships are added.
 -- =========================================================
 
 
 -- =========================================================
 -- 1. Add Collection table
 -- =========================================================
-CREATE TABLE IF NOT EXISTS Collection (
-    collection_id INT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS collection (
+    collection_id INTEGER PRIMARY KEY,
     collection_name VARCHAR(100),
     season VARCHAR(50),
-    year INT,
+    year INTEGER,
     release_date DATE
 );
 
@@ -22,81 +20,135 @@ CREATE TABLE IF NOT EXISTS Collection (
 -- =========================================================
 -- 2. Add Model table
 -- =========================================================
-CREATE TABLE IF NOT EXISTS Model (
-    model_id INT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS model (
+    model_id INTEGER PRIMARY KEY,
     model_name VARCHAR(100),
+    work_time DOUBLE PRECISION,
     clothing_type VARCHAR(50),
     description_json JSON,
-    work_time DOUBLE PRECISION,
-    collection_id INT,
-    FOREIGN KEY (collection_id) REFERENCES Collection(collection_id)
+    collection_id INTEGER
 );
+
+
+ALTER TABLE model
+DROP CONSTRAINT IF EXISTS fk_model_collection;
+
+ALTER TABLE model
+ADD CONSTRAINT fk_model_collection
+FOREIGN KEY (collection_id)
+REFERENCES collection(collection_id);
 
 
 -- =========================================================
 -- 3. Connect Product to Model
 -- =========================================================
-ALTER TABLE Product
-ADD COLUMN IF NOT EXISTS model_id INT;
+ALTER TABLE product
+ADD COLUMN IF NOT EXISTS model_id INTEGER;
 
+ALTER TABLE product
+DROP CONSTRAINT IF EXISTS fk_product_model;
 
--- Add foreign key from Product to Model
-ALTER TABLE Product
+ALTER TABLE product
 ADD CONSTRAINT fk_product_model
 FOREIGN KEY (model_id)
-REFERENCES Model(model_id);
+REFERENCES model(model_id);
 
 
 -- =========================================================
--- 4. Add Required table
--- This table represents a many-to-many relationship
+-- 4. Add columns to Product
 -- =========================================================
-CREATE TABLE IF NOT EXISTS Required (
-    model_id INT,
-    r_id INT,
+ALTER TABLE product
+ADD COLUMN IF NOT EXISTS size VARCHAR(10);
+
+ALTER TABLE product
+ADD COLUMN IF NOT EXISTS quality_score INTEGER;
+
+
+-- =========================================================
+-- 5. Add columns to RawMaterial
+-- =========================================================
+ALTER TABLE rawmaterial
+ADD COLUMN IF NOT EXISTS color VARCHAR(50);
+
+ALTER TABLE rawmaterial
+ADD COLUMN IF NOT EXISTS properties_json JSON;
+
+
+-- =========================================================
+-- 6. Add columns to Employee
+-- =========================================================
+ALTER TABLE employee
+ADD COLUMN IF NOT EXISTS employee_phone VARCHAR(20);
+
+ALTER TABLE employee
+ADD COLUMN IF NOT EXISTS salary DOUBLE PRECISION;
+
+
+-- =========================================================
+-- 7. Add column to Supplier
+-- =========================================================
+ALTER TABLE supplier
+ADD COLUMN IF NOT EXISTS rating INTEGER;
+
+
+-- =========================================================
+-- 8. Add Required_M table
+-- Model uses raw materials
+-- =========================================================
+CREATE TABLE IF NOT EXISTS required_m (
+    model_id INTEGER,
+    r_id INTEGER,
     amount DOUBLE PRECISION,
+
     PRIMARY KEY (model_id, r_id),
-    FOREIGN KEY (model_id) REFERENCES Model(model_id),
-    FOREIGN KEY (r_id) REFERENCES RawMaterial(r_id)
+
+    CONSTRAINT fk_required_m_model
+        FOREIGN KEY (model_id)
+        REFERENCES model(model_id),
+
+    CONSTRAINT fk_required_m_rawmaterial
+        FOREIGN KEY (r_id)
+        REFERENCES rawmaterial(r_id)
 );
 
 
 -- =========================================================
--- 5. Add Works_On table
--- This table represents a many-to-many relationship
+-- 9. Add Works_On table
+-- Employee works on Model
 -- =========================================================
-CREATE TABLE IF NOT EXISTS Works_On (
-    employee_id INT,
-    model_id INT,
-    hours DOUBLE PRECISION,
-    PRIMARY KEY (employee_id, model_id),
-    FOREIGN KEY (employee_id) REFERENCES Employee(e_id),
-    FOREIGN KEY (model_id) REFERENCES Model(model_id)
+CREATE TABLE IF NOT EXISTS works_on (
+    e_id INTEGER,
+    model_id INTEGER,
+    hour DOUBLE PRECISION,
+
+    PRIMARY KEY (e_id, model_id),
+
+    CONSTRAINT fk_works_on_employee
+        FOREIGN KEY (e_id)
+        REFERENCES employee(e_id),
+
+    CONSTRAINT fk_works_on_model
+        FOREIGN KEY (model_id)
+        REFERENCES model(model_id)
 );
 
 
 -- =========================================================
--- 6. Add Supplied_By table
+-- 10. Add Supplied_By table
+-- Supplier supplies RawMaterial
 -- =========================================================
-CREATE TABLE IF NOT EXISTS Supplied_By (
-    supplier_id INT,
-    r_id INT,
+CREATE TABLE IF NOT EXISTS supplied_by (
+    supplier_id INTEGER,
+    r_id INTEGER,
     unit_price DOUBLE PRECISION,
+
     PRIMARY KEY (supplier_id, r_id),
-    FOREIGN KEY (supplier_id) REFERENCES Supplier(s_id),
-    FOREIGN KEY (r_id) REFERENCES RawMaterial(r_id)
+
+    CONSTRAINT fk_supplied_by_supplier
+        FOREIGN KEY (supplier_id)
+        REFERENCES supplier(s_id),
+
+    CONSTRAINT fk_supplied_by_rawmaterial
+        FOREIGN KEY (r_id)
+        REFERENCES rawmaterial(r_id)
 );
-
-
--- =========================================================
--- 7. Verify that data exists in the integrated database
--- =========================================================
-SELECT COUNT(*) AS total_collections FROM Collection;
-SELECT COUNT(*) AS total_models FROM Model;
-SELECT COUNT(*) AS total_products FROM Product;
-SELECT COUNT(*) AS total_raw_materials FROM RawMaterial;
-SELECT COUNT(*) AS total_suppliers FROM Supplier;
-SELECT COUNT(*) AS total_employees FROM Employee;
-SELECT COUNT(*) AS total_required FROM Required;
-SELECT COUNT(*) AS total_works_on_model FROM Works_On_Model;
-SELECT COUNT(*) AS total_supplied_by FROM Supplied_By;
