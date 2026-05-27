@@ -5,6 +5,23 @@
 -- =========================================================
 
 
+-- 1. תיקון מבני (שלב קריטי):
+-- בגיבוי של המרצה הטבלה נקראת 'material' והעמודה המזהה נקראת 'material_id'.
+-- אנחנו משנים אותן לשמות שסיכמתן עליהן ('rawmaterial' ו-'r_id') כדי שכל הקוד יתחבר.
+DO $$ 
+BEGIN
+    -- שינוי שם הטבלה
+    IF EXISTS (SELECT FROM pg_tables WHERE tablename = 'material') THEN
+        ALTER TABLE public.material RENAME TO rawmaterial;
+    END IF;
+
+    -- שינוי שם העמודה המזהה בתוך הטבלה
+    IF EXISTS (SELECT 1 FROM information_schema.columns 
+               WHERE table_name='rawmaterial' AND column_name='material_id') THEN
+        ALTER TABLE public.rawmaterial RENAME COLUMN material_id TO r_id;
+    END IF;
+END $$;
+
 -- =========================================================
 -- 1. Add Collection table
 -- =========================================================

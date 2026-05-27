@@ -1869,15 +1869,33 @@ WHERE Stock_Quantity < 100;
 
 ---
 
+
+
+
+
+<details>
+<summary><b> # שלב ג – אינטגרציה ומבטים</b></summary>
+<br>
+
+
 # שלב ג – אינטגרציה ומבטים
+
+
+<details>
+<summary><b> ## פתיחת שלב ג'</b></summary>
+<br>
 
 ## פתיחת שלב ג'
 
 בשלב זה ביצענו אינטגרציה בין בסיס הנתונים המקורי של הפרויקט שלנו לבין בסיס נתונים נוסף שקיבלנו מגיבוי של אגף אחר.
 
 מטרת השלב היא להבין את מבנה בסיס הנתונים שקיבלנו, לבצע עליו הינדוס לאחור (Reverse Engineering), לבנות עבורו תרשים ERD, ולאחר מכן לשלב אותו עם ה־ERD המקורי שלנו למערכת אחת משותפת.
+</details>
 
 ---
+<details>
+<summary><b> ## יצירת DSD לאגף שהתקבל</b></summary>
+<br>
 
 ## יצירת DSD לאגף שהתקבל
 
@@ -1887,7 +1905,13 @@ WHERE Stock_Quantity < 100;
 
 ![DSD of received department](./DBProject/dbFiles/dsd.jpeg)
 
+
+</details>
+
 ---
+<details>
+<summary><b> ## הינדוס לאחור – Reverse Engineering</b></summary>
+<br>
 
 ## הינדוס לאחור – Reverse Engineering
 
@@ -1971,8 +1995,13 @@ WHERE Stock_Quantity < 100;
 
 ![ERD of received department](./DBProject/dbFiles/erdplus_new.png)
 
----
 
+</details>
+
+---
+<details>
+<summary><b> ## אינטגרציה בין המערכות ועיצוב ERD משותף</b></summary>
+<br>
 ## אינטגרציה בין המערכות ועיצוב ERD משותף
 
 בשלב זה בוצעה אינטגרציה בין בסיס הנתונים המקורי של הפרויקט לבין בסיס הנתונים שהתקבל מהאגף הנוסף.
@@ -2015,7 +2044,12 @@ WHERE Stock_Quantity < 100;
 
 ישויות אלו נוספו למערכת מכיוון שהן מייצגות מידע חדש שלא היה קיים בבסיס הנתונים המקורי.
 
+</details>
+
 ---
+<details>
+<summary><b> ## הפקת הסכמה החדשה מתוך ה־ERD המשולב</b></summary>
+<br>
 
 ## הפקת הסכמה החדשה מתוך ה־ERD המשולב
 
@@ -2150,7 +2184,12 @@ stageC/Integrate.sql
 
 ![supplyorder supplier fk](./DBProject/dbFiles/supplyorder_supplier_fk.jpeg)
 
+</details>
+
 ---
+<details>
+<summary><b> ## בדיקת תקינות מפתחות וקשרים לאחר האינטגרציה</b></summary>
+<br>
 
 ## בדיקת תקינות מפתחות וקשרים לאחר האינטגרציה
 
@@ -2190,3 +2229,101 @@ ORDER BY tc.table_name, kcu.column_name;
 וכן מפתחות זרים לטבלאות `employee` ו־`model`.
 
 ![works on fk check](./DBProject/dbFiles/works_on_fk_check.png)
+
+</details>
+
+---
+<details>
+<summary><b>7. יצירת מבטים (Views)</b></summary>
+
+### מבט 1: אגף עיצוב וייצור (המקורי)
+מבט זה מציג את דגמי הנעליים שאנו מעצבים ואת חומרי הגלם הנדרשים לכל דגם, כדי שנוכל לנהל את מפרטי הייצור בצורה מדויקת וריכוזית. המבט משלב את הטבלאות 
+`model`, `required_m` ו-`rawmaterial`.
+
+**קוד יצירת המבט:**
+```sql
+CREATE OR REPLACE VIEW view_design_production_status AS
+SELECT
+    m.model_name,
+    m.clothing_type,
+    r.r_id,
+    r.color,
+    rm.amount
+FROM model m
+JOIN required_m rm ON m.model_id = rm.model_id
+JOIN rawmaterial r ON rm.r_id = r.r_id;
+```
+![VIEW1 ](DBProject/dbFiles/view_design_production_status1.JPG)
+
+## מבט 2: אגף סחר ורכש (האגף שקיבלנו)
+מבט זה מאפשר לקשר בין ספקים לבין חומרי הגלם שהם מספקים והעלויות שלהם, לצורך ניהול רכש חכם וחיסכון בעלויות עבור הארגון. המבט משלב את הטבלאות 
+supplier, supplied_by ו-rawmaterial.
+
+
+**קוד יצירת המבט:**
+```sql
+CREATE OR REPLACE VIEW view_procurement_suppliers AS
+SELECT
+    s.supplier_name,
+    s.rating,
+    r.r_id,
+    sb.unit_price
+FROM supplier s
+JOIN supplied_by sb ON s.supplier_id = sb.supplier_id
+JOIN rawmaterial r ON sb.material_id = r.r_id;
+```
+![VIEW2 ](DBProject/dbFiles/view_design_production_status2.JPG)
+
+</details>
+
+---
+<details>
+<summary><b> שאילתות על המבטים</b></summary>
+
+## שאילתות על המבטים
+לכל מבט הגדרנו 2 שאילתות בעלות משמעות עסקית לניתוח הנתונים.
+
+
+
+### שאילתות על view_design_production_status:
+חיפוש דגם ספציפי:**  בדיקת רשימת חומרי הגלם הנדרשים עבור דגם מסוים**
+
+```sql
+SELECT * 
+FROM view_design_production_status 
+WHERE model_name = 'Silk Flow Dress';
+```
+![VIEW2 ](DBProject/dbFiles/view_procurement_suppliers1.1.JPG)
+
+סינון דגמים מורכבים:** שליפת דגמים שדורשים כמות גדולה (מעל 5 יחידות) של חומר גלם **
+מסוים לצורך תעדוף ייצור.
+
+```sql
+SELECT *
+FROM view_design_production_status
+WHERE amount > 5;
+```
+![VIEW2 ](DBProject/dbFiles/view_procurement_suppliers1.2.JPG)
+
+
+### שאילתות על view_procurement_suppliers:
+איתור ספקים איכותיים וזולים:** שליפת ספקים עם דירוג גבוה (מעל 4) שמציעים מחיר יחידה אטרקטיבי (מתחת ל-20)**
+```sql
+SELECT * 
+FROM view_procurement_suppliers
+WHERE rating > 4 
+AND unit_price < 20;
+```
+![VIEW2 ](DBProject/dbFiles/view_procurement_suppliers2.1.JPG)
+
+ניתוח עלויות מינימליות:** השוואת מחירי חומרי הגלם בין הספקים השונים כדי למצוא את העסקה הטובה ביותר עבור כל רכיב**
+```sql
+SELECT r_id, MIN(unit_price)
+FROM view_procurement_suppliers
+GROUP BY r_id;
+```
+![VIEW2 ](DBProject/dbFiles/view_procurement_suppliers2.2.JPG)
+
+</details>
+
+</details>
