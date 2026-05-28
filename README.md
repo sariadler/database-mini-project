@@ -2018,6 +2018,7 @@ WHERE Stock_Quantity < 100;
 ![Final Integrated DSD](./DBProject/dbFiles/DSDSchemaLEVEL3.JPG)
 
 </details>
+
 ---
 
 <details>
