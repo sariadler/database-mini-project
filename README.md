@@ -1875,13 +1875,6 @@ WHERE Stock_Quantity < 100;
 # שלב ג – אינטגרציה ומבטים
 
 <details>
-<summary><b> # שלב ג – אינטגרציה ומבטים</b></summary>
-<br>
-
-
-
-
-<details>
 <summary><b>  פתיחת שלב ג'</b></summary>
 <br>
 
@@ -2013,9 +2006,11 @@ WHERE Stock_Quantity < 100;
 
 <details>
 <summary><b>  Final Integrated DSD</b></summary>
-<br
+<br>
 
 ###  Final Integrated DSD
+
+
 זהו תרשים המבנה הפיזי (DSD) של בסיס הנתונים לאחר אינטגרציה מלאה של כל האגפים.
 
 ![Final Integrated DSD](./DBProject/dbFiles/DSDSchemaLEVEL3.JPG)
@@ -2246,13 +2241,14 @@ ORDER BY tc.table_name, kcu.column_name;
 
 ---
 <details>
-<summary><b>יצירת מבטים (Views) ושאילתות על המבטים</b></summary>
+<summary><b>יצירת מבטים (Views) </b></summary>
 
 ## יצירת מבטים (Views)
 
 ### מבט 1: אגף עיצוב וייצור
-מבט זה מציג את דגמי הנעליים ואת חומרי הגלם הנדרשים לכל דגם.
-`model`, `required_m` ו-`rawmaterial`.
+מבט זה מציג את דגמי הנעליים וחומרי הגלם הנדרשים לכל דגם, כדי לנהל מפרטי ייצור במרוכז. 
+המבט משלב את הטבלאות 
+`model`, `required_m` ו-`rawmaterial`..
 
 **קוד יצירת המבט:**
 
@@ -2314,7 +2310,7 @@ WHERE model_name = 'Silk Flow Dress';
 ```
 
 
-![VIEW2 ](DBProject/dbFiles/view_procurement_suppliers1.1.JPG)
+![VIEW2 ](DBProject/dbFiles/view_design_production_statu1.1.JPG)
 
 **סינון דגמים מורכבים:**
  שליפת דגמים שדורשים כמות גדולה (מעל 5 יחידות) של חומר גלם 
@@ -2327,7 +2323,7 @@ WHERE amount > 5;
 ```
 
 
-![VIEW2 ](DBProject/dbFiles/view_procurement_suppliers1.2.JPG)
+![VIEW2 ](DBProject/dbFiles/view_design_production_statu1.2.JPG)
 
 
 ### שאילתות על view_procurement_suppliers:
