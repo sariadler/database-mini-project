@@ -2004,6 +2004,8 @@ WHERE Stock_Quantity < 100;
 ![Integrated ERD](./DBProject/dbFiles/erdplus_integration.png)
 </details>
 
+---
+
 <details>
 <summary><b>  Final Integrated DSD</b></summary>
 <br>
@@ -2016,7 +2018,7 @@ WHERE Stock_Quantity < 100;
 ![Final Integrated DSD](./DBProject/dbFiles/DSDSchemaLEVEL3.JPG)
 
 </details>
-
+---
 
 <details>
 <summary><b>   החלטות שהתקבלו בשלב האינטגרציה</b></summary>
