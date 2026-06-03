@@ -2295,6 +2295,32 @@ JOIN rawmaterial r ON sb.material_id = r.r_id;
 ```
 ![VIEW2 ](DBProject/dbFiles/view_design_production_status2.JPG)
 
+## מבט 3: ניהול דגמים וקולקציות
+
+מבט זה מציג את הדגמים יחד עם הקולקציה שאליה כל דגם שייך.  
+המבט מאפשר לעקוב אחר הדגמים לפי שם קולקציה, עונה, שנה ותאריך יציאה, וכך להבין אילו פריטים מתוכננים לכל קו עיצובי בארגון.
+
+המבט משלב את הטבלאות  
+`model` ו-`collection`.
+
+**קוד יצירת המבט:**
+
+```sql
+CREATE OR REPLACE VIEW view_models_collections AS
+SELECT
+    m.model_id,
+    m.model_name,
+    m.clothing_type,
+    m.work_time,
+    c.collection_id,
+    c.collection_name,
+    c.season,
+    c.year,
+    c.release_date
+FROM model m
+JOIN collection c ON m.collection_id = c.collection_id;
+```
+
 </details>
 
 ---
@@ -2318,7 +2344,7 @@ WHERE model_name = 'Silk Flow Dress';
 ```
 
 
-![VIEW2 ](DBProject/dbFiles/view_design_production_statu1.1.JPG)
+![VIEW2 ](DBProject/dbFiles/select1_view1.png)
 
 **סינון דגמים מורכבים:**
  שליפת דגמים שדורשים כמות גדולה (מעל 5 יחידות) של חומר גלם 
@@ -2331,7 +2357,7 @@ WHERE amount > 5;
 ```
 
 
-![VIEW2 ](DBProject/dbFiles/view_design_production_statu1.2.JPG)
+![VIEW2 ](DBProject/dbFiles/select2_view1.png)
 
 
 ### שאילתות על view_procurement_suppliers:
@@ -2360,6 +2386,40 @@ GROUP BY r_id;
 
 
 ![VIEW2 ](DBProject/dbFiles/view_procurement_suppliers2.2.JPG)
+
+### שאילתות על view_models_collections:
+
+**הצגת דגמים לפי קולקציה מסוימת:**  
+שאילתה זו מציגה את כל הדגמים ששייכים לקולקציה מסוימת.  
+במקרה זה בחרנו להציג את הדגמים ששייכים לקולקציית `Summer Breeze`, כדי לראות אילו פריטים מתוכננים לקולקציה זו לפי סוג פריט, עונה ושנה.
+
+```sql
+SELECT
+    model_name,
+    clothing_type,
+    collection_name,
+    season,
+    year
+FROM view_models_collections
+WHERE collection_name = 'Summer Breeze';
+```
+![VIEW3_QUERY1](DBProject/dbFiles/select1_view3.png)
+
+**חישוב מספר הדגמים בכל קולקציה:**
+שאילתה זו סופרת כמה דגמים קיימים בכל קולקציה, לפי שם הקולקציה, העונה והשנה.
+השאילתה מאפשרת לקבל תמונה ניהולית על היקף העבודה בכל קולקציה, ולראות אילו קולקציות כוללות יותר דגמים.
+
+```sql
+SELECT
+    collection_name,
+    season,
+    year,
+    COUNT(model_id) AS total_models
+FROM view_models_collections
+GROUP BY collection_name, season, year
+ORDER BY year DESC, total_models DESC;
+```
+![VIEW3_QUERY1](DBProject/dbFiles/select2_view3.png)
 
 </details>
 

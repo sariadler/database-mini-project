@@ -53,7 +53,7 @@ DROP CONSTRAINT IF EXISTS fk_model_collection;
 ALTER TABLE model
 ADD CONSTRAINT fk_model_collection
 FOREIGN KEY (collection_id)
-REFERENCES collection(collection_id);
+REFERENCES collection(collection_id); //מצביעה על העמודה COLLECTION_ID בטבלת COLLECTION
 
 
 -- =========================================================
