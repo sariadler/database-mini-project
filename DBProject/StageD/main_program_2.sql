@@ -1,22 +1,15 @@
 -- =========================================================
--- Main Program 2
+-- Main Program 1
 -- Calls one function and one procedure
 -- =========================================================
 
--- Call function 2: get ref cursor with supplier materials
-BEGIN;
+-- Call function 1: calculate material cost for model 1
+SELECT calculate_model_material_cost(1) AS total_model_material_cost;
 
-SELECT get_supplier_materials_cursor(1);
+-- Call procedure 1: update status of supply order 1
+CALL update_supply_order_status(1);
 
-FETCH ALL FROM supplier_materials_cursor;
-
-COMMIT;
-
--- Call procedure 2: create new order for supplier 1
-CALL create_supply_order_for_supplier(1, 0);
-
--- Show latest orders
-SELECT order_id, order_date, total, order_status, s_id, updated_at
+-- Show result after procedure
+SELECT order_id, order_date, total, order_status, updated_at
 FROM supplyorder
-ORDER BY order_id DESC
-LIMIT 5;
+WHERE order_id = 1;

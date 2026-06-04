@@ -70,3 +70,23 @@ EXCEPTION
         RAISE EXCEPTION 'Error in create_supply_order_for_supplier: %', SQLERRM;
 END;
 $$;
+
+-- =========================================================
+-- Procedure 2 - Test
+-- =========================================================
+
+-- Run the procedure for supplier 3
+--CALL create_supply_order_for_supplier(3, 5000);
+
+-- Check that the new order was inserted
+SELECT
+    order_id,
+    order_date,
+    total,
+    order_status,
+    s_id,
+    updated_at
+FROM supplyorder
+WHERE s_id = 3
+ORDER BY order_id DESC
+LIMIT 5;

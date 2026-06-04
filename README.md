@@ -2424,3 +2424,520 @@ ORDER BY year DESC, total_models DESC;
 </details>
 
 </details>
+
+## שלב ד׳ – תכנות ב־PL/pgSQL
+
+בשלב זה נוספו לבסיס הנתונים שינויים הנדרשים לצורך מימוש פונקציות, פרוצדורות וטריגרים בשפת `PL/pgSQL`.
+
+לפני כתיבת התוכניות, היה צורך להרחיב את טבלת הזמנות האספקה ולהוסיף טבלה חדשה שתשמש לתיעוד שינויי סטטוס של הזמנות.
+
+### הכנת בסיס הנתונים לתוכניות PL/pgSQL
+
+השינויים בוצעו בקובץ:
+
+```text
+AlterTable.sql
+```
+
+הקובץ כולל את הפקודות הבאות:
+
+```sql
+-- =========================================================
+-- Stage D - Alter Table
+-- Additional changes needed for PL/pgSQL programs
+-- =========================================================
+
+-- Add status column to supply orders if it does not exist
+ALTER TABLE supplyorder
+ADD COLUMN IF NOT EXISTS order_status VARCHAR(50) DEFAULT 'Pending';
+
+-- Add updated_at column to supply orders if it does not exist
+ALTER TABLE supplyorder
+ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
+-- Create a log table for status changes in supply orders
+CREATE TABLE IF NOT EXISTS supply_order_status_log (
+    log_id SERIAL PRIMARY KEY,
+    order_id INT,
+    old_status VARCHAR(50),
+    new_status VARCHAR(50),
+    change_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+### הרצת קובץ AlterTable.sql
+
+הקובץ הורץ בהצלחה ב־pgAdmin.  
+ניתן לראות שהעמודה `order_status` כבר הייתה קיימת ולכן PostgreSQL דילג על יצירתה מחדש, בהתאם לשימוש ב־`IF NOT EXISTS`.  
+בנוסף, הטבלה `supply_order_status_log` נוצרה בהצלחה.
+
+![Alter Table Run](DBProject/dbFiles/AlterTable_run.png)
+
+### הסבר השינויים
+
+#### הוספת העמודה `order_status`
+
+העמודה `order_status` נוספה לטבלת `supplyorder` כדי לאפשר שמירה וניהול של מצב הזמנת האספקה.
+
+לכל הזמנה חדשה מוגדר כברירת מחדל הסטטוס:
+
+```text
+Pending
+```
+
+עמודה זו תשמש בהמשך בפרוצדורות ובטריגרים שיעדכנו את סטטוס ההזמנה ויתעדו את השינויים שבוצעו.
+
+#### הוספת העמודה `updated_at`
+
+העמודה `updated_at` נוספה כדי לשמור את התאריך והשעה שבהם ההזמנה עודכנה.
+
+ברירת המחדל של העמודה היא הזמן הנוכחי בעת יצירת הרשומה:
+
+```sql
+CURRENT_TIMESTAMP
+```
+
+#### יצירת הטבלה `supply_order_status_log`
+
+הטבלה `supply_order_status_log` נוצרה לצורך שמירת היסטוריית שינויי הסטטוס של הזמנות האספקה.
+
+הטבלה כוללת את העמודות הבאות:
+
+* `log_id` – מזהה ייחודי אוטומטי לכל רשומת תיעוד.
+* `order_id` – מזהה הזמנת האספקה שהסטטוס שלה השתנה.
+* `old_status` – הסטטוס שהיה להזמנה לפני השינוי.
+* `new_status` – הסטטוס החדש של ההזמנה.
+* `change_date` – התאריך והשעה שבהם בוצע השינוי.
+
+השימוש בטבלת תיעוד מאפשר לעקוב אחר שינויים שבוצעו בהזמנות ולשמור היסטוריה של הסטטוסים השונים.
+
+### שימוש ב־`IF NOT EXISTS`
+
+בפקודות נעשה שימוש ב־`IF NOT EXISTS`, כדי למנוע שגיאות במקרה שהקובץ יורץ יותר מפעם אחת.
+
+כך, אם העמודות או הטבלה כבר קיימות בבסיס הנתונים, PostgreSQL לא ינסה ליצור אותן מחדש.
+
+### צילום מסך של בדיקת המבנה
+
+הצילום הבא מציג בדיקה של העמודות בטבלת supplyorder לאחר הרצת הקובץ:
+
+![Supply Order Columns Check](DBProject/dbFiles/supplyorder_columns_check.png)
+
+
+## פונקציה 1 – חישוב עלות חומרי הגלם עבור דגם
+
+הפונקציה:
+
+```text
+calculate_model_material_cost
+```
+
+מקבלת מזהה של דגם מסוג `INT`, ומחזירה את העלות הכוללת של חומרי הגלם הנדרשים לייצור הדגם.
+
+החישוב מתבצע לפי כמות חומר הגלם הנדרשת עבור הדגם ולפי המחיר המינימלי שבו ניתן לרכוש כל חומר גלם מספק.
+
+הפונקציה משתמשת ב־**Explicit Cursor** כדי לעבור על כל חומרי הגלם הנדרשים עבור הדגם ולחשב את העלות הכוללת שלהם.
+
+### מטרת הפונקציה
+
+מטרת הפונקציה היא לאפשר לאגף העיצוב והייצור להעריך את העלות המינימלית של חומרי הגלם הנדרשים לייצור דגם מסוים.
+
+באמצעות חישוב זה ניתן להשוות בין עלויות של דגמים שונים ולבחון את העלות הצפויה של הייצור.
+
+### יצירת הפונקציה
+
+הפונקציה נוצרה בהצלחה ב־pgAdmin.
+
+
+![Create Function 1](DBProject/dbFiles/func1_create.png)
+
+
+### בדיקת מזהי הדגמים
+
+לפני הרצת הפונקציה, בוצעה שאילתה להצגת מזהי הדגמים הקיימים בבסיס הנתונים:
+
+```sql
+SELECT model_id, model_name
+FROM model
+LIMIT 10;
+```
+
+![Models](DBProject/dbFiles/models.png)
+
+
+### הרצת הפונקציה
+
+הפונקציה הורצה באמצעות פקודת `SELECT`:
+
+```sql
+SELECT calculate_model_material_cost(1) AS total_model_material_cost;
+```
+
+
+![Run Function 1](DBProject/dbFiles/func1_run.png)
+
+
+הפונקציה הורצה עבור דגם שמזההו `1000`, והחזירה עלות כוללת של `31,654` עבור חומרי הגלם הנדרשים לייצור הדגם.
+
+
+## פרוצדורה 2 – יצירת הזמנת אספקה עבור ספק
+
+הפרוצדורה:
+
+```text
+create_supply_order_for_supplier
+```
+
+מקבלת מזהה של ספק וסכום התחלתי עבור הזמנת אספקה חדשה.
+
+מטרת הפרוצדורה היא ליצור הזמנת אספקה חדשה עבור ספק קיים בבסיס הנתונים, תוך בדיקה שהספק אכן קיים והצגת חומרי הגלם שהוא מספק.
+
+הפרוצדורה משתמשת ב־**Implicit Cursor** באמצעות לולאת `FOR`, כדי לעבור על כל חומרי הגלם שהספק מספק ולהדפיס את המזהה והמחיר של כל חומר גלם.
+
+בנוסף, הפרוצדורה מבצעת פקודת `INSERT` לטבלת `supplyorder`, ומשתמשת בטיפול בחריגות כדי למנוע יצירת הזמנה עבור ספק שאינו קיים.
+
+### קוד הפרוצדורה
+
+```sql
+CREATE OR REPLACE PROCEDURE create_supply_order_for_supplier(
+    p_supplier_id INT,
+    p_initial_total NUMERIC DEFAULT 0
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    supplier_exists INT;
+    new_order_id INT;
+    supplier_material RECORD;
+BEGIN
+    -- Check if supplier exists
+    SELECT COUNT(*)
+    INTO supplier_exists
+    FROM supplier
+    WHERE s_id = p_supplier_id;
+
+    IF supplier_exists = 0 THEN
+        RAISE EXCEPTION 'Supplier with id % does not exist', p_supplier_id;
+    END IF;
+
+    -- Print supplier materials using implicit cursor
+    FOR supplier_material IN
+        SELECT r_id, unit_price
+        FROM supplied_by
+        WHERE supplier_id = p_supplier_id
+    LOOP
+        RAISE NOTICE 'Supplier % supplies raw material % with unit price %',
+            p_supplier_id,
+            supplier_material.r_id,
+            supplier_material.unit_price;
+    END LOOP;
+
+    -- Create new order id manually
+    SELECT COALESCE(MAX(order_id), 0) + 1
+    INTO new_order_id
+    FROM supplyorder;
+
+    -- Insert new supply order
+    INSERT INTO supplyorder (
+        order_id,
+        order_date,
+        total,
+        order_status,
+        s_id,
+        updated_at
+    )
+    VALUES (
+        new_order_id,
+        CURRENT_DATE,
+        p_initial_total,
+        'Pending',
+        p_supplier_id,
+        CURRENT_TIMESTAMP
+    );
+
+    RAISE NOTICE 'New supply order % was created for supplier %',
+        new_order_id,
+        p_supplier_id;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE EXCEPTION 'Error in create_supply_order_for_supplier: %', SQLERRM;
+END;
+$$;
+```
+
+### יצירת הפרוצדורה
+
+הפרוצדורה נוצרה בהצלחה ב־pgAdmin.
+
+![Create Procedure 2](DBProject/dbFiles/proc2_create.png)
+
+### הרצת הפרוצדורה
+
+הפרוצדורה הורצה עבור ספק שמזההו `3`, עם סכום התחלתי של `5000`.
+
+```sql
+CALL create_supply_order_for_supplier(3, 5000);
+```
+
+במהלך ההרצה הודפסו חומרי הגלם שהספק מספק והמחיר של כל אחד מהם.
+
+בנוסף, הודפסה הודעה המאשרת שהזמנת אספקה חדשה שמספרה `501` נוצרה עבור הספק.
+
+![Run Procedure 2](DBProject/dbFiles/proc2_run.png)
+
+### בדיקת השינוי בבסיס הנתונים
+
+לאחר הרצת הפרוצדורה, בוצעה שאילתה לבדיקת הזמנות האספקה של הספק:
+
+```sql
+SELECT
+    order_id,
+    order_date,
+    total,
+    order_status,
+    s_id,
+    updated_at
+FROM supplyorder
+WHERE s_id = 3
+ORDER BY order_id DESC
+LIMIT 5;
+```
+
+בתוצאה ניתן לראות שנוספה בהצלחה הזמנה חדשה שמספרה `501`, עם סכום כולל של `5000`, סטטוס `Pending` ומזהה ספק `3`.
+
+![Procedure 2 Result](DBProject/dbFiles/proc2_result.png)
+
+הצילומים מוכיחים שהפרוצדורה נוצרה ללא תקלות, רצה בהצלחה, הדפיסה את המידע הנדרש ועדכנה את בסיס הנתונים.
+
+
+## טריגר 1 – תיעוד שינוי סטטוס של הזמנת אספקה
+
+הטריגר:
+
+```text
+trg_log_supply_order_update
+```
+
+משתמש בפונקציית הטריגר:
+
+```text
+log_supply_order_status_update
+```
+
+מטרת הטריגר היא לתעד כל שינוי בסטטוס של הזמנת אספקה בטבלת `supplyorder`.
+
+כאשר מתבצע עדכון לעמודה `order_status`, הטריגר מופעל ובודק האם הסטטוס אכן השתנה.
+
+אם הסטטוס השתנה, הטריגר מבצע שתי פעולות:
+
+* מעדכן את השדה `updated_at` של ההזמנה לזמן הנוכחי.
+* מוסיף רשומה חדשה לטבלת `supply_order_status_log`, הכוללת את מספר ההזמנה, הסטטוס הישן, הסטטוס החדש וזמן השינוי.
+
+באופן זה ניתן לעקוב אחר שינויי הסטטוס שבוצעו להזמנות האספקה ולשמור היסטוריה של העדכונים.
+
+### קוד הטריגר
+
+```sql
+CREATE OR REPLACE FUNCTION log_supply_order_status_update()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- Insert into log table only if the status was changed
+    IF OLD.order_status IS DISTINCT FROM NEW.order_status THEN
+
+        -- Update the order modification time
+        NEW.updated_at := CURRENT_TIMESTAMP;
+
+        -- Save the status change in the log table
+        INSERT INTO supply_order_status_log (
+            order_id,
+            old_status,
+            new_status,
+            change_date
+        )
+        VALUES (
+            OLD.order_id,
+            OLD.order_status,
+            NEW.order_status,
+            CURRENT_TIMESTAMP
+        );
+    END IF;
+
+    RETURN NEW;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE EXCEPTION 'Error in log_supply_order_status_update trigger: %', SQLERRM;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_log_supply_order_update ON supplyorder;
+
+CREATE TRIGGER trg_log_supply_order_update
+BEFORE UPDATE OF order_status ON supplyorder
+FOR EACH ROW
+EXECUTE FUNCTION log_supply_order_status_update();
+```
+
+### יצירת הטריגר
+
+הטריגר נוצר בהצלחה ב־pgAdmin.
+
+![Create Trigger 1](DBProject/dbFiles/triger1_create.png)
+
+### הרצת הטריגר
+
+כדי להפעיל את הטריגר, בוצע עדכון לסטטוס של הזמנה מספר `501`:
+
+```sql
+UPDATE supplyorder
+SET order_status = 'Completed'
+WHERE order_id = 501;
+```
+
+![Run Trigger 1](DBProject/dbFiles/triger1_run.png)
+
+### בדיקת עדכון ההזמנה
+
+לאחר ביצוע העדכון, נבדקה ההזמנה עצמה:
+
+```sql
+SELECT
+    order_id,
+    order_status,
+    updated_at
+FROM supplyorder
+WHERE order_id = 501;
+```
+
+בתוצאה ניתן לראות שהסטטוס של ההזמנה השתנה ל־`Completed`, וששדה `updated_at` עודכן אוטומטית.
+
+![Trigger 1 Order Check](DBProject/dbFiles/triger1_select.png)
+
+### בדיקת טבלת הלוג
+
+לבסוף נבדקה טבלת הלוג:
+
+```sql
+SELECT
+    log_id,
+    order_id,
+    old_status,
+    new_status,
+    change_date
+FROM supply_order_status_log
+WHERE order_id = 501
+ORDER BY log_id DESC;
+```
+
+בתוצאה ניתן לראות שנוספה רשומת לוג חדשה עבור הזמנה מספר `501`, שבה הסטטוס הישן הוא `Pending` והסטטוס החדש הוא `Completed`.
+
+![Trigger 1 Log Check](DBProject/dbFiles/triger1_log.png)
+
+הצילומים מוכיחים שהטריגר נוצר בהצלחה, הופעל בעת שינוי סטטוס של הזמנה, עדכן את זמן העדכון של ההזמנה והוסיף תיעוד מתאים לטבלת הלוג.
+
+
+## תוכנית ראשית 1 – יצירת הזמנת אספקה על בסיס עלות חומרי גלם
+
+התוכנית הראשית משלבת בין הפונקציה, הפרוצדורה והטריגר שנכתבו בשלב זה.
+
+מטרת התוכנית היא לחשב את עלות חומרי הגלם עבור דגם מסוים, ליצור הזמנת אספקה חדשה עבור ספק קיים באמצעות העלות שחושבה, ולאחר מכן לעדכן את סטטוס ההזמנה כדי להפעיל את הטריגר המתעד את שינוי הסטטוס.
+
+התוכנית מבצעת את השלבים הבאים:
+
+1. קוראת לפונקציה `calculate_model_material_cost` כדי לחשב את עלות חומרי הגלם עבור דגם שמזההו `1000`.
+2. שומרת את העלות שהתקבלה במשתנה `v_material_cost`.
+3. קוראת לפרוצדורה `create_supply_order_for_supplier` כדי ליצור הזמנת אספקה חדשה עבור ספק שמזההו `3`.
+4. מאתרת את מספר ההזמנה החדשה שנוצרה.
+5. מעדכנת את סטטוס ההזמנה ל־`Completed`.
+6. עדכון הסטטוס מפעיל את הטריגר `trg_log_supply_order_update`, אשר מעדכן את זמן השינוי ומוסיף רשומה לטבלת הלוג.
+
+### קוד התוכנית הראשית
+
+```sql
+DO $$
+DECLARE
+    v_material_cost NUMERIC;
+    v_new_order_id INT;
+BEGIN
+    -- Call Function 1
+    SELECT calculate_model_material_cost(1000)
+    INTO v_material_cost;
+
+    RAISE NOTICE 'Material cost for model 1000: %', v_material_cost;
+
+    -- Call Procedure 2
+    CALL create_supply_order_for_supplier(3, v_material_cost);
+
+    -- Find the new order
+    SELECT MAX(order_id)
+    INTO v_new_order_id
+    FROM supplyorder
+    WHERE s_id = 3;
+
+    -- Activate Trigger 1
+    UPDATE supplyorder
+    SET order_status = 'Completed'
+    WHERE order_id = v_new_order_id;
+
+    RAISE NOTICE 'Order % was created and completed', v_new_order_id;
+END;
+$$;
+
+-- Verify the new order
+SELECT
+    order_id,
+    total,
+    order_status,
+    s_id,
+    updated_at
+FROM supplyorder
+WHERE s_id = 3
+ORDER BY order_id DESC
+LIMIT 1;
+
+-- Verify the trigger log
+SELECT
+    log_id,
+    order_id,
+    old_status,
+    new_status,
+    change_date
+FROM supply_order_status_log
+ORDER BY log_id DESC
+LIMIT 1;
+```
+
+### הרצת התוכנית הראשית
+
+התוכנית הורצה בהצלחה ב־pgAdmin.
+
+בהודעות ההרצה ניתן לראות כי:
+
+* עלות חומרי הגלם עבור דגם `1000` חושבה והתקבל הערך `31.654`.
+* הפרוצדורה עברה על חומרי הגלם של ספק `3`.
+* נוצרה הזמנת אספקה חדשה שמספרה `502`.
+* סטטוס ההזמנה עודכן ל־`Completed`.
+
+![Main Program 1 Run](DBProject/dbFiles/main1_run.png)
+
+### בדיקת ההזמנה החדשה
+
+לאחר הרצת התוכנית, בוצעה בדיקה של ההזמנה האחרונה שנוצרה עבור ספק `3`.
+
+בתוצאה ניתן לראות שהזמנה מספר `502` נוצרה בהצלחה, עם עלות כוללת של `31.65`, סטטוס `Completed` ומזהה ספק `3`.
+
+הערך מוצג כ־`31.65` מכיוון שהעמודה `total` מוגדרת עם שתי ספרות אחרי הנקודה.
+
+![Main Program 1 Order Result](DBProject/dbFiles/main1_select.png)
+
+### בדיקת טבלת הלוג
+
+לבסוף נבדקה טבלת `supply_order_status_log`.
+
+בתוצאה ניתן לראות שנוספה רשומת לוג חדשה עבור הזמנה מספר `502`, שבה הסטטוס הישן הוא `Pending` והסטטוס החדש הוא `Completed`.
+
+![Main Program 1 Log Result](DBProject/dbFiles/main1_log.png)
+
+הצילומים מוכיחים שהתוכנית הראשית רצה ללא תקלות, שילבה בהצלחה בין הפונקציה, הפרוצדורה והטריגר, יצרה הזמנה חדשה ועדכנה את טבלת הלוג.
