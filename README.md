@@ -2578,8 +2578,71 @@ SELECT calculate_model_material_cost(1) AS total_model_material_cost;
 
 הפונקציה הורצה עבור דגם שמזההו `1000`, והחזירה עלות כוללת של `31,654` עבור חומרי הגלם הנדרשים לייצור הדגם.
 
+<details>
+<summary><b>פונקציה 2 – הצגת חומרי גלם בעלי מלאי נמוך (Ref Cursor)</b></summary>
 
-## פרוצדורה 2 – יצירת הזמנת אספקה עבור ספק
+## פונקציה 2 – הצגת חומרי גלם בעלי מלאי נמוך
+
+הפונקציה:
+
+```text
+get_low_stock_materials_cursor
+```
+
+מקבלת ערך סף מסוג `INT`, ומחזירה `Ref Cursor` המכיל את כל חומרי הגלם שעבורם כמות המלאי נמוכה מהערך שהתקבל.
+
+הפונקציה משתמשת ב־**Ref Cursor** כדי להחזיר אוסף רשומות המכיל מידע על חומרי הגלם הזקוקים לחידוש מלאי.
+
+### מטרת הפונקציה
+
+מטרת הפונקציה היא לאפשר למחלקת הרכש והייצור לזהות במהירות חומרי גלם בעלי מלאי נמוך, ולהיערך להזמנת חומרי גלם חדשים לפני שנוצר מחסור בתהליך הייצור.
+
+באמצעות פונקציה זו ניתן לקבל רשימה עדכנית של חומרי הגלם הזקוקים לחידוש מלאי ולייעל את תהליך ניהול המלאי.
+
+### יצירת הפונקציה
+
+הפונקציה נוצרה בהצלחה ב־pgAdmin.
+
+![Create Function 2](DBProject/dbFiles/f2_create.png)
+
+### בדיקת חומרי גלם בעלי מלאי נמוך
+
+לפני הרצת הפונקציה בוצעה שאילתה להצגת חומרי הגלם בעלי מלאי נמוך:
+
+```sql
+SELECT r_id, r_name, stock_quantity
+FROM rawmaterial
+WHERE stock_quantity < 50
+ORDER BY stock_quantity;
+```
+
+![Low Stock Materials](DBProject/dbFiles/function2_before.png)
+
+### הרצת הפונקציה
+
+הפונקציה הורצה בתוך Transaction, מכיוון שפונקציה שמחזירה `Ref Cursor` דורשת פתיחת טרנזקציה כדי שניתן יהיה לקרוא את הנתונים מתוך הסמן.
+
+```sql
+BEGIN;
+
+SELECT get_low_stock_materials_cursor(150);
+
+FETCH ALL IN "<unnamed portal 2>";
+
+COMMIT;
+```
+
+![Run Function 2](DBProject/dbFiles/function2_run.png)
+
+הפונקציה הורצה עבור ערך סף `150`, והחזירה רשימת חומרי גלם שכמות המלאי שלהם נמוכה מ־150.  
+בתוצאה ניתן לראות עבור כל חומר גלם את מזהה החומר, שם החומר, כמות המלאי, מחיר החומר ויחידת המידה.
+
+</details>
+
+
+
+
+## פרוצדורה  1  – יצירת הזמנת אספקה עבור ספק
 
 הפרוצדורה:
 
@@ -2709,6 +2772,150 @@ LIMIT 5;
 
 הצילומים מוכיחים שהפרוצדורה נוצרה ללא תקלות, רצה בהצלחה, הדפיסה את המידע הנדרש ועדכנה את בסיס הנתונים.
 
+<details>
+<summary><b>פרוצדורה  2 – חידוש מלאי חומרי גלם בעלי מלאי נמוך</b></summary>
+
+## פרוצדורה  2 – חידוש מלאי חומרי גלם בעלי מלאי נמוך
+
+הפרוצדורה:
+
+```text
+refill_low_stock_materials
+```
+
+מקבלת שני פרמטרים מסוג `INT`:
+
+- ערך סף מינימלי למלאי (`p_min_stock`)
+- כמות להוספה למלאי (`p_add_amount`)
+
+מטרת הפרוצדורה היא לאתר את כל חומרי הגלם שכמות המלאי שלהם נמוכה מערך הסף שהתקבל, ולעדכן את כמות המלאי שלהם באמצעות הוספת הכמות שהתקבלה כפרמטר.
+
+הפרוצדורה משתמשת ב־**Explicit Cursor** כדי לעבור על חומרי הגלם בעלי המלאי הנמוך, ובכל איטרציה מבצעת פקודת `UPDATE` לטבלת `rawmaterial`.
+
+בנוסף, הפרוצדורה משתמשת ב־`RECORD` לשמירת נתוני כל חומר גלם, ב־`IF / ELSE` לצורך הבחנה בין חומר גלם שמלאיו הוא אפס לבין חומר גלם שמלאיו נמוך אך אינו אפס, וב־`EXCEPTION` לצורך טיפול בשגיאות.
+
+### קוד הפרוצדורה
+
+```sql
+CREATE OR REPLACE PROCEDURE refill_low_stock_materials(
+    p_min_stock INT,
+    p_add_amount INT
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_material RECORD;
+    v_updated_count INT := 0;
+    v_last_update_count INT := 0;
+    v_new_quantity INT;
+
+    cur_low_stock CURSOR FOR
+        SELECT
+            r_id,
+            r_name,
+            stock_quantity
+        FROM rawmaterial
+        WHERE stock_quantity < p_min_stock
+        ORDER BY stock_quantity ASC;
+BEGIN
+    IF p_min_stock <= 0 THEN
+        RAISE EXCEPTION 'Minimum stock must be greater than 0';
+    END IF;
+
+    IF p_add_amount <= 0 THEN
+        RAISE EXCEPTION 'Amount to add must be greater than 0';
+    END IF;
+
+    FOR v_material IN cur_low_stock LOOP
+        v_new_quantity := v_material.stock_quantity + p_add_amount;
+
+        IF v_material.stock_quantity = 0 THEN
+            RAISE NOTICE 'Material % (%) had zero stock. New quantity: %',
+                v_material.r_id, v_material.r_name, v_new_quantity;
+        ELSE
+            RAISE NOTICE 'Material % (%) had low stock: %. New quantity: %',
+                v_material.r_id, v_material.r_name,
+                v_material.stock_quantity, v_new_quantity;
+        END IF;
+
+        UPDATE rawmaterial
+        SET stock_quantity = v_new_quantity
+        WHERE r_id = v_material.r_id;
+
+        GET DIAGNOSTICS v_last_update_count = ROW_COUNT;
+        v_updated_count := v_updated_count + v_last_update_count;
+    END LOOP;
+
+    IF v_updated_count = 0 THEN
+        RAISE NOTICE 'No low stock materials were found.';
+    ELSE
+        RAISE NOTICE 'Procedure completed successfully. Total updated materials: %',
+            v_updated_count;
+    END IF;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE EXCEPTION 'Error in refill_low_stock_materials: %', SQLERRM;
+END;
+$$;
+```
+
+### יצירת הפרוצדורה
+
+הפרוצדורה נוצרה בהצלחה ב־pgAdmin.
+
+![Create Procedure 3](DBProject/dbFiles/procedure3_create.png)
+
+### בדיקת מצב המלאי לפני הרצת הפרוצדורה
+
+לפני הרצת הפרוצדורה, בוצעה שאילתה להצגת חומרי גלם בעלי מלאי נמוך:
+
+```sql
+SELECT r_id, r_name, stock_quantity
+FROM rawmaterial
+WHERE stock_quantity < 50
+ORDER BY stock_quantity
+LIMIT 10;
+```
+
+בתוצאה ניתן לראות חומרי גלם שכמות המלאי שלהם נמוכה מ־50, וחלקם בעלי מלאי אפסי.
+
+![Procedure 3 Before](DBProject/dbFiles/procedure3_before.png)
+
+### הרצת הפרוצדורה
+
+הפרוצדורה הורצה עבור ערך סף `50`, כאשר לכל חומר גלם בעל מלאי נמוך נוספו `100` יחידות למלאי.
+
+```sql
+CALL refill_low_stock_materials(50, 100);
+```
+
+במהלך ההרצה הודפסו הודעות באמצעות `RAISE NOTICE`, המציגות את מזהה חומר הגלם, שמו, כמות המלאי לפני העדכון וכמות המלאי לאחר העדכון.
+
+בסיום ההרצה הודפסה הודעה המאשרת שהפרוצדורה הסתיימה בהצלחה ושעודכנו 5 חומרי גלם.
+
+![Run Procedure 3](DBProject/dbFiles/procedure3_run.png)
+
+### בדיקת השינוי בבסיס הנתונים
+
+לאחר הרצת הפרוצדורה, בוצעה שוב שאילתה לבדיקת חומרי גלם בעלי מלאי נמוך:
+
+```sql
+SELECT r_id, r_name, stock_quantity
+FROM rawmaterial
+WHERE stock_quantity < 50
+ORDER BY stock_quantity
+LIMIT 10;
+```
+
+בתוצאה ניתן לראות שהשאילתה אינה מחזירה רשומות, כלומר לא נותרו חומרי גלם שכמות המלאי שלהם נמוכה מ־50.
+
+![Procedure 3 After](DBProject/dbFiles/procedure3_after.png)
+
+הצילומים מוכיחים שהפרוצדורה נוצרה ללא תקלות, רצה בהצלחה, הדפיסה הודעות מתאימות, וביצעה עדכון בפועל של נתוני המלאי בטבלת `rawmaterial`.
+
+</details>
+
 
 ## טריגר 1 – תיעוד שינוי סטטוס של הזמנת אספקה
 
@@ -2837,6 +3044,119 @@ ORDER BY log_id DESC;
 
 הצילומים מוכיחים שהטריגר נוצר בהצלחה, הופעל בעת שינוי סטטוס של הזמנה, עדכן את זמן העדכון של ההזמנה והוסיף תיעוד מתאים לטבלת הלוג.
 
+## טריגר 2 – תיעוד אוטומטי של שינויים במלאי חומרי גלם
+
+הטריגר:
+
+```text
+trg_log_rawmaterial_stock_update
+```
+
+משתמש בפונקציית הטריגר:
+
+```text
+log_rawmaterial_stock_update
+```
+
+מטרת הטריגר היא לתעד כל שינוי בכמות המלאי של חומר גלם בטבלת `rawmaterial`.
+
+כאשר מתבצע עדכון לעמודה `stock_quantity`, הטריגר מופעל ובודק האם כמות המלאי אכן השתנתה.
+
+אם כמות המלאי השתנתה, הטריגר מוסיף רשומה חדשה לטבלת `rawmaterial_stock_log`, הכוללת את מזהה חומר הגלם, כמות המלאי הישנה, כמות המלאי החדשה וזמן ביצוע השינוי.
+
+באופן זה ניתן לעקוב אחר שינויי מלאי שבוצעו במערכת ולשמור היסטוריה של עדכוני המלאי.
+
+### קוד הטריגר
+
+```sql
+CREATE TABLE rawmaterial_stock_log (
+    log_id SERIAL PRIMARY KEY,
+    r_id INT NOT NULL,
+    old_quantity INT,
+    new_quantity INT,
+    change_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE OR REPLACE FUNCTION log_rawmaterial_stock_update()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF OLD.stock_quantity IS DISTINCT FROM NEW.stock_quantity THEN
+        INSERT INTO rawmaterial_stock_log (
+            r_id,
+            old_quantity,
+            new_quantity,
+            change_date
+        )
+        VALUES (
+            OLD.r_id,
+            OLD.stock_quantity,
+            NEW.stock_quantity,
+            CURRENT_TIMESTAMP
+        );
+    END IF;
+
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trg_log_rawmaterial_stock_update
+AFTER UPDATE OF stock_quantity
+ON rawmaterial
+FOR EACH ROW
+EXECUTE FUNCTION log_rawmaterial_stock_update();
+```
+
+### יצירת טבלת הלוג
+
+טבלת הלוג נוצרה בהצלחה ב־pgAdmin.
+
+![Create RawMaterial Stock Log](DBProject/dbFiles/trigger2_log_table_create.png)
+
+### יצירת פונקציית הטריגר
+
+פונקציית הטריגר נוצרה בהצלחה ב־pgAdmin.
+
+![Create Trigger Function 2](DBProject/dbFiles/trigger2_function_create.png)
+
+### יצירת הטריגר
+
+הטריגר נוצר בהצלחה ב־pgAdmin.
+
+![Create Trigger 2](DBProject/dbFiles/trigger2_create.png)
+
+### הרצת הטריגר
+
+כדי להפעיל את הטריגר, בוצע עדכון לכמות המלאי של חומר גלם שמזההו `1823`:
+
+```sql
+UPDATE rawmaterial
+SET stock_quantity = stock_quantity + 50
+WHERE r_id = 1823;
+```
+
+הטריגר הופעל אוטומטית מיד לאחר עדכון כמות המלאי.
+
+![Run Trigger 2](DBProject/dbFiles/trigger2_run.png)
+
+### בדיקת טבלת הלוג
+
+לאחר ביצוע העדכון, נבדקה טבלת הלוג:
+
+```sql
+SELECT *
+FROM rawmaterial_stock_log
+ORDER BY log_id DESC
+LIMIT 5;
+```
+
+בתוצאה ניתן לראות שנוספה רשומת לוג חדשה עבור חומר גלם מספר `1823`, שבה הכמות הישנה היא `110` והכמות החדשה היא `160`.
+
+![Trigger 2 Log Check](DBProject/dbFiles/trigger2_log.png)
+
+הצילומים מוכיחים שהטריגר נוצר בהצלחה, הופעל בעת שינוי כמות מלאי של חומר גלם, והוסיף תיעוד מתאים לטבלת הלוג.
+
 
 ## תוכנית ראשית 1 – יצירת הזמנת אספקה על בסיס עלות חומרי גלם
 
@@ -2941,3 +3261,125 @@ LIMIT 1;
 ![Main Program 1 Log Result](DBProject/dbFiles/main1_log.png)
 
 הצילומים מוכיחים שהתוכנית הראשית רצה ללא תקלות, שילבה בהצלחה בין הפונקציה, הפרוצדורה והטריגר, יצרה הזמנה חדשה ועדכנה את טבלת הלוג.
+
+## תוכנית ראשית  2 – ניהול אוטומטי של חומרי גלם בעלי מלאי נמוך
+
+התוכנית הראשית משלבת בין הפונקציה, הפרוצדורה והטריגר שנכתבו בשלב זה.
+
+מטרת התוכנית היא לאתר חומרי גלם בעלי מלאי נמוך, לעדכן את המלאי שלהם באופן אוטומטי ולאחר מכן לתעד את השינויים שבוצעו באמצעות הטריגר.
+
+התוכנית מבצעת את השלבים הבאים:
+
+1. קוראת לפונקציה `get_low_stock_materials_cursor` ומחזירה Ref Cursor המכיל את כל חומרי הגלם שמלאים נמוך מהסף שנקבע.
+2. עוברת על הרשומות שהוחזרו וסופרת כמה חומרי גלם נמצאו.
+3. קוראת לפרוצדורה `refill_low_stock_materials` אשר מגדילה את המלאי של כל חומרי הגלם שנמצאו.
+4. מבצעת עדכון נוסף לחומר גלם מספר `1823`.
+5. עדכון המלאי מפעיל את הטריגר `trg_log_rawmaterial_stock_update`.
+6. הטריגר מוסיף רשומת תיעוד לטבלת `rawmaterial_stock_log`.
+
+### קוד התוכנית הראשית
+
+```sql
+DO $$
+DECLARE
+    v_cursor refcursor;
+    v_material RECORD;
+    v_material_count INT := 0;
+BEGIN
+    -- Call Function 2
+    v_cursor := get_low_stock_materials_cursor(200);
+
+    LOOP
+        FETCH v_cursor INTO v_material;
+        EXIT WHEN NOT FOUND;
+
+        v_material_count := v_material_count + 1;
+    END LOOP;
+
+    RAISE NOTICE
+        'Number of raw materials with stock lower than 200: %',
+        v_material_count;
+
+    -- Call Procedure 1
+    CALL refill_low_stock_materials(200, 50);
+
+    -- Activate Trigger 1
+    UPDATE rawmaterial
+    SET stock_quantity = stock_quantity + 25
+    WHERE r_id = 1823;
+
+    RAISE NOTICE 'Main program completed successfully.';
+END;
+$$;
+
+SELECT
+    r_id,
+    r_name,
+    stock_quantity
+FROM rawmaterial
+WHERE r_id = 1823;
+
+SELECT
+    log_id,
+    r_id,
+    old_quantity,
+    new_quantity,
+    change_date
+FROM rawmaterial_stock_log
+ORDER BY log_id DESC
+LIMIT 5;
+```
+
+### הרצת התוכנית הראשית
+
+התוכנית הורצה בהצלחה ב־pgAdmin.
+
+במהלך ההרצה:
+
+* הפונקציה איתרה חומרי גלם בעלי מלאי נמוך מ־200.
+* הפרוצדורה הגדילה את המלאי של חומרי הגלם שנמצאו.
+* בוצע עדכון נוסף לחומר גלם מספר `1823`.
+* הטריגר הופעל באופן אוטומטי ותיעד את השינוי בטבלת הלוג.
+
+![Main Program Run](DBProject/dbFiles/main_program_run.png)
+
+### בדיקת חומר הגלם לאחר העדכון
+
+לאחר הרצת התוכנית בוצעה בדיקה של חומר הגלם מספר `1823`.
+
+```sql
+SELECT
+    r_id,
+    r_name,
+    stock_quantity
+FROM rawmaterial
+WHERE r_id = 1823;
+```
+
+ניתן לראות שכמות המלאי של חומר הגלם עודכנה בהצלחה.
+
+![Main Program Material Result](DBProject/dbFiles/main_program_material.png)
+
+### בדיקת טבלת הלוג
+
+לבסוף נבדקה טבלת `rawmaterial_stock_log`.
+
+```sql
+SELECT
+    log_id,
+    r_id,
+    old_quantity,
+    new_quantity,
+    change_date
+FROM rawmaterial_stock_log
+ORDER BY log_id DESC
+LIMIT 5;
+```
+
+בתוצאה ניתן לראות שנוספו רשומות לוג חדשות המתעדות את השינויים שבוצעו בכמויות המלאי.
+
+עבור חומר גלם מספר `1823` ניתן לראות שהכמות השתנתה מ־`210` ל־`235`.
+
+![Main Program Log Result](DBProject/dbFiles/main_program_log.png)
+
+הצילומים מוכיחים שהתוכנית הראשית רצה ללא תקלות, שילבה בהצלחה בין הפונקציה, הפרוצדורה והטריגר, עדכנה את מלאי חומרי הגלם ותיעדה את כל השינויים בטבלת הלוג.
