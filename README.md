@@ -2522,6 +2522,9 @@ CURRENT_TIMESTAMP
 
 ![Supply Order Columns Check](DBProject/dbFiles/supplyorder_columns_check.png)
 
+<details>
+<summary><b> פונקציה 1 – חישוב עלות חומרי הגלם עבור דגם </b></summary>
+
 
 ## פונקציה 1 – חישוב עלות חומרי הגלם עבור דגם
 
@@ -2577,6 +2580,8 @@ SELECT calculate_model_material_cost(1) AS total_model_material_cost;
 
 
 הפונקציה הורצה עבור דגם שמזההו `1000`, והחזירה עלות כוללת של `31,654` עבור חומרי הגלם הנדרשים לייצור הדגם.
+
+</details>
 
 <details>
 <summary><b>פונקציה 2 – הצגת חומרי גלם בעלי מלאי נמוך (Ref Cursor)</b></summary>
@@ -2640,6 +2645,65 @@ COMMIT;
 </details>
 
 
+<details>
+<summary><b> פונקציה 3 – דירוג ותק עובדים (Experience Rank) </b></summary>
+
+## פונקציה 3 – דירוג ותק עובדים (Experience Rank)
+
+הפונקציה:
+
+```text
+get_employee_experience_rank
+
+```
+הפונקציה מקבלת כקלט מזהה עובד (p_e_id) ומחזירה דרגת ותק בפורמט TEXT. הדירוג נקבע על בסיס חישוב הפרש השנים המדויק בין תאריך הגיוס של העובד לבין התאריך הנוכחי.
+
+המימוש מבוסס על שימוש בפונקציות תאריך מובנות (AGE, EXTRACT) לחישוב הוותק, ועל מבנה בקרה מסוג IF-ELSIF למיפוי משך העבודה לדרגות מקצועיות מוגדרות:
+
+Junior: פחות מ-2 שנים.
+
+Mid-Level: בין 2 ל-4 שנים.
+
+Senior: בין 5 ל-9 שנים.
+
+Expert: 10 שנים ומעלה.
+
+
+### מטרת הפונקציה
+מטרת הפונקציה היא ביצוע אוטומציה של תהליך סיווג הניסיון המקצועי של העובדים במערכת. הכלי מאפשר שליפה מהירה ומדויקת של רמת הוותק של עובד ספציפי לצורכי ניהול כוח אדם, קביעת תגמול ושיבוץ למשימות, ללא צורך בביצוע חישובים ידניים או הרצת שאילתות מורכבות בכל פעם מחדש.
+
+
+### יצירת הפונקציה
+הפונקצייה נוצרה בהצלחה ב־pgAdmin
+
+![Create Function 3](DBProject/dbFiles/func3_create.JPG)
+
+
+### בדיקת נתוני הבסיס (לפני הרצה)
+לפני הרצת הפונקציה, בוצעה שאילתת אימות להצגת נתוני העובדים הקיימים בטבלה, על מנת לוודא תקינות נתוני תאריכי הגיוס:
+
+
+```sql
+SELECT E_id, E_name, E_date
+FROM Employee
+LIMIT 5;
+```
+
+![Employees Before](DBProject/dbFiles/f3_before.JPG)
+
+### הרצת הפונקציה (אחרי)
+הרצנו את הפונקציה על מספר עובדים כדי לוודא שהדירוג שהיא מחזירה מדויק ונכון
+
+
+```sql
+SELECT E_id, E_name, get_employee_experience_rank(E_id) AS Rank
+FROM Employee
+WHERE E_id IN (1, 2, 3);
+```
+
+![Run Function 3](DBProject/dbFiles/f3_run.JPG)
+
+</details>
 
 
 ## פרוצדורה  1  – יצירת הזמנת אספקה עבור ספק
