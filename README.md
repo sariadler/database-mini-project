@@ -2431,6 +2431,10 @@ ORDER BY year DESC, total_models DESC;
 
 לפני כתיבת התוכניות, היה צורך להרחיב את טבלת הזמנות האספקה ולהוסיף טבלה חדשה שתשמש לתיעוד שינויי סטטוס של הזמנות.
 
+<details>
+<summary><b>  הכנת בסיס הנתונים לתוכניות PL/pgSQL </b></summary>
+
+
 ### הכנת בסיס הנתונים לתוכניות PL/pgSQL
 
 השינויים בוצעו בקובץ:
@@ -2521,6 +2525,11 @@ CURRENT_TIMESTAMP
 הצילום הבא מציג בדיקה של העמודות בטבלת supplyorder לאחר הרצת הקובץ:
 
 ![Supply Order Columns Check](DBProject/dbFiles/supplyorder_columns_check.png)
+
+</details>
+
+
+
 
 <details>
 <summary><b> פונקציה 1 – חישוב עלות חומרי הגלם עבור דגם </b></summary>
