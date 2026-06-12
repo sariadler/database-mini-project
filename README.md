@@ -2527,9 +2527,8 @@ CURRENT_TIMESTAMP
 ![Supply Order Columns Check](DBProject/dbFiles/supplyorder_columns_check.png)
 
 </details>
-
-
-
+---
+## פונקציות
 
 <details>
 <summary><b> פונקציה 1 – חישוב עלות חומרי הגלם עבור דגם </b></summary>
@@ -2714,6 +2713,11 @@ WHERE E_id IN (1, 2, 3);
 
 </details>
 
+---
+##פורצדורות
+
+<details>
+<summary><b>  פרוצדורה  1  – יצירת הזמנת אספקה עבור ספק </b></summary>
 
 ## פרוצדורה  1  – יצירת הזמנת אספקה עבור ספק
 
@@ -2844,6 +2848,9 @@ LIMIT 5;
 ![Procedure 2 Result](DBProject/dbFiles/proc2_result.png)
 
 הצילומים מוכיחים שהפרוצדורה נוצרה ללא תקלות, רצה בהצלחה, הדפיסה את המידע הנדרש ועדכנה את בסיס הנתונים.
+
+</details>
+
 
 <details>
 <summary><b>פרוצדורה  2 – חידוש מלאי חומרי גלם בעלי מלאי נמוך</b></summary>
@@ -2989,6 +2996,80 @@ LIMIT 10;
 
 </details>
 
+
+<details>
+<summary><b> פרוצדורה 3 – עדכון סטטוס הזמנת אספקה </b></summary>
+
+## פרוצדורה 3 – עדכון סטטוס הזמנת אספקה
+
+**הפרוצדורה:**
+`update_supply_order_status`
+
+**תיאור:**
+מטרת הפרוצדורה היא לעדכן בצורה מבוקרת את הסטטוס של הזמנת אספקה קיימת במערכת, ובו זמנית לעדכן את זמן העדכון האחרון.
+
+### הסבר על הפרוצדורה
+הפרוצדורה בנויה בצורה מודולרית ששומרת על שלמות הנתונים:
+* **בדיקת קיום (Validation):** השימוש ב-`IF NOT EXISTS` מבטיח שהפרוצדורה לא תנסה לעדכן הזמנה שאינה קיימת, ובכך מונע שגיאות לוגיות במערכת.
+* **עדכון (Update):** מתבצע עדכון של שני שדות: הסטטוס (`order_status`) וזמן העדכון (`updated_at`), כדי לשמור על היסטוריה מדויקת של השינויים.
+* **טיפול בחריגות (Exception Handling):** השימוש בבלוק `EXCEPTION` יחד עם `SQLERRM` מאפשר למערכת לתפוס שגיאות בלתי צפויות ולהחזיר הודעת שגיאה ברורה ומקצועית במקום "לקרוס".
+
+### קוד הפרוצדורה
+```sql
+CREATE OR REPLACE PROCEDURE update_supply_order_status(
+    p_order_id INT,
+    p_new_status VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- בדיקה האם ההזמנה קיימת בבסיס הנתונים
+    IF NOT EXISTS (SELECT 1 FROM supplyorder WHERE order_id = p_order_id) THEN
+        RAISE EXCEPTION 'הזמנה עם מזהה % לא קיימת במערכת', p_order_id;
+    END IF;
+
+    -- עדכון הסטטוס של ההזמנה וזמן העדכון הנוכחי
+    UPDATE supplyorder
+    SET order_status = p_new_status,
+        updated_at = CURRENT_TIMESTAMP
+    WHERE order_id = p_order_id;
+
+    -- הדפסת הודעת אישור למשתמש
+    RAISE NOTICE 'סטטוס ההזמנה % עודכן ל-%', p_order_id, p_new_status;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        -- טיפול בשגיאות בלתי צפויות
+        RAISE EXCEPTION 'אירעה שגיאה בעדכון סטטוס ההזמנה: %', SQLERRM;
+END;
+$$;
+```
+### יצירת הפרוצדורה
+![Create Procedure 3](DBProject/dbFiles/proc3_create.png)
+
+### בדיקת סטטוס לפני העדכון
+![Before Procedure 3](DBProject/dbFiles/proc3_befor.png)
+
+### הרצת הפרוצדורה
+```sql
+CALL update_supply_order_status(501, 'Completed');
+```
+
+
+### בדיקת השינוי בבסיס הנתונים
+
+```sql
+SELECT order_id, order_status, updated_at
+FROM supplyorder
+WHERE order_id = 501;
+```
+
+הצילומים מוכיחים שהפרוצדורה נוצרה ללא תקלות, רצה בהצלחה, הדפיסה הודעת אישור, וביצעה עדכון בפועל של הסטטוס וזמן העדכון בטבלה.
+
+</details>
+
+
+## טריגרים
 
 ## טריגר 1 – תיעוד שינוי סטטוס של הזמנת אספקה
 
