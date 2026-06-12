@@ -3045,15 +3045,26 @@ END;
 $$;
 ```
 ### יצירת הפרוצדורה
+
+הפרוצדורה נוצרה בהצלחה ב-pgAdmin.
+
+
 ![Create Procedure 3](DBProject/dbFiles/proc3_create.png)
 
 ### בדיקת סטטוס לפני העדכון
+
+לפני הרצת הפרוצדורה, בדקנו את הסטטוס הנוכחי של הזמנה 501:
+
 ![Before Procedure 3](DBProject/dbFiles/proc3_befor.png)
 
 ### הרצת הפרוצדורה
 ```sql
 CALL update_supply_order_status(501, 'Completed');
 ```
+
+![run Procedure 3](DBProject/dbFiles/proc3_run.JPG)
+
+ניתן לראות בחלונית ה-Messages שהפרוצדורה ביצעה את העדכון בהצלחה.
 
 
 ### בדיקת השינוי בבסיס הנתונים
@@ -3063,6 +3074,8 @@ SELECT order_id, order_status, updated_at
 FROM supplyorder
 WHERE order_id = 501;
 ```
+![after Procedure 3](DBProject/dbFiles/proc3_after.JPG)
+
 
 הצילומים מוכיחים שהפרוצדורה נוצרה ללא תקלות, רצה בהצלחה, הדפיסה הודעת אישור, וביצעה עדכון בפועל של הסטטוס וזמן העדכון בטבלה.
 
