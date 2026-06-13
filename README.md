@@ -3081,8 +3081,14 @@ WHERE order_id = 501;
 
 </details>
 
-
+---
 ## טריגרים
+
+
+
+<details>
+<summary><b>  טריגר 1 – תיעוד שינוי סטטוס של הזמנת אספקה</b></summary>
+
 
 ## טריגר 1 – תיעוד שינוי סטטוס של הזמנת אספקה
 
@@ -3210,6 +3216,14 @@ ORDER BY log_id DESC;
 ![Trigger 1 Log Check](DBProject/dbFiles/triger1_log.png)
 
 הצילומים מוכיחים שהטריגר נוצר בהצלחה, הופעל בעת שינוי סטטוס של הזמנה, עדכן את זמן העדכון של ההזמנה והוסיף תיעוד מתאים לטבלת הלוג.
+
+
+</details>
+
+
+<details>
+<summary><b>  2 – תיעוד אוטומטי של שינויים במלאי חומרי גלם </b></summary>
+
 
 ## טריגר 2 – תיעוד אוטומטי של שינויים במלאי חומרי גלם
 
@@ -3339,6 +3353,114 @@ LIMIT 5;
 4. מאתרת את מספר ההזמנה החדשה שנוצרה.
 5. מעדכנת את סטטוס ההזמנה ל־`Completed`.
 6. עדכון הסטטוס מפעיל את הטריגר `trg_log_supply_order_update`, אשר מעדכן את זמן השינוי ומוסיף רשומה לטבלת הלוג.
+
+
+</details>
+
+
+<details>
+<summary><b>טריגר 3 – בקרת מחיר ותיעוד היסטורי בטבלת מוצרים  </b></summary>
+
+## טריגר 3 – בקרת מחיר ותיעוד היסטורי בטבלת מוצרים
+
+`
+
+
+הטריגר:
+```text
+trigger_check_and_log_product_price
+```
+משתמש בפונקציית הטריגר:
+```text
+process_product_price_update
+```
+
+מטרת הטריגר היא להבטיח את איכות הנתונים בטבלת Product. הטריגר מבצע שתי פעולות משולבות: הוא חוסם הזנת מחיר לא תקין (אפס או שלילי) לפני ביצוע העדכון, ומתעד באופן אוטומטי כל שינוי במחיר בטבלת היסטוריה, כולל תיעוד של המשתמש שביצע את השינוי
+
+### קוד הטריגר
+
+```sql
+
+-- יצירת טבלת היסטוריה לתיעוד שינויי מחיר
+CREATE TABLE IF NOT EXISTS product_price_history (
+    history_id SERIAL PRIMARY KEY,
+    p_id INT,
+    old_price NUMERIC,
+    new_price NUMERIC,
+    changed_by TEXT,
+    change_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- יצירת פונקציית הטריגר
+CREATE OR REPLACE FUNCTION process_product_price_update()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- ולידציה: לוודא שהמחיר חיובי
+    IF NEW.P_price <= 0 THEN
+        RAISE EXCEPTION 'Business Rule Violation: Product price must be positive. Attempted value: %', NEW.P_price;
+    END IF;
+
+    -- לוג: רק אם המחיר השתנה בפועל
+    IF OLD.P_price IS DISTINCT FROM NEW.P_price THEN
+        INSERT INTO product_price_history (p_id, old_price, new_price, changed_by)
+        VALUES (OLD.P_id, OLD.P_price, NEW.P_price, current_user);
+    END IF;
+
+    RETURN NEW;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE EXCEPTION 'Critical error in process_product_price_update: %', SQLERRM;
+END;
+$$;
+
+-- יצירת הטריגר
+DROP TRIGGER IF EXISTS trigger_check_and_log_product_price ON Product;
+
+CREATE TRIGGER trigger_check_and_log_product_price
+BEFORE UPDATE OF P_price ON Product
+FOR EACH ROW
+EXECUTE FUNCTION process_product_price_update();
+```
+
+###יצירת הטריגר
+הטריגר וטבלת ההיסטוריה נוצרו בהצלחה ב־pgAdmin.
+
+![Create Trigger 3](DBProject/dbFiles/trigger3_create.JPG)
+
+### הרצת הטריגר (בדיקת חסימה)
+כדי לוודא שהטריגר מגן על הנתונים, בוצע ניסיון עדכון למחיר שלילי עבור מוצר 1:
+
+```sql
+UPDATE Product SET P_price = -10 WHERE P_id = 1;
+```
+הטריגר חסם את הפעולה והציג הודעת שגיאה מפורטת.
+
+![Erorr Trigger 3](DBProject/dbFiles/trigger3_error.png)
+
+
+### בדיקת פעולה מאושרת ותיעוד בלוג
+
+לאחר מכן בוצע עדכון למחיר תקין עבור מוצר 1, והשינוי תועד בטבלת הלוג:
+
+```sql
+UPDATE Product SET P_price = 199.99 WHERE P_id = 1;
+
+SELECT * FROM product_price_history ORDER BY change_date DESC;
+```
+
+
+בתוצאה ניתן לראות שנוספה רשומת לוג חדשה המתעדת את שינוי המחיר, כולל שם המשתמש שביצע את השינוי.
+
+![Success Trigger 3](DBProject/dbFiles/trigger3_success.png)
+
+
+הצילומים מוכיחים שהטריגר נוצר בהצלחה, מונע הכנסת נתונים עסקיים שגויים, ומתעד כל שינוי לטובת שקיפות ואבטחה.
+</details>
+
+---
 
 ### קוד התוכנית הראשית
 
