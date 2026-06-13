@@ -3382,7 +3382,6 @@ process_product_price_update
 
 ```sql
 
-
 -- יצירת טבלת היסטוריה לתיעוד שינויי מחיר
 CREATE TABLE IF NOT EXISTS product_price_history (
     history_id SERIAL PRIMARY KEY,
@@ -3411,7 +3410,6 @@ BEGIN
     END IF;
 
     RETURN NEW;
-
 EXCEPTION
     WHEN OTHERS THEN
         RAISE EXCEPTION 'Critical error in process_product_price_update: %', SQLERRM;
@@ -3427,8 +3425,6 @@ FOR EACH ROW
 EXECUTE FUNCTION process_product_price_update();
 
 ```
-
-
 
 ###יצירת הטריגר
 הטריגר וטבלת ההיסטוריה נוצרו בהצלחה ב־pgAdmin.
