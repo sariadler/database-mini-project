@@ -3363,23 +3363,25 @@ LIMIT 5;
 
 ## טריגר 3 – בקרת מחיר ותיעוד היסטורי בטבלת מוצרים
 
-`
-
 
 הטריגר:
+
 ```text
 trigger_check_and_log_product_price
 ```
 משתמש בפונקציית הטריגר:
+
 ```text
 process_product_price_update
 ```
 
 מטרת הטריגר היא להבטיח את איכות הנתונים בטבלת Product. הטריגר מבצע שתי פעולות משולבות: הוא חוסם הזנת מחיר לא תקין (אפס או שלילי) לפני ביצוע העדכון, ומתעד באופן אוטומטי כל שינוי במחיר בטבלת היסטוריה, כולל תיעוד של המשתמש שביצע את השינוי
 
-### קוד הטריגר
+###  קוד הטריגר
+
 
 ```sql
+
 
 -- יצירת טבלת היסטוריה לתיעוד שינויי מחיר
 CREATE TABLE IF NOT EXISTS product_price_history (
@@ -3423,7 +3425,10 @@ CREATE TRIGGER trigger_check_and_log_product_price
 BEFORE UPDATE OF P_price ON Product
 FOR EACH ROW
 EXECUTE FUNCTION process_product_price_update();
+
 ```
+
+
 
 ###יצירת הטריגר
 הטריגר וטבלת ההיסטוריה נוצרו בהצלחה ב־pgAdmin.
@@ -3446,6 +3451,7 @@ UPDATE Product SET P_price = -10 WHERE P_id = 1;
 לאחר מכן בוצע עדכון למחיר תקין עבור מוצר 1, והשינוי תועד בטבלת הלוג:
 
 ```sql
+
 UPDATE Product SET P_price = 199.99 WHERE P_id = 1;
 
 SELECT * FROM product_price_history ORDER BY change_date DESC;
