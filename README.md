@@ -3382,7 +3382,6 @@ process_product_price_update
 
 ```sql
 
--- יצירת טבלת היסטוריה לתיעוד שינויי מחיר
 CREATE TABLE IF NOT EXISTS product_price_history (
     history_id SERIAL PRIMARY KEY,
     p_id INT,
