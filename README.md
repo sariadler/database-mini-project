@@ -3467,7 +3467,9 @@ SELECT * FROM product_price_history ORDER BY change_date DESC;
 
 
 <details>
-<summary><b> קוד התוכנית הראשית 1 </b></summary>
+<summary><b>  התוכנית הראשית 1 </b></summary>
+
+###  קוד התוכנית הראשית 1 
 
 ```sql
 DO $$
@@ -3560,7 +3562,7 @@ LIMIT 1;
 
 
 <details>
-<summary><b>  תוכנית ראשית  2 – ניהול אוטומטי של חומרי גלם בעלי מלאי נמוך</b></summary>
+<summary><b>  תוכנית ראשית  2 </b></summary>
 ## תוכנית ראשית  2 – ניהול אוטומטי של חומרי גלם בעלי מלאי נמוך
 
 התוכנית הראשית משלבת בין הפונקציה, הפרוצדורה והטריגר שנכתבו בשלב זה.
@@ -3686,7 +3688,7 @@ LIMIT 5;
 
 
 <details>
-<summary><b>  התוכנית הראשית 3 </b></summary>
+<summary><b>  תוכנית הראשית 3 </b></summary>
 
 
 
@@ -3726,7 +3728,8 @@ ORDER BY change_date DESC LIMIT 1;
 
 ### הרצת התוכנית 
 
-התוכנית הורצה ב-pgAdmin.
+התוכנית הורצה ב-pgAdmin. 
+
  בלשונית ה-Messages ניתן לראות את הודעות המערכת המאשרות את ביצוע שלבי התהליך.
 
 
