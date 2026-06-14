@@ -3467,7 +3467,7 @@ SELECT * FROM product_price_history ORDER BY change_date DESC;
 
 
 <details>
-<summary><b>  התוכנית הראשית 1 </b></summary>
+<summary><b>  התוכנית ראשית 1 </b></summary>
 
 ###  קוד התוכנית הראשית 1 
 
@@ -3688,7 +3688,7 @@ LIMIT 5;
 
 
 <details>
-<summary><b>  תוכנית הראשית 3 </b></summary>
+<summary><b>  תוכנית ראשית 3 </b></summary>
 
 
 
