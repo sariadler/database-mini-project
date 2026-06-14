@@ -2527,8 +2527,10 @@ CURRENT_TIMESTAMP
 ![Supply Order Columns Check](DBProject/dbFiles/supplyorder_columns_check.png)
 
 </details>
+
 ---
-## פונקציות
+
+##  פונקציות
 
 <details>
 <summary><b> פונקציה 1 – חישוב עלות חומרי הגלם עבור דגם </b></summary>
@@ -3222,7 +3224,7 @@ ORDER BY log_id DESC;
 
 
 <details>
-<summary><b>  2 – תיעוד אוטומטי של שינויים במלאי חומרי גלם </b></summary>
+<summary><b> טריגר 2 – תיעוד אוטומטי של שינויים במלאי חומרי גלם</b></summary>
 
 
 ## טריגר 2 – תיעוד אוטומטי של שינויים במלאי חומרי גלם
@@ -3467,7 +3469,7 @@ SELECT * FROM product_price_history ORDER BY change_date DESC;
 
 
 <details>
-<summary><b>  התוכנית ראשית 1 </b></summary>
+<summary><b>  תוכנית ראשית 1 </b></summary>
 
 ###  קוד התוכנית הראשית 1 
 
