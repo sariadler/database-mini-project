@@ -2714,7 +2714,7 @@ WHERE E_id IN (1, 2, 3);
 </details>
 
 ---
-##פורצדורות
+##  פורצדורות
 
 <details>
 <summary><b>  פרוצדורה  1  – יצירת הזמנת אספקה עבור ספק </b></summary>
@@ -3425,7 +3425,7 @@ EXECUTE FUNCTION process_product_price_update();
 
 ```
 
-###יצירת הטריגר
+### יצירת הטריגר
 הטריגר וטבלת ההיסטוריה נוצרו בהצלחה ב־pgAdmin.
 
 ![Create Trigger 3](DBProject/dbFiles/trigger3_create.JPG)
@@ -3463,7 +3463,11 @@ SELECT * FROM product_price_history ORDER BY change_date DESC;
 
 ---
 
-### קוד התוכנית הראשית
+###  התוכנית הראשית
+
+
+<details>
+<summary><b> קוד התוכנית הראשית 1 </b></summary>
 
 ```sql
 DO $$
@@ -3552,6 +3556,11 @@ LIMIT 1;
 
 הצילומים מוכיחים שהתוכנית הראשית רצה ללא תקלות, שילבה בהצלחה בין הפונקציה, הפרוצדורה והטריגר, יצרה הזמנה חדשה ועדכנה את טבלת הלוג.
 
+</details>
+
+
+<details>
+<summary><b>  תוכנית ראשית  2 – ניהול אוטומטי של חומרי גלם בעלי מלאי נמוך</b></summary>
 ## תוכנית ראשית  2 – ניהול אוטומטי של חומרי גלם בעלי מלאי נמוך
 
 התוכנית הראשית משלבת בין הפונקציה, הפרוצדורה והטריגר שנכתבו בשלב זה.
@@ -3673,3 +3682,79 @@ LIMIT 5;
 ![Main Program Log Result](DBProject/dbFiles/main_program_log.png)
 
 הצילומים מוכיחים שהתוכנית הראשית רצה ללא תקלות, שילבה בהצלחה בין הפונקציה, הפרוצדורה והטריגר, עדכנה את מלאי חומרי הגלם ותיעדה את כל השינויים בטבלת הלוג.
+</details>
+
+
+<details>
+<summary><b>  התוכנית הראשית 3 </b></summary>
+
+
+
+## תוכנית ראשית - תהליך עבודה משולב
+
+התוכנית הראשית מבצעת אינטגרציה של שלושת הרכיבים :
+1. הפעלת הפונקציה `get_employee_experience_rank`.
+2. הפעלת הפרוצדורה `update_supply_order_status`.
+3. ביצוע עדכון מחיר המפעיל את הטריגר `trigger_check_and_log_product_price`.
+
+### קוד התוכנית
+
+```sql
+DO $$
+DECLARE
+    v_rank TEXT;
+    v_e_id INT := 101; 
+    v_order_id INT := 501;
+    v_p_id INT := 1;
+BEGIN
+    v_rank := get_employee_experience_rank(v_e_id);
+    RAISE NOTICE 'דרגת העובד % היא: %', v_e_id, v_rank;
+
+    CALL update_supply_order_status(v_order_id, 'Completed');
+    
+    UPDATE Product SET P_price = 250.00 WHERE P_id = v_p_id;
+    
+    RAISE NOTICE 'התהליך הושלם בהצלחה';
+END;
+$$;
+
+SELECT * 
+FROM product_price_history 
+ORDER BY change_date DESC LIMIT 1;
+
+```
+
+### הרצת התוכנית 
+
+התוכנית הורצה ב-pgAdmin.
+ בלשונית ה-Messages ניתן לראות את הודעות המערכת המאשרות את ביצוע שלבי התהליך.
+
+
+![Main Program 3 Run](DBProject/dbFiles/main3_run.png)
+
+### בדיקת סטטוס הזמנה
+
+לאחר הרצת התוכנית, נבדקה טבלת ההזמנות כדי לוודא שסטטוס הזמנה מס' 501 עודכן ל-Completed:
+
+```text
+SELECT * 
+FROM SupplyOrder 
+WHERE order_id = 501;
+```
+![Main Program 3 order](DBProject/dbFiles/main3_order.JPG)
+
+### בדיקת לוג עדכון מחיר
+
+בנוסף, נבדקה טבלת product_price_history כדי לוודא שהטריגר פעל ותיעד את השינוי במחיר:
+
+```text
+SELECT *
+FROM product_price_history
+ORDER BY change_date DESC LIMIT 1;
+```
+
+![Main Program 3 log](DBProject/dbFiles/main3_log.png)
+
+הצילומים מוכיחים שהתוכנית שילבה בהצלחה בין הפונקציה, הפרוצדורה והטריגר, וביצעה את הבקרה המתוכננת על הנתונים ללא שגיאות.
+
+</details>
