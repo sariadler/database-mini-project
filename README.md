@@ -3763,3 +3763,438 @@ ORDER BY change_date DESC LIMIT 1;
 הצילומים מוכיחים שהתוכנית שילבה בהצלחה בין הפונקציה, הפרוצדורה והטריגר, וביצעה את הבקרה המתוכננת על הנתונים ללא שגיאות.
 
 </details>
+
+
+## שלב ה׳ - יצירת ממשק גרפי לעבודה מול בסיס הנתונים
+
+בשלב זה נבנה ממשק גרפי המאפשר עבודה מול בסיס הנתונים של הפרויקט.
+הממשק נבנה באמצעות Python ו־Tkinter, ומתחבר למסד הנתונים PostgreSQL בעזרת הספרייה `psycopg2`.
+
+מטרת הממשק היא לאפשר למשתמש לבצע פעולות בסיסיות על טבלאות בסיס הנתונים בצורה נוחה וידידותית, וכן להריץ שאילתות ותתי־תוכניות שנכתבו בשלבים הקודמים של הפרויקט.
+
+### קשר למסכים שתוכננו בשלב א׳
+
+בשלב א׳ תוכננו מסכי מערכת עבור אגף עיצוב וייצור, שכללו מסך Dashboard ומסכים לניהול מוצרים, חומרי גלם, ספקים, קווי ייצור ומשמרות עובדים.
+
+בשלב ה׳ יצרנו ממשק גרפי בפועל באמצעות Python ו־Tkinter. הממשק אינו העתק מדויק של ה־wireframes משלב א׳, אך הוא ממשיך את אותו רעיון מערכת: ניהול אגף עיצוב וייצור מול בסיס הנתונים.
+
+במקום ליצור מסך נפרד לכל ישות, יצרנו מסך כללי לניהול טבלאות, שממנו ניתן לבחור טבלה ולבצע פעולות CRUD. פתרון זה מאפשר גישה נוחה לכל טבלאות בסיס הנתונים, כולל הטבלאות שנוספו לאחר האינטגרציה.
+
+בנוסף, קיימים מסכים להרצת שאילתות ודוחות משלב ב׳ ולהפעלת פונקציות ופרוצדורות משלב ד׳ מתוך הממשק.
+
+### כלים וטכנולוגיות
+
+בשלב זה השתמשנו בכלים הבאים:
+
+* Python 3.13
+* Tkinter ליצירת הממשק הגרפי
+* psycopg2-binary לחיבור בין Python לבין PostgreSQL
+* PostgreSQL כבסיס הנתונים
+* pgAdmin לצפייה וניהול של בסיס הנתונים
+* Docker להרצת סביבת PostgreSQL ו־pgAdmin
+* Visual Studio Code לעריכת קבצי הקוד
+
+### התקנת חבילות נדרשות
+
+לפני הרצת האפליקציה יש לוודא ש־Python מותקן במחשב.
+בנוסף, התקנו את הספרייה המאפשרת חיבור ל־PostgreSQL באמצעות הפקודה:
+
+```bash
+py -m pip install psycopg2-binary
+```
+
+לאחר ההתקנה בדקנו שהחבילה הותקנה בהצלחה באמצעות:
+
+```bash
+py -m pip show psycopg2-binary
+```
+
+### חיבור למסד הנתונים
+
+החיבור למסד הנתונים מתבצע בקובץ `db.py`.
+קובץ זה מכיל פונקציה בשם `get_connection`, אשר יוצרת חיבור למסד הנתונים `stage4_test_db`.
+
+פרטי החיבור בהם השתמשנו:
+
+```text
+host: localhost
+port: 5432
+database: stage4_test_db
+user: postgres
+password: 1234
+```
+
+לפני בניית המסכים בדקנו שהחיבור למסד הנתונים תקין באמצעות הקובץ `test_connection.py`.
+כאשר ההרצה הצליחה התקבלה ההודעה:
+
+```text
+Connected successfully!
+Database: stage4_test_db
+```
+
+### מבנה הקבצים של האפליקציה
+
+קבצי הממשק נמצאים בתיקייה:
+
+```text
+DBProject/stageE/app
+```
+
+מבנה הקבצים:
+
+```text
+app/
+├── db.py
+├── main.py
+├── tables_screen.py
+├── queries_screen.py
+├── programs_screen.py
+└── test_connection.py
+```
+
+תיקיית התמונות נמצאת ב:
+
+```text
+DBProject/stageE/screenshots
+```
+
+### מסכי המערכת
+
+האפליקציה כוללת את המסכים הבאים:
+
+1. מסך כניסה ראשי
+   במסך זה קיימים כפתורים למעבר למסכי המערכת השונים:
+
+   * ניהול טבלאות ופעולות CRUD
+   * הרצת שאילתות משלב ב׳
+   * הרצת פונקציות ופרוצדורות משלב ד׳
+   * יציאה מהמערכת
+
+2. מסך ניהול טבלאות
+   במסך זה ניתן לבחור טבלה מתוך בסיס הנתונים, לטעון את הנתונים שלה ולהציג אותם בטבלה גרפית.
+   המסך מיועד לביצוע פעולות CRUD:
+
+   * שליפה - Select
+   * הוספה - Insert
+   * עדכון - Update
+   * מחיקה - Delete
+
+3. מסך שאילתות
+   במסך זה ניתן להריץ שאילתות שנכתבו בשלב ב׳ של הפרויקט ולהציג את התוצאות בצורה גרפית.
+
+4. מסך פונקציות ופרוצדורות
+   במסך זה ניתן להפעיל פונקציות ופרוצדורות שנכתבו בשלב ד׳ של הפרויקט, לדוגמה חישוב דירוג ניסיון של עובד או עדכון סטטוס הזמנה.
+
+### הוראות הפעלה
+
+יש לוודא ש־Docker פועל ושה־containers של PostgreSQL ו־pgAdmin פעילים.
+
+במידה וה־containers אינם פעילים, ניתן להפעיל אותם מתיקיית הפרויקט הראשית באמצעות:
+
+```bash
+docker compose up -d
+```
+
+לאחר מכן יש להיכנס לתיקיית האפליקציה:
+
+```bash
+cd DBProject\stageE\app
+```
+
+ולהריץ את האפליקציה:
+
+```bash
+py main.py
+```
+
+לאחר ההרצה ייפתח מסך הכניסה הראשי של המערכת.
+
+### תמונות מסך
+
+#### מסך כניסה ראשי
+
+![Main Screen](DBProject/stageE/screenshots/01_main_screen.png)
+
+#### מסך ניהול טבלאות ושליפת נתונים
+
+במסך זה ניתן לראות טעינה של 100 רשומות מטבלת `employee` מתוך בסיס הנתונים.
+
+![Tables Screen - Load Employee](DBProject/stageE/screenshots/02_tables_screen_load_employee.png)
+
+#### טעינת טבלה נוספת
+
+![Tables Screen - Load Supply Order](DBProject/stageE/screenshots/03_tables_screen_load_supplyorder.png)
+
+בנוסף לשליפת נתונים רגילה, במסך ניהול הטבלאות המערכת מזהה מפתחות זרים ומבצעת `JOIN` אוטומטי לטבלה שאליה המפתח מצביע.
+
+כך, במקום להציג למשתמש רק ערך מספרי של מפתח זר, מוצג ערך קריא וברור יותר מתוך הטבלה המקושרת.
+
+לדוגמה, בטבלת `required_m` קיימים מפתחות זרים לדגם ולחומר גלם.
+במקום להציג רק את `model_id` ואת `r_id`, המערכת מציגה עמודות תצוגה ידידותיות:
+
+```text
+model_id_display
+r_id_display
+```
+
+בעמודות אלו ניתן לראות את שם הדגם ואת צבע/שם חומר הגלם שאליו המפתח מצביע.
+
+![Friendly Foreign Keys Required Materials](DBProject/stageE/screenshots/03_friendly_foreign_keys_required_m.png)
+
+בדוגמה נוספת, בטבלת `supplied_by` קיימים מפתחות זרים לספק ולחומר גלם.
+במקום להציג רק מזהים מספריים, המערכת מציגה ערכים קריאים כגון שם הספק ופרטי חומר הגלם.
+
+![Friendly Foreign Keys Supplied By](DBProject/stageE/screenshots/04_friendly_foreign_keys_supplied_by.png)
+
+
+#### פעולת Insert
+
+במסך ניהול הטבלאות בחרנו את הטבלה `employee` ולחצנו על הכפתור `Insert`.
+לאחר מכן נפתח חלון חדש שבו ניתן למלא את ערכי השדות של הרשומה החדשה.
+
+בדוגמה זו הוספנו עובד חדש לטבלת `employee` עם הנתונים הבאים:
+
+```text
+e_id: 9999
+e_name: Test
+e_familyname: Employee
+e_date: 2026-06-15
+role: Tester
+employee_phone: 0500000000
+salary: 5000
+```
+
+המערכת קיבלה את הנתונים מהמשתמש וביצעה פעולת `INSERT` למסד הנתונים.
+
+צילום מסך של טופס ההכנסה:
+
+![Insert Employee Form](DBProject/stageE/screenshots/04_insert_employee_form.png)
+
+לאחר לחיצה על הכפתור `Insert`, התקבלה הודעת הצלחה המאשרת שהרשומה נוספה בהצלחה לטבלה.
+
+צילום מסך של הודעת ההצלחה:
+
+![Insert Success Message](DBProject/stageE/screenshots/insert_success_message.png)
+
+כדי לוודא שההוספה באמת בוצעה במסד הנתונים, הרצנו ב־Query Tool את השאילתה הבאה:
+
+```sql
+SELECT *
+FROM employee
+WHERE e_id = 9999;
+```
+
+השאילתה החזירה את העובד החדש שנוסף, ולכן ניתן לראות שפעולת ה־Insert בוצעה בהצלחה.
+
+צילום מסך של תוצאת הבדיקה:
+
+![Insert Employee Result](DBProject/stageE/screenshots/05_insert_employee_result.png)
+
+
+#### פעולת Update
+
+במסך ניהול הטבלאות בחרנו את הטבלה `employee` ולחצנו על הכפתור `Update`.
+
+בהתאם לדרישת השלב, בזמן עדכון המשתמש מזין תחילה את המפתח הראשי של הרשומה, והמערכת מביאה את שאר השדות של אותה רשומה.
+בדוגמה זו הזנו את המפתח:
+
+```text
+e_id = 9999
+```
+
+לאחר לחיצה על `Load Row`, המערכת שלפה את פרטי העובד מתוך בסיס הנתונים והציגה את כל השדות בטופס העדכון.
+
+![Update Employee Load Row](DBProject/stageE/screenshots/06_update_employee_load_row.png)
+
+לאחר מכן עדכנו את ערכי השדות הבאים:
+
+```text
+role: Senior Tester
+salary: 7000
+```
+
+ולחצנו על הכפתור `Update`. לאחר ביצוע העדכון התקבלה הודעת הצלחה המאשרת שהרשומה עודכנה במסד הנתונים.
+
+![Update Employee Success](DBProject/stageE/screenshots/07_update_employee_success.png)
+
+כדי לוודא שהעדכון בוצע בפועל, הרצנו ב־Query Tool את השאילתה הבאה:
+
+```sql
+SELECT *
+FROM employee
+WHERE e_id = 9999;
+```
+
+בתוצאת השאילתה ניתן לראות שהרשומה של העובד עודכנה, והשדות `role` ו־`salary` קיבלו את הערכים החדשים.
+
+![Update Employee Result](DBProject/stageE/screenshots/08_update_employee_result.png)
+
+
+#### פעולת Delete
+
+במסך ניהול הטבלאות בחרנו את הטבלה `employee` ולחצנו על הכפתור `Delete`.
+
+בחלון המחיקה המשתמש נדרש להזין את המפתח הראשי של הרשומה שאותה הוא רוצה למחוק.
+בדוגמה זו מחקנו את העובד שהוספנו קודם, לפי המפתח:
+
+```text
+e_id = 9999
+```
+
+צילום מסך של חלון המחיקה עם המפתח שהוזן:
+
+![Delete Employee Form](DBProject/stageE/screenshots/09_delete_employee_form.png)
+
+לאחר לחיצה על הכפתור `Delete`, המערכת הציגה הודעת אישור כדי לוודא שהמשתמש אכן רוצה למחוק את הרשומה.
+
+![Delete Employee Confirm](DBProject/stageE/screenshots/10_delete_employee_confirm.png)
+
+לאחר אישור המחיקה, התקבלה הודעת הצלחה המאשרת שהרשומה נמחקה בהצלחה ממסד הנתונים.
+
+![Delete Employee Success](DBProject/stageE/screenshots/11_delete_employee_success.png)
+
+כדי לוודא שהמחיקה בוצעה בפועל, הרצנו ב־Query Tool את השאילתה הבאה:
+
+```sql
+SELECT *
+FROM employee
+WHERE e_id = 9999;
+```
+
+השאילתה החזירה 0 שורות, ולכן ניתן לראות שהרשומה נמחקה בהצלחה מהטבלה.
+
+![Delete Employee Result](DBProject/stageE/screenshots/12_delete_employee_result.png)
+
+
+#### הרצת שאילתות משלב ב׳
+
+במסך זה ניתן להריץ שאילתות שנכתבו בשלב ב׳ של הפרויקט, ולהציג את התוצאות שלהן בצורה גרפית בתוך טבלה.
+
+במסך קיים שדה בחירה שבו ניתן לבחור את השאילתה הרצויה, ולאחר מכן ללחוץ על הכפתור `Run Query`.
+המערכת מתחברת למסד הנתונים, מריצה את השאילתה ומציגה את התוצאות בטבלה.
+
+השאילתה הראשונה מציגה את מספר המוצרים בכל מחלקה:
+
+```sql
+SELECT 
+    d.de_name AS department_name,
+    COUNT(p.p_id) AS total_products
+FROM department d
+JOIN product_line pl ON d.pl_id = pl.pl_id
+JOIN product p ON pl.p_id = p.p_id
+GROUP BY d.de_name
+ORDER BY total_products DESC;
+```
+
+צילום מסך של תוצאת השאילתה הראשונה:
+
+![Stage B Query Products By Department](DBProject/stageE/screenshots/13_stage_b_query_products_by_department.png)
+
+השאילתה השנייה מציגה את מספר הדגמים בכל קולקציה לפי עונה ושנה:
+
+```sql
+SELECT
+    collection_name,
+    season,
+    year,
+    COUNT(model_id) AS total_models
+FROM view_models_collections
+GROUP BY collection_name, season, year
+ORDER BY year DESC, total_models DESC;
+```
+
+צילום מסך של תוצאת השאילתה השנייה:
+
+![Stage B Query Models By Collection](DBProject/stageE/screenshots/14_stage_b_query_models_by_collection.png)
+
+
+#### הרצת פונקציות ופרוצדורות משלב ד׳
+
+במסך זה ניתן להפעיל פונקציות ופרוצדורות שנכתבו בשלב ד׳ של הפרויקט ישירות מתוך הממשק הגרפי.
+
+המסך כולל שדות קלט עבור:
+
+* מספר עובד (`Employee ID`)
+* מספר דגם (`Model ID`)
+* מספר הזמנה (`Order ID`)
+* סטטוס חדש להזמנה (`New Status`)
+
+לאחר הזנת הנתונים ניתן ללחוץ על הכפתור המתאים, והמערכת מריצה את הפונקציה או הפרוצדורה מול בסיס הנתונים ומציגה את התוצאה בטבלה.
+
+צילום מסך של מסך הפונקציות והפרוצדורות לפני הרצה:
+
+![Stage D Programs Screen Empty](DBProject/stageE/screenshots/15_stage_d_programs_screen_empty.png)
+
+##### פונקציה 1 - דירוג ניסיון של עובד
+
+הפונקציה `get_employee_experience_rank` מקבלת מספר עובד ומחזירה את דירוג הניסיון שלו לפי תאריך תחילת העבודה.
+
+בדוגמה זו הרצנו את הפונקציה עבור:
+
+```text
+Employee ID = 1
+```
+
+הקריאה שבוצעה במסד הנתונים:
+
+```sql
+SELECT 
+    1 AS employee_id,
+    get_employee_experience_rank(1) AS experience_rank;
+```
+
+בתוצאה ניתן לראות שהפונקציה החזירה את דירוג הניסיון של העובד.
+
+![Stage D Employee Rank Function](DBProject/stageE/screenshots/16_stage_d_employee_rank_function.png)
+
+##### פונקציה 2 - חישוב עלות חומרי גלם לדגם
+
+הפונקציה `calculate_model_material_cost` מקבלת מספר דגם ומחזירה את עלות חומרי הגלם הנדרשים עבור אותו דגם.
+
+בדוגמה זו הרצנו את הפונקציה עבור:
+
+```text
+Model ID = 130
+```
+
+הקריאה שבוצעה במסד הנתונים:
+
+```sql
+SELECT 
+    130 AS model_id,
+    calculate_model_material_cost(130) AS total_material_cost;
+```
+
+בתוצאה ניתן לראות שהפונקציה רצה והחזירה את עלות חומרי הגלם עבור הדגם שנבחר.
+
+![Stage D Model Cost Function](DBProject/stageE/screenshots/17_stage_d_model_cost_function.png)
+
+##### פרוצדורה - עדכון סטטוס הזמנה
+
+הפרוצדורה `update_supply_order_status` מקבלת מספר הזמנה וסטטוס חדש, ומעדכנת את סטטוס ההזמנה בטבלת `supplyorder`.
+
+בדוגמה זו הרצנו את הפרוצדורה עבור:
+
+```text
+Order ID = 1
+New Status = Delivered
+```
+
+הקריאה שבוצעה במסד הנתונים:
+
+```sql
+CALL update_supply_order_status(1, 'Delivered');
+```
+
+לאחר הרצת הפרוצדורה המערכת הציגה את ההזמנה המעודכנת, כולל הסטטוס החדש ותאריך העדכון.
+
+![Stage D Update Order Status Procedure](DBProject/stageE/screenshots/18_stage_d_update_order_status_procedure.png)
+
+לאחר ביצוע הפעולה התקבלה הודעת הצלחה המאשרת שהפרוצדורה רצה בהצלחה.
+
+![Stage D Update Order Status Success](DBProject/stageE/screenshots/19_stage_d_update_order_status_success.png)
+
+### סיכום
+
+בשלב זה יצרנו ממשק גרפי ידידותי למשתמש, המתחבר לבסיס הנתונים ומאפשר ביצוע פעולות בסיסיות על הטבלאות.
+בנוסף, הממשק מאפשר להריץ שאילתות ותתי־תוכניות שנכתבו בשלבים קודמים, ובכך מחבר את כל חלקי הפרויקט למערכת אחת שניתן להפעיל בצורה נוחה.
