@@ -25,7 +25,7 @@ BEGIN
     IF NOT FOUND THEN
         RAISE EXCEPTION 'Employee with ID % does not exist', p_e_id;
     END IF;
-
+    
     -- חישוב הפרש השנים בין היום לתאריך הגיוס
     v_years_diff := EXTRACT(YEAR FROM AGE(CURRENT_DATE, v_hire_date));
 

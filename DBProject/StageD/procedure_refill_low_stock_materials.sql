@@ -50,7 +50,7 @@ BEGIN
         SET stock_quantity = v_new_quantity
         WHERE r_id = v_material.r_id;
 
-        GET DIAGNOSTICS v_last_update_count = ROW_COUNT;
+        GET DIAGNOSTICS v_last_update_count = ROW_COUNT; --מחזיר את מספר השורות שעודכנו בפקודה האחרונה(בדכ אחד)
         v_updated_count := v_updated_count + v_last_update_count;
     END LOOP;
 

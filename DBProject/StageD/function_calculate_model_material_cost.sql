@@ -6,12 +6,12 @@
 -- =========================================================
 
 CREATE OR REPLACE FUNCTION calculate_model_material_cost(p_model_id INT)
-RETURNS NUMERIC
+RETURNS NUMERIC --מחיר עם נקודה עשרונית
 LANGUAGE plpgsql
 AS $$
 DECLARE
     -- Explicit cursor: goes over all raw materials required for the given model
-    material_cursor CURSOR FOR
+    material_cursor CURSOR FOR -- היה אפשר להשתמש גם בSUM 
         SELECT 
             rm.r_id,
             rm.amount,
@@ -22,7 +22,7 @@ DECLARE
         GROUP BY rm.r_id, rm.amount;
 
     -- Record variable for each row from the cursor
-    material_record RECORD;
+    material_record RECORD; --  מחזיק שורה אחת מהתוצאה של ה-CURSOR
 
     -- Total cost result
     total_cost NUMERIC := 0;
@@ -41,8 +41,8 @@ BEGIN
     END IF;
 
     -- Open explicit cursor
-    OPEN material_cursor;
-
+    OPEN material_cursor; 
+    
     LOOP
         -- Fetch next row into record
         FETCH material_cursor INTO material_record;

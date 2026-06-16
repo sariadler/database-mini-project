@@ -26,6 +26,7 @@ BEGIN
         RAISE EXCEPTION 'Supplier with id % does not exist', p_supplier_id;
     END IF;
 
+    --implicit cursor
     -- Print supplier materials using implicit cursor
     FOR supplier_material IN
         SELECT r_id, unit_price
