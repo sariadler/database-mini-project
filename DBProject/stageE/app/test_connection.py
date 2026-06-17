@@ -29,7 +29,7 @@ print("Starting connection tests...")
 
 try:
     try:
-        # בדיקת התחברות ראשונית מול שרת א' (הגדרות המחשב אחד)
+        # בדיקת התחברות ראשונית מול שרת א' (הגדרות המחשב שלה)
         print("Attempting connection with credentials (User: postgres, DB: stage4_test_db)...")
         conn = psycopg2.connect(
             host="localhost",
@@ -39,7 +39,7 @@ try:
             password="1234"
         )
     except psycopg2.OperationalError:
-        # מעבר אוטומטי לבדיקת שרת ב' (הגדרות המחשב שני)
+        # מעבר אוטומטי לבדיקת שרת ב' (הגדרות המחשב שלך)
         print("First attempt failed. Switching to credentials (User: Chani, DB: Project_DB)...")
         conn = psycopg2.connect(
             host="localhost",

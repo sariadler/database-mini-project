@@ -55,18 +55,16 @@ def main():
 '''
 
 # ===================================================================
-# 🚀 העיצוב החדש והדו-לשוני - תיקון מלא ללחיצה מיידית מכל נקודה
+# 🚀 העיצוב המתוקן (בטוח להרצה)
 # ===================================================================
 
 BG_COLOR = "#243B55"          
 TEXT_MAIN = "#FFFFFF"         
 TEXT_SUB = "#E2E8F0"          
-
 COLOR_CRUD = "#2B6CB0"        
 COLOR_QUERIES = "#2F855A"     
 COLOR_STAGED = "#D69E2E"      
 COLOR_EXIT = "#C53030"        
-
 HOVER_CRUD = "#2A4365"
 HOVER_QUERIES = "#22543D"
 HOVER_STAGED = "#975A16"
@@ -81,7 +79,7 @@ def main():
     title = tk.Label(
         root,
         text="מערכת ניהול בסיס נתונים\nDatabase Management System",
-        font=("Segoe UI", 24, "bold"),
+        font=("Arial", 24, "bold"), # הוחלף מ-Segoe UI ל-Arial בטוח
         bg=BG_COLOR,
         fg=TEXT_MAIN,
         justify="center"
@@ -91,7 +89,7 @@ def main():
     subtitle = tk.Label(
         root,
         text="מערכת מידע וניהול עבור רשת הנעליים | Shoes Enterprise System",
-        font=("Segoe UI", 12, "italic"),
+        font=("Arial", 12), # הוסר ה-"italic" שעלול היה לגרום לבעיות
         bg=BG_COLOR,
         fg=TEXT_SUB
     )
@@ -100,51 +98,39 @@ def main():
     grid_container = tk.Frame(root, bg=BG_COLOR)
     grid_container.pack(expand=True, fill="both", padx=60, pady=10)
 
-    # פונקציה משופרת: מחברת את אירוע הלחיצה גם לטקסטים עצמם!
     def create_menu_box(parent, row, col, title_text, desc_text, command, bg_color, hover_color):
         box = tk.Button(
-            parent,
-            command=command,
-            bg=bg_color,
-            activebackground=hover_color,
-            bd=0,
-            relief="flat",
-            cursor="hand2",
-            padx=15,
-            pady=20
+            parent, command=command, bg=bg_color, activebackground=hover_color,
+            bd=0, relief="flat", cursor="hand2", padx=15, pady=20
         )
         
         lbl_title = tk.Label(
-            box, text=title_text, font=("Segoe UI", 14, "bold"),
+            box, text=title_text, font=("Arial", 14, "bold"),
             bg=bg_color, fg="white", justify="center", wraplength=260
         )
         lbl_title.pack(pady=(15, 5))
         
         lbl_desc = tk.Label(
-            box, text=desc_text, font=("Segoe UI", 10),
+            box, text=desc_text, font=("Arial", 10),
             bg=bg_color, fg="#E2E8F0", justify="center", wraplength=260
         )
         lbl_desc.pack(pady=(0, 15))
 
-        # 🔥 תיקון קריטי: אם המשתמש לוחץ על הטקסט, זה מפעיל מיד את הלחיצה של הכפתור!
         lbl_title.bind("<Button-1>", lambda e: box.invoke())
         lbl_desc.bind("<Button-1>", lambda e: box.invoke())
 
-        # אפקטים של מעבר עכבר (Hover)
         def on_enter(e):
             box.config(bg=hover_color)
             lbl_title.config(bg=hover_color)
             lbl_desc.config(bg=hover_color)
-            
         def on_leave(e):
             box.config(bg=bg_color)
             lbl_title.config(bg=bg_color)
             lbl_desc.config(bg=bg_color)
 
-        box.bind("<Enter>", on_enter)
-        box.bind("<Leave>", on_leave)
-        lbl_title.bind("<Enter>", on_enter)
-        lbl_desc.bind("<Enter>", on_enter)
+        box.bind("<Enter>", on_enter); box.bind("<Leave>", on_leave)
+        lbl_title.bind("<Enter>", on_enter); lbl_title.bind("<Leave>", on_leave)
+        lbl_desc.bind("<Enter>", on_enter); lbl_desc.bind("<Leave>", on_leave)
 
         box.grid(row=row, column=col, padx=20, pady=20, sticky="nsew")
         return box
@@ -154,37 +140,10 @@ def main():
     grid_container.grid_rowconfigure(0, weight=1)
     grid_container.grid_rowconfigure(1, weight=1)
 
-    # 🟦 קובייה 1: ניהול טבלאות
-    create_menu_box(
-        grid_container, 0, 0,
-        "⚙️   ניהול טבלאות\nCRUD Tables",
-        "הוספה, קריאה, עדכון ומחיקה של נתונים בבסיס הנתונים\n(Create, Read, Update, Delete)",
-        open_tables_screen, COLOR_CRUD, HOVER_CRUD
-    )
-
-    # 🟩 קובייה 2: שאילתות ודוחות
-    create_menu_box(
-        grid_container, 0, 1,
-        "📊   שאילתות ודוחות\nQueries & Reports",
-        "הפקת דוחות מורכבים והרצת שאילתות שליפת נתונים\n(Stage B Queries)",
-        open_queries_screen, COLOR_QUERIES, HOVER_QUERIES
-    )
-
-    # 🟨 קובייה 3: פונקציות ופרוצדורות
-    create_menu_box(
-        grid_container, 1, 0,
-        "⚡   פונקציות ופרוצדורות\nStored Programs",
-        "הפעלת פרוצדורות שמורות, פונקציות וטריגרים מול השרת\n(Stage D Procedures)",
-        open_programs_screen, COLOR_STAGED, HOVER_STAGED
-    )
-
-    # 🟥 קובייה 4: יציאה
-    create_menu_box(
-        grid_container, 1, 1,
-        "❌   יציאה מהמערכת\nExit System",
-        "סגירה בטוחה של החיבור למסד הנתונים וסגירת האפליקציה",
-        root.destroy, COLOR_EXIT, HOVER_EXIT
-    )
+    create_menu_box(grid_container, 0, 0, "⚙️  ניהול טבלאות", "CRUD Tables", open_tables_screen, COLOR_CRUD, HOVER_CRUD)
+    create_menu_box(grid_container, 0, 1, "📊  שאילתות ודוחות", "Queries & Reports", open_queries_screen, COLOR_QUERIES, HOVER_QUERIES)
+    create_menu_box(grid_container, 1, 0, "⚡  פרוצדורות", "Stored Programs", open_programs_screen, COLOR_STAGED, HOVER_STAGED)
+    create_menu_box(grid_container, 1, 1, "❌  יציאה", "Exit System", root.destroy, COLOR_EXIT, HOVER_EXIT)
 
     root.mainloop()
 
