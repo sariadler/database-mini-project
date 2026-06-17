@@ -2425,6 +2425,13 @@ ORDER BY year DESC, total_models DESC;
 
 </details>
 
+
+---
+<details>
+<summary><b>  שלב ד׳ – תכנות ב־PL/pgSQL </b></summary>
+
+
+
 ## שלב ד׳ – תכנות ב־PL/pgSQL
 
 בשלב זה נוספו לבסיס הנתונים שינויים הנדרשים לצורך מימוש פונקציות, פרוצדורות וטריגרים בשפת `PL/pgSQL`.
@@ -3732,6 +3739,14 @@ ORDER BY change_date DESC LIMIT 1;
 </details>
 
 
+</details>
+
+
+---
+<details>
+<summary><b>   שלב ה׳ - יצירת ממשק גרפי לעבודה מול בסיס הנתונים  </b></summary>
+
+
 ## שלב ה׳ - יצירת ממשק גרפי לעבודה מול בסיס הנתונים
 
 בשלב זה נבנה ממשק גרפי המאפשר עבודה מול בסיס הנתונים של הפרויקט.
@@ -3880,7 +3895,7 @@ py main.py
 
 #### מסך כניסה ראשי
 
-![Main Screen](DBProject/stageE/screenshots/01_main_screen.png)
+![Main Screen](DBProject/stageE/screenshots/MainScreen.JPG)
 
 #### מסך ניהול טבלאות ושליפת נתונים
 
@@ -4165,3 +4180,7 @@ CALL update_supply_order_status(1, 'Delivered');
 
 בשלב זה יצרנו ממשק גרפי ידידותי למשתמש, המתחבר לבסיס הנתונים ומאפשר ביצוע פעולות בסיסיות על הטבלאות.
 בנוסף, הממשק מאפשר להריץ שאילתות ותתי־תוכניות שנכתבו בשלבים קודמים, ובכך מחבר את כל חלקי הפרויקט למערכת אחת שניתן להפעיל בצורה נוחה.
+
+
+
+</details>
