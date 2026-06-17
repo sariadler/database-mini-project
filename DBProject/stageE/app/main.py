@@ -1,151 +1,242 @@
-import tkinter as tk
-from tkinter import ttk
+import customtkinter as ctk
 
 from tables_screen import open_tables_screen
 from queries_screen import open_queries_screen
 from programs_screen import open_programs_screen
 
-'''
-===================================================================
-📌 הקוד המקורי של חברה שלך (שמור כהערה - לא נוגעות בו):
-===================================================================
-def main():
-    root = tk.Tk()
-    root.title("Database Project - Stage E")
-    root.geometry("820x560")
-    root.configure(bg="#F0F4F8")
 
-    style = ttk.Style()
-    style.theme_use("clam")
+ctk.set_appearance_mode("light")
+ctk.set_default_color_theme("blue")
 
-    style.configure("Main.TButton", font=("Arial", 12, "bold"), padding=10, foreground="white")
-    style.configure("Exit.TButton", font=("Arial", 12, "bold"), padding=10, background="#D32F2F", foreground="white")
-    style.map("Exit.TButton", background=[("active", "#B71C1C")])
 
-    container = tk.Frame(root, bg="#FFFFFF", highlightbackground="#D9E2EC", highlightthickness=1)
-    container.place(relx=0.5, rely=0.5, anchor="center", width=620, height=460)
+BG = "#DDEBFF"
+MAIN_CARD = "#F8FAFC"
 
-    title = tk.Label(container, text="PROD-SYS v1.0", font=("Arial", 26, "bold"), bg="#FFFFFF", fg="#102A43")
-    title.pack(pady=(35, 10))
+TEXT_MAIN = "#0F172A"
+TEXT_SUB = "#64748B"
 
-    subtitle = tk.Label(container, text="Design & Production Departmant Database System", font=("Arial", 13, "italic"), bg="#FFFFFF", fg="#486581")
-    subtitle.pack(pady=(0, 30))
+BLUE = "#2563EB"
+BLUE_HOVER = "#1D4ED8"
 
-    btn_crud = ttk.Button(container, text="Manage Database Tables - CRUD", command=open_tables_screen, style="Crud.TButton", width=38)
-    style.configure("Crud.TButton", parent="Main.TButton", background="#1976D2")
-    style.map("Crud.TButton", background=[("active", "#1565C0")])
-    btn_crud.pack(pady=10)
+GREEN = "#059669"
+GREEN_HOVER = "#047857"
 
-    btn_queries = ttk.Button(container, text="Run Stage B Reports / Queries", command=open_queries_screen, style="Queries.TButton", width=38)
-    style.configure("Queries.TButton", parent="Main.TButton", background="#1976D2")
-    style.map("Queries.TButton", background=[("active", "#1565C0")])
-    btn_queries.pack(pady=10)
+PURPLE = "#7C3AED"
+PURPLE_HOVER = "#6D28D9"
 
-    btn_programs = ttk.Button(container, text="Run Stage D Functions / Procedurs", command=open_programs_screen, style="Programs.TButton", width=38)
-    style.configure("Programs.TButton", parent="Main.TButton", background="#1976D2")
-    style.map("Programs.TButton", background=[("active", "#1565C0")])
-    btn_programs.pack(pady=10)
+RED = "#DC2626"
+RED_HOVER = "#B91C1C"
 
-    ttk.Button(container, text="Exit", command=root.destroy, style="Exit.TButton", width=38)
-    btn_programs.pack(pady=10)
-    container.winfo_children()[-1].pack(pady=(25, 0))
-
-    root.mainloop()
-===================================================================
-'''
-
-# ===================================================================
-# 🚀 העיצוב המתוקן (בטוח להרצה)
-# ===================================================================
-
-BG_COLOR = "#243B55"          
-TEXT_MAIN = "#FFFFFF"         
-TEXT_SUB = "#E2E8F0"          
-COLOR_CRUD = "#2B6CB0"        
-COLOR_QUERIES = "#2F855A"     
-COLOR_STAGED = "#D69E2E"      
-COLOR_EXIT = "#C53030"        
-HOVER_CRUD = "#2A4365"
-HOVER_QUERIES = "#22543D"
-HOVER_STAGED = "#975A16"
-HOVER_EXIT = "#9B2C2C"
 
 def main():
-    root = tk.Tk()
-    root.title("מערכת ניהול - תפריט ראשי")
-    root.geometry("920x720")  
-    root.configure(bg=BG_COLOR)
+    root = ctk.CTk()
+    root.title("PROD-SYS Dashboard - Stage E")
+    root.geometry("1120x760")
+    root.minsize(1000, 680)
+    root.configure(fg_color=BG)
 
-    title = tk.Label(
+    main_card = ctk.CTkFrame(
         root,
-        text="מערכת ניהול בסיס נתונים\nDatabase Management System",
-        font=("Arial", 24, "bold"), # הוחלף מ-Segoe UI ל-Arial בטוח
-        bg=BG_COLOR,
-        fg=TEXT_MAIN,
-        justify="center"
+        fg_color=MAIN_CARD,
+        corner_radius=35,
+        border_width=1,
+        border_color="#C7D2FE"
     )
-    title.pack(pady=(40, 5))
+    main_card.pack(expand=True, fill="both", padx=35, pady=30)
 
-    subtitle = tk.Label(
-        root,
-        text="מערכת מידע וניהול עבור רשת הנעליים | Shoes Enterprise System",
-        font=("Arial", 12), # הוסר ה-"italic" שעלול היה לגרום לבעיות
-        bg=BG_COLOR,
-        fg=TEXT_SUB
+    # =========================
+    # Header
+    # =========================
+    header = ctk.CTkFrame(main_card, fg_color="transparent")
+    header.pack(pady=(35, 10))
+
+    title = ctk.CTkLabel(
+        header,
+        text="📊  PROD-SYS Dashboard",
+        font=("Arial", 38, "bold"),
+        text_color=TEXT_MAIN
     )
-    subtitle.pack(pady=(0, 35))
+    title.pack()
 
-    grid_container = tk.Frame(root, bg=BG_COLOR)
-    grid_container.pack(expand=True, fill="both", padx=60, pady=10)
+    subtitle = ctk.CTkLabel(
+        header,
+        text="Shoes Enterprise Database Management System",
+        font=("Arial", 16),
+        text_color=TEXT_SUB
+    )
+    subtitle.pack(pady=(8, 0))
 
-    def create_menu_box(parent, row, col, title_text, desc_text, command, bg_color, hover_color):
-        box = tk.Button(
-            parent, command=command, bg=bg_color, activebackground=hover_color,
-            bd=0, relief="flat", cursor="hand2", padx=15, pady=20
+    line = ctk.CTkFrame(
+        main_card,
+        fg_color="#2563EB",
+        height=3,
+        width=180,
+        corner_radius=10
+    )
+    line.pack(pady=(12, 28))
+
+    # =========================
+    # Menu
+    # =========================
+    menu = ctk.CTkFrame(main_card, fg_color="transparent")
+    menu.pack(expand=True, fill="both", padx=45, pady=10)
+
+    menu.grid_columnconfigure(0, weight=1)
+    menu.grid_columnconfigure(1, weight=1)
+    menu.grid_rowconfigure(0, weight=1)
+    menu.grid_rowconfigure(1, weight=1)
+
+    def create_dashboard_card(row, col, icon, title_text, desc_text, color, hover_color, command):
+        shadow = ctk.CTkFrame(
+            menu,
+            fg_color="#CBD5E1",
+            corner_radius=30
         )
-        
-        lbl_title = tk.Label(
-            box, text=title_text, font=("Arial", 14, "bold"),
-            bg=bg_color, fg="white", justify="center", wraplength=260
+        shadow.grid(row=row, column=col, padx=18, pady=18, sticky="nsew")
+
+        card = ctk.CTkFrame(
+            shadow,
+            fg_color=color,
+            corner_radius=30
         )
-        lbl_title.pack(pady=(15, 5))
-        
-        lbl_desc = tk.Label(
-            box, text=desc_text, font=("Arial", 10),
-            bg=bg_color, fg="#E2E8F0", justify="center", wraplength=260
+        card.pack(expand=True, fill="both", padx=(0, 0), pady=(0, 6))
+
+        content = ctk.CTkFrame(card, fg_color="transparent")
+        content.pack(expand=True, fill="both", padx=28, pady=26)
+
+        icon_box = ctk.CTkFrame(
+            content,
+            fg_color=hover_color,
+            corner_radius=22,
+            width=105,
+            height=105
         )
-        lbl_desc.pack(pady=(0, 15))
+        icon_box.pack(side="left", padx=(0, 28))
+        icon_box.pack_propagate(False)
 
-        lbl_title.bind("<Button-1>", lambda e: box.invoke())
-        lbl_desc.bind("<Button-1>", lambda e: box.invoke())
+        icon_label = ctk.CTkLabel(
+            icon_box,
+            text=icon,
+            font=("Arial", 45, "bold"),
+            text_color="white"
+        )
+        icon_label.pack(expand=True)
 
-        def on_enter(e):
-            box.config(bg=hover_color)
-            lbl_title.config(bg=hover_color)
-            lbl_desc.config(bg=hover_color)
-        def on_leave(e):
-            box.config(bg=bg_color)
-            lbl_title.config(bg=bg_color)
-            lbl_desc.config(bg=bg_color)
+        text_frame = ctk.CTkFrame(content, fg_color="transparent")
+        text_frame.pack(side="left", expand=True, fill="both")
 
-        box.bind("<Enter>", on_enter); box.bind("<Leave>", on_leave)
-        lbl_title.bind("<Enter>", on_enter); lbl_title.bind("<Leave>", on_leave)
-        lbl_desc.bind("<Enter>", on_enter); lbl_desc.bind("<Leave>", on_leave)
+        title_label = ctk.CTkLabel(
+            text_frame,
+            text=title_text,
+            font=("Arial", 24, "bold"),
+            text_color="white",
+            anchor="w"
+        )
+        title_label.pack(anchor="w", pady=(18, 8))
 
-        box.grid(row=row, column=col, padx=20, pady=20, sticky="nsew")
-        return box
+        desc_label = ctk.CTkLabel(
+            text_frame,
+            text=desc_text,
+            font=("Arial", 15),
+            text_color="#E2E8F0",
+            anchor="w",
+            justify="left",
+            wraplength=380
+        )
+        desc_label.pack(anchor="w")
 
-    grid_container.grid_columnconfigure(0, weight=1)
-    grid_container.grid_columnconfigure(1, weight=1)
-    grid_container.grid_rowconfigure(0, weight=1)
-    grid_container.grid_rowconfigure(1, weight=1)
+        arrow = ctk.CTkLabel(
+            content,
+            text="›",
+            font=("Arial", 46, "bold"),
+            text_color="#E2E8F0"
+        )
+        arrow.pack(side="right", padx=(15, 0))
 
-    create_menu_box(grid_container, 0, 0, "⚙️  ניהול טבלאות", "CRUD Tables", open_tables_screen, COLOR_CRUD, HOVER_CRUD)
-    create_menu_box(grid_container, 0, 1, "📊  שאילתות ודוחות", "Queries & Reports", open_queries_screen, COLOR_QUERIES, HOVER_QUERIES)
-    create_menu_box(grid_container, 1, 0, "⚡  פרוצדורות", "Stored Programs", open_programs_screen, COLOR_STAGED, HOVER_STAGED)
-    create_menu_box(grid_container, 1, 1, "❌  יציאה", "Exit System", root.destroy, COLOR_EXIT, HOVER_EXIT)
+        def on_enter(event=None):
+            card.configure(fg_color=hover_color)
+            icon_box.configure(fg_color=color)
+            shadow.configure(fg_color="#94A3B8")
+            arrow.configure(text_color="white")
+            root.configure(cursor="hand2")
+
+        def on_leave(event=None):
+            card.configure(fg_color=color)
+            icon_box.configure(fg_color=hover_color)
+            shadow.configure(fg_color="#CBD5E1")
+            arrow.configure(text_color="#E2E8F0")
+            root.configure(cursor="")
+
+        def on_click(event=None):
+            command()
+
+        widgets = [
+            shadow, card, content, icon_box, icon_label,
+            text_frame, title_label, desc_label, arrow
+        ]
+
+        for widget in widgets:
+            widget.bind("<Enter>", on_enter)
+            widget.bind("<Leave>", on_leave)
+            widget.bind("<Button-1>", on_click)
+
+    create_dashboard_card(
+        0, 0,
+        "⚙️",
+        "Manage Tables",
+        "Insert, update, delete and view database tables",
+        BLUE,
+        BLUE_HOVER,
+        open_tables_screen
+    )
+
+    create_dashboard_card(
+        0, 1,
+        "📊",
+        "Reports & Queries",
+        "Run predefined Stage B reports and view results",
+        GREEN,
+        GREEN_HOVER,
+        open_queries_screen
+    )
+
+    create_dashboard_card(
+        1, 0,
+        "⚡",
+        "Stored Programs",
+        "Run Stage D functions and procedures",
+        PURPLE,
+        PURPLE_HOVER,
+        open_programs_screen
+    )
+
+    create_dashboard_card(
+        1, 1,
+        "✖",
+        "Exit System",
+        "Close the application safely",
+        RED,
+        RED_HOVER,
+        root.destroy
+    )
+
+    footer_line = ctk.CTkFrame(
+        main_card,
+        fg_color="#CBD5E1",
+        height=1
+    )
+    footer_line.pack(fill="x", padx=55, pady=(10, 12))
+
+    footer = ctk.CTkLabel(
+        main_card,
+        text="PROD-SYS v1.0  |  Stage E  |  Database GUI Application",
+        font=("Arial", 12),
+        text_color=TEXT_SUB
+    )
+    footer.pack(pady=(0, 18))
 
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()

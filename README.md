@@ -3895,7 +3895,7 @@ py main.py
 
 #### מסך כניסה ראשי
 
-![Main Screen](DBProject/stageE/screenshots/MainScreen.JPG)
+![Main Screen](DBProject/stageE/screenshots/MainScreen.png)
 
 #### מסך ניהול טבלאות ושליפת נתונים
 
