@@ -3089,77 +3089,65 @@ WHERE order_id = 501;
 
 
 <details>
-<summary><b>  טריגר 1 – תיעוד שינוי סטטוס של הזמנת אספקה</b></summary>
+<summary><b>טריגר 1 – בקרת סטטוס הזמנת אספקה</b></summary>
 
-
-## טריגר 1 – תיעוד שינוי סטטוס של הזמנת אספקה
+## טריגר 1 – בקרת סטטוס הזמנת אספקה
 
 הטריגר:
 
 ```text
-trg_log_supply_order_update
+trg_validate_supply_order_status
 ```
 
 משתמש בפונקציית הטריגר:
 
 ```text
-log_supply_order_status_update
+validate_supply_order_status_update
 ```
 
-מטרת הטריגר היא לתעד כל שינוי בסטטוס של הזמנת אספקה בטבלת `supplyorder`.
+מטרת הטריגר היא להבטיח את תקינות הנתונים בטבלת `supplyorder`.
 
-כאשר מתבצע עדכון לעמודה `order_status`, הטריגר מופעל ובודק האם הסטטוס אכן השתנה.
+הטריגר אוכף חוק עסקי שלפיו סטטוס של הזמנת אספקה חייב להיות אחד מהערכים המותרים:
 
-אם הסטטוס השתנה, הטריגר מבצע שתי פעולות:
+```text
+Pending, Shipped, Delivered, Cancelled, Completed
+```
 
-* מעדכן את השדה `updated_at` של ההזמנה לזמן הנוכחי.
-* מוסיף רשומה חדשה לטבלת `supply_order_status_log`, הכוללת את מספר ההזמנה, הסטטוס הישן, הסטטוס החדש וזמן השינוי.
-
-באופן זה ניתן לעקוב אחר שינויי הסטטוס שבוצעו להזמנות האספקה ולשמור היסטוריה של העדכונים.
+כאשר מתבצע ניסיון להכניס או לעדכן סטטוס הזמנה, הטריגר מופעל לפני שהשינוי נשמר בטבלה. אם הסטטוס החדש אינו חוקי, הטריגר חוסם את הפעולה ומחזיר הודעת שגיאה. אם הסטטוס תקין, הטריגר מעדכן אוטומטית את השדה `updated_at` לזמן הנוכחי ומאפשר את ביצוע הפעולה.
 
 ### קוד הטריגר
 
 ```sql
-CREATE OR REPLACE FUNCTION log_supply_order_status_update()
+CREATE OR REPLACE FUNCTION validate_supply_order_status_update()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    -- Insert into log table only if the status was changed
-    IF OLD.order_status IS DISTINCT FROM NEW.order_status THEN
-
-        -- Update the order modification time
-        NEW.updated_at := CURRENT_TIMESTAMP;
-
-        -- Save the status change in the log table
-        INSERT INTO supply_order_status_log (
-            order_id,
-            old_status,
-            new_status,
-            change_date
-        )
-        VALUES (
-            OLD.order_id,
-            OLD.order_status,
-            NEW.order_status,
-            CURRENT_TIMESTAMP
-        );
+    -- Business rule: order status must be valid
+    IF NEW.order_status NOT IN ('Pending', 'Shipped', 'Delivered', 'Cancelled', 'Completed') THEN
+        RAISE EXCEPTION
+            'Invalid order status: %. Allowed values are: Pending, Shipped, Delivered, Cancelled, Completed',
+            NEW.order_status;
     END IF;
+
+    -- Automatically update the modification timestamp
+    NEW.updated_at := CURRENT_TIMESTAMP;
 
     RETURN NEW;
 
 EXCEPTION
     WHEN OTHERS THEN
-        RAISE EXCEPTION 'Error in log_supply_order_status_update trigger: %', SQLERRM;
+        RAISE EXCEPTION 'Error in validate_supply_order_status_update trigger: %', SQLERRM;
 END;
 $$;
 
 DROP TRIGGER IF EXISTS trg_log_supply_order_update ON supplyorder;
+DROP TRIGGER IF EXISTS trg_validate_supply_order_status ON supplyorder;
 
-CREATE TRIGGER trg_log_supply_order_update
-BEFORE UPDATE OF order_status ON supplyorder
+CREATE TRIGGER trg_validate_supply_order_status
+BEFORE INSERT OR UPDATE OF order_status ON supplyorder
 FOR EACH ROW
-EXECUTE FUNCTION log_supply_order_status_update();
+EXECUTE FUNCTION validate_supply_order_status_update();
 ```
 
 ### יצירת הטריגר
@@ -3168,9 +3156,23 @@ EXECUTE FUNCTION log_supply_order_status_update();
 
 ![Create Trigger 1](DBProject/dbFiles/triger1_create.png)
 
-### הרצת הטריגר
+### הרצת הטריגר – בדיקת חסימה
 
-כדי להפעיל את הטריגר, בוצע עדכון לסטטוס של הזמנה מספר `501`:
+כדי לוודא שהטריגר מגן על הנתונים, בוצע ניסיון לעדכן את סטטוס הזמנה מספר `501` לסטטוס לא חוקי:
+
+```sql
+UPDATE supplyorder
+SET order_status = 'WrongStatus'
+WHERE order_id = 501;
+```
+
+הטריגר חסם את הפעולה והציג הודעת שגיאה, מכיוון שהסטטוס אינו אחד מהערכים המותרים.
+
+![Run Trigger 1](DBProject/dbFiles/triger1_run.png)
+
+### בדיקת פעולה מאושרת
+
+לאחר מכן בוצע עדכון לסטטוס תקין עבור הזמנה מספר `501`:
 
 ```sql
 UPDATE supplyorder
@@ -3178,7 +3180,7 @@ SET order_status = 'Completed'
 WHERE order_id = 501;
 ```
 
-![Run Trigger 1](DBProject/dbFiles/triger1_run.png)
+העדכון בוצע בהצלחה, משום שהסטטוס `Completed` הוא ערך חוקי.
 
 ### בדיקת עדכון ההזמנה
 
@@ -3193,32 +3195,11 @@ FROM supplyorder
 WHERE order_id = 501;
 ```
 
-בתוצאה ניתן לראות שהסטטוס של ההזמנה השתנה ל־`Completed`, וששדה `updated_at` עודכן אוטומטית.
+בתוצאה ניתן לראות שהסטטוס של ההזמנה השתנה ל־`Completed`, וששדה `updated_at` עודכן אוטומטית לזמן הנוכחי.
 
 ![Trigger 1 Order Check](DBProject/dbFiles/triger1_select.png)
 
-### בדיקת טבלת הלוג
-
-לבסוף נבדקה טבלת הלוג:
-
-```sql
-SELECT
-    log_id,
-    order_id,
-    old_status,
-    new_status,
-    change_date
-FROM supply_order_status_log
-WHERE order_id = 501
-ORDER BY log_id DESC;
-```
-
-בתוצאה ניתן לראות שנוספה רשומת לוג חדשה עבור הזמנה מספר `501`, שבה הסטטוס הישן הוא `Pending` והסטטוס החדש הוא `Completed`.
-
-![Trigger 1 Log Check](DBProject/dbFiles/triger1_log.png)
-
-הצילומים מוכיחים שהטריגר נוצר בהצלחה, הופעל בעת שינוי סטטוס של הזמנה, עדכן את זמן העדכון של ההזמנה והוסיף תיעוד מתאים לטבלת הלוג.
-
+הצילומים מוכיחים שהטריגר נוצר בהצלחה, חוסם סטטוס לא חוקי, מאפשר עדכון סטטוס תקין, ומעדכן אוטומטית את זמן העדכון של ההזמנה.
 
 </details>
 
