@@ -2427,12 +2427,13 @@ ORDER BY year DESC, total_models DESC;
 
 
 ---
+## שלב ד׳ – תכנות ב־PL/pgSQL
+
 <details>
 <summary><b>  שלב ד׳ – תכנות ב־PL/pgSQL </b></summary>
 
 
 
-## שלב ד׳ – תכנות ב־PL/pgSQL
 
 בשלב זה נוספו לבסיס הנתונים שינויים הנדרשים לצורך מימוש פונקציות, פרוצדורות וטריגרים בשפת `PL/pgSQL`.
 
@@ -3407,7 +3408,7 @@ EXECUTE FUNCTION process_product_price_update();
 
 הטריגר נוצר בהצלחה ב־pgAdmin.
 
-![Create Trigger 3](DBProject/dbFiles/trigger3_create.JPG)
+![Create Trigger 3](DBProject/dbFiles/trigger3_create.png)
 
 ### הרצת הטריגר – בדיקת חסימה
 
@@ -3726,11 +3727,13 @@ ORDER BY change_date DESC LIMIT 1;
 
 
 ---
+
+## שלב ה׳ - יצירת ממשק גרפי לעבודה מול בסיס הנתונים
+
 <details>
 <summary><b>   שלב ה׳ - יצירת ממשק גרפי לעבודה מול בסיס הנתונים  </b></summary>
 
 
-## שלב ה׳ - יצירת ממשק גרפי לעבודה מול בסיס הנתונים
 
 בשלב זה נבנה ממשק גרפי המאפשר עבודה מול בסיס הנתונים של הפרויקט.
 הממשק נבנה באמצעות Python ו־Tkinter, ומתחבר למסד הנתונים PostgreSQL בעזרת הספרייה `psycopg2`.

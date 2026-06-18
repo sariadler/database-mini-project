@@ -31,7 +31,7 @@ END;
 $$;
 
 -- Step 2: Drop old triggers if they exist
-DROP TRIGGER IF EXISTS trg_log_supply_order_update ON supplyorder;
+--DROP TRIGGER IF EXISTS trg_log_supply_order_update ON supplyorder;
 DROP TRIGGER IF EXISTS trg_validate_supply_order_status ON supplyorder;
 
 -- Step 3: Create the corrected trigger
