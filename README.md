@@ -3404,7 +3404,7 @@ EXECUTE FUNCTION process_product_price_update();
 
 הטריגר נוצר בהצלחה ב־pgAdmin.
 
-![Create Trigger 3](DBProject/dbFiles/trigger3_create.JPG)
+![Create Trigger 3](DBProject/dbFiles/trigger3_create.png)
 
 ### הרצת הטריגר – בדיקת חסימה
 
