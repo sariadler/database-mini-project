@@ -3215,75 +3215,58 @@ WHERE order_id = 501;
 <summary><b> טריגר 2 – תיעוד אוטומטי של שינויים במלאי חומרי גלם</b></summary>
 
 
-## טריגר 2 – תיעוד אוטומטי של שינויים במלאי חומרי גלם
+## טריגר 2-מלאי חומרי הגלם לא יכול להיות שלילי 
 
 הטריגר:
 
 ```text
-trg_log_rawmaterial_stock_update
+trg_validate_rawmaterial_stock
 ```
 
 משתמש בפונקציית הטריגר:
 
 ```text
-log_rawmaterial_stock_update
+validate_rawmaterial_stock
 ```
 
-מטרת הטריגר היא לתעד כל שינוי בכמות המלאי של חומר גלם בטבלת `rawmaterial`.
+מטרת הטריגר היא לאכוף חוק עסקי בטבלת `rawmaterial`, כך שכמות המלאי של חומר גלם לא יכולה להיות שלילית.
 
-כאשר מתבצע עדכון לעמודה `stock_quantity`, הטריגר מופעל ובודק האם כמות המלאי אכן השתנתה.
+הטריגר מופעל לפני כל פעולת `INSERT` או `UPDATE` על העמודה `stock_quantity`.
 
-אם כמות המלאי השתנתה, הטריגר מוסיף רשומה חדשה לטבלת `rawmaterial_stock_log`, הכוללת את מזהה חומר הגלם, כמות המלאי הישנה, כמות המלאי החדשה וזמן ביצוע השינוי.
+כאשר מתבצע עדכון או הוספה של חומר גלם, פונקציית הטריגר בודקת את הערך החדש של `stock_quantity`.
 
-באופן זה ניתן לעקוב אחר שינויי מלאי שבוצעו במערכת ולשמור היסטוריה של עדכוני המלאי.
+אם הערך החדש קטן מ־0, הטריגר מונע את ביצוע הפעולה וזורק הודעת שגיאה מתאימה.
+
+אם הערך תקין, הפעולה ממשיכה כרגיל והנתונים נשמרים במסד הנתונים.
+
+באופן זה נשמרת תקינות הנתונים במערכת ונמנעת האפשרות ליצור מצב שבו מלאי של חומר גלם יהיה שלילי, דבר שאינו הגיוני מבחינה עסקית.
+
 
 ### קוד הטריגר
-
-```sql
-CREATE TABLE rawmaterial_stock_log (
-    log_id SERIAL PRIMARY KEY,
-    r_id INT NOT NULL,
-    old_quantity INT,
-    new_quantity INT,
-    change_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE OR REPLACE FUNCTION log_rawmaterial_stock_update()
+CREATE OR REPLACE FUNCTION validate_rawmaterial_stock()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    IF OLD.stock_quantity IS DISTINCT FROM NEW.stock_quantity THEN
-        INSERT INTO rawmaterial_stock_log (
-            r_id,
-            old_quantity,
-            new_quantity,
-            change_date
-        )
-        VALUES (
-            OLD.r_id,
-            OLD.stock_quantity,
-            NEW.stock_quantity,
-            CURRENT_TIMESTAMP
-        );
+    IF NEW.stock_quantity < 0 THEN
+        RAISE EXCEPTION
+            'Stock quantity for raw material % cannot be negative',
+            NEW.r_id;
     END IF;
 
     RETURN NEW;
 END;
 $$;
 
-CREATE TRIGGER trg_log_rawmaterial_stock_update
-AFTER UPDATE OF stock_quantity
+DROP TRIGGER IF EXISTS trg_validate_rawmaterial_stock ON rawmaterial;
+
+CREATE TRIGGER trg_validate_rawmaterial_stock
+BEFORE INSERT OR UPDATE OF stock_quantity
 ON rawmaterial
 FOR EACH ROW
-EXECUTE FUNCTION log_rawmaterial_stock_update();
-```
+EXECUTE FUNCTION validate_rawmaterial_stock();
 
-### יצירת טבלת הלוג
 
-טבלת הלוג נוצרה בהצלחה ב־pgAdmin.
-
-![Create RawMaterial Stock Log](DBProject/dbFiles/trigger2_log_table_create.png)
 
 ### יצירת פונקציית הטריגר
 
@@ -3299,7 +3282,35 @@ EXECUTE FUNCTION log_rawmaterial_stock_update();
 
 ### הרצת הטריגר
 
-כדי להפעיל את הטריגר, בוצע עדכון לכמות המלאי של חומר גלם שמזההו `1823`:
+כדי לבדוק את הטריגר, בוצע ניסיון לעדכן את כמות המלאי של חומר גלם לערך שלילי:
+
+```sql
+UPDATE rawmaterial
+SET stock_quantity = -10
+WHERE r_id = 1823;
+```
+
+הטריגר הופעל אוטומטית לפני ביצוע העדכון, זיהה שכמות המלאי החדשה שלילית, ועצר את הפעולה באמצעות הודעת שגיאה.
+
+![Run Trigger 2](DBProject/dbFiles/trigger2_run.png)
+
+### בדיקה שהעדכון נחסם
+
+לאחר ניסיון העדכון, נבדקה טבלת `rawmaterial` כדי לוודא שהערך השלילי לא נשמר:
+
+```sql
+SELECT r_id, r_name, stock_quantity
+FROM rawmaterial
+WHERE r_id = 1823;
+```
+
+בתוצאה ניתן לראות שכמות המלאי נשארה תקינה ולא עודכנה לערך שלילי.
+
+![Trigger 2 Check](DBProject/dbFiles/trigger2_check.png)
+
+### בדיקת עדכון תקין
+
+כדי להראות שהטריגר לא חוסם עדכונים תקינים, בוצע עדכון חוקי לכמות המלאי:
 
 ```sql
 UPDATE rawmaterial
@@ -3307,26 +3318,19 @@ SET stock_quantity = stock_quantity + 50
 WHERE r_id = 1823;
 ```
 
-הטריגר הופעל אוטומטית מיד לאחר עדכון כמות המלאי.
-
-![Run Trigger 2](DBProject/dbFiles/trigger2_run.png)
-
-### בדיקת טבלת הלוג
-
-לאחר ביצוע העדכון, נבדקה טבלת הלוג:
+לאחר מכן נבדקה שוב הטבלה:
 
 ```sql
-SELECT *
-FROM rawmaterial_stock_log
-ORDER BY log_id DESC
-LIMIT 5;
+SELECT r_id, r_name, stock_quantity
+FROM rawmaterial
+WHERE r_id = 1823;
 ```
 
-בתוצאה ניתן לראות שנוספה רשומת לוג חדשה עבור חומר גלם מספר `1823`, שבה הכמות הישנה היא `110` והכמות החדשה היא `160`.
+העדכון בוצע בהצלחה מכיוון שכמות המלאי החדשה אינה שלילית.
 
-![Trigger 2 Log Check](DBProject/dbFiles/trigger2_log.png)
+![Trigger 2 Valid Update](DBProject/dbFiles/trigger2_valid_update.png)
 
-הצילומים מוכיחים שהטריגר נוצר בהצלחה, הופעל בעת שינוי כמות מלאי של חומר גלם, והוסיף תיעוד מתאים לטבלת הלוג.
+הצילומים מוכיחים שהטריגר נוצר בהצלחה, הופעל בעת ניסיון עדכון מלאי, מנע הכנסת ערך לא חוקי של מלאי שלילי, ואפשר עדכון תקין כאשר הערך החדש היה חוקי.
 
 
 ## תוכנית ראשית 1 – יצירת הזמנת אספקה על בסיס עלות חומרי גלם
@@ -3538,21 +3542,22 @@ LIMIT 1;
 
 
 <details>
-<summary><b>  תוכנית ראשית  2 </b></summary>
-## תוכנית ראשית  2 – ניהול אוטומטי של חומרי גלם בעלי מלאי נמוך
+<summary><b> תוכנית ראשית 2 </b></summary>
+
+## תוכנית ראשית 2 – ניהול אוטומטי של חומרי גלם בעלי מלאי נמוך
 
 התוכנית הראשית משלבת בין הפונקציה, הפרוצדורה והטריגר שנכתבו בשלב זה.
 
-מטרת התוכנית היא לאתר חומרי גלם בעלי מלאי נמוך, לעדכן את המלאי שלהם באופן אוטומטי ולאחר מכן לתעד את השינויים שבוצעו באמצעות הטריגר.
+מטרת התוכנית היא לאתר חומרי גלם בעלי מלאי נמוך, לעדכן את המלאי שלהם באופן אוטומטי, ולאחר מכן לבדוק שהטריגר מונע הכנסת ערך לא תקין של מלאי שלילי.
 
 התוכנית מבצעת את השלבים הבאים:
 
-1. קוראת לפונקציה `get_low_stock_materials_cursor` ומחזירה Ref Cursor המכיל את כל חומרי הגלם שמלאים נמוך מהסף שנקבע.
+1. קוראת לפונקציה `get_low_stock_materials_cursor` ומחזירה Ref Cursor המכיל את כל חומרי הגלם שהמלאי שלהם נמוך מהסף שנקבע.
 2. עוברת על הרשומות שהוחזרו וסופרת כמה חומרי גלם נמצאו.
 3. קוראת לפרוצדורה `refill_low_stock_materials` אשר מגדילה את המלאי של כל חומרי הגלם שנמצאו.
-4. מבצעת עדכון נוסף לחומר גלם מספר `1823`.
-5. עדכון המלאי מפעיל את הטריגר `trg_log_rawmaterial_stock_update`.
-6. הטריגר מוסיף רשומת תיעוד לטבלת `rawmaterial_stock_log`.
+4. מבצעת עדכון תקין לחומר גלם מספר `1823`.
+5. מנסה לבצע עדכון לא תקין שבו כמות המלאי מוגדרת לערך שלילי.
+6. הטריגר `trg_validate_rawmaterial_stock` מופעל אוטומטית ומונע את העדכון הלא תקין.
 
 ### קוד התוכנית הראשית
 
@@ -3566,6 +3571,7 @@ BEGIN
     -- Call Function 2
     v_cursor := get_low_stock_materials_cursor(200);
 
+    -- Read the Ref Cursor returned by the function
     LOOP
         FETCH v_cursor INTO v_material;
         EXIT WHEN NOT FOUND;
@@ -3573,50 +3579,49 @@ BEGIN
         v_material_count := v_material_count + 1;
     END LOOP;
 
-    RAISE NOTICE
-        'Number of raw materials with stock lower than 200: %',
+    RAISE NOTICE 'Number of raw materials with stock lower than 200: %',
         v_material_count;
 
-    -- Call Procedure 1
+    -- Call Procedure 3
     CALL refill_low_stock_materials(200, 50);
 
-    -- Activate Trigger 1
+    -- Activate Trigger 2 with a valid update
     UPDATE rawmaterial
     SET stock_quantity = stock_quantity + 25
+    WHERE r_id = 1823;
+
+    RAISE NOTICE 'Valid stock update was completed successfully.';
+
+    -- Activate Trigger 2 with an invalid update
+    -- This should fail because stock quantity cannot be negative
+    UPDATE rawmaterial
+    SET stock_quantity = -10
     WHERE r_id = 1823;
 
     RAISE NOTICE 'Main program completed successfully.';
 END;
 $$;
 
+-- Verify updated raw material
 SELECT
     r_id,
     r_name,
     stock_quantity
 FROM rawmaterial
 WHERE r_id = 1823;
-
-SELECT
-    log_id,
-    r_id,
-    old_quantity,
-    new_quantity,
-    change_date
-FROM rawmaterial_stock_log
-ORDER BY log_id DESC
-LIMIT 5;
 ```
 
 ### הרצת התוכנית הראשית
 
-התוכנית הורצה בהצלחה ב־pgAdmin.
+התוכנית הורצה ב־pgAdmin.
 
 במהלך ההרצה:
 
 * הפונקציה איתרה חומרי גלם בעלי מלאי נמוך מ־200.
 * הפרוצדורה הגדילה את המלאי של חומרי הגלם שנמצאו.
-* בוצע עדכון נוסף לחומר גלם מספר `1823`.
-* הטריגר הופעל באופן אוטומטי ותיעד את השינוי בטבלת הלוג.
+* בוצע עדכון תקין לחומר גלם מספר `1823`.
+* לאחר מכן בוצע ניסיון לעדכן את המלאי לערך שלילי.
+* הטריגר הופעל באופן אוטומטי ומנע את העדכון הלא תקין.
 
 ![Main Program Run](DBProject/dbFiles/main_program_run.png)
 
@@ -3633,33 +3638,11 @@ FROM rawmaterial
 WHERE r_id = 1823;
 ```
 
-ניתן לראות שכמות המלאי של חומר הגלם עודכנה בהצלחה.
+ניתן לראות שכמות המלאי של חומר הגלם לא נשמרה כערך שלילי, משום שהטריגר מנע את העדכון הלא תקין.
 
 ![Main Program Material Result](DBProject/dbFiles/main_program_material.png)
 
-### בדיקת טבלת הלוג
-
-לבסוף נבדקה טבלת `rawmaterial_stock_log`.
-
-```sql
-SELECT
-    log_id,
-    r_id,
-    old_quantity,
-    new_quantity,
-    change_date
-FROM rawmaterial_stock_log
-ORDER BY log_id DESC
-LIMIT 5;
-```
-
-בתוצאה ניתן לראות שנוספו רשומות לוג חדשות המתעדות את השינויים שבוצעו בכמויות המלאי.
-
-עבור חומר גלם מספר `1823` ניתן לראות שהכמות השתנתה מ־`210` ל־`235`.
-
-![Main Program Log Result](DBProject/dbFiles/main_program_log.png)
-
-הצילומים מוכיחים שהתוכנית הראשית רצה ללא תקלות, שילבה בהצלחה בין הפונקציה, הפרוצדורה והטריגר, עדכנה את מלאי חומרי הגלם ותיעדה את כל השינויים בטבלת הלוג.
+הצילומים מוכיחים שהתוכנית הראשית שילבה בהצלחה בין הפונקציה, הפרוצדורה והטריגר, עדכנה מלאי בצורה תקינה, והפעילה את הטריגר שמנע הכנסת ערך לא חוקי של מלאי שלילי.
 </details>
 
 
