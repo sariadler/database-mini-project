@@ -35,7 +35,7 @@ BEGIN
 END;
 $$;
 
--- Verify the new order
+-- Verify the new order and the updated timestamp
 SELECT
     order_id,
     total,
@@ -45,15 +45,4 @@ SELECT
 FROM supplyorder
 WHERE s_id = 3
 ORDER BY order_id DESC
-LIMIT 1;
-
--- Verify the trigger log
-SELECT
-    log_id,
-    order_id,
-    old_status,
-    new_status,
-    change_date
-FROM supply_order_status_log
-ORDER BY log_id DESC
 LIMIT 1;
